@@ -11,5 +11,3 @@ if __name__ == "__main__":
     Test_unit().run()
 
 # Hello Liza
-
-print('hello')
