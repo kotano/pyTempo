@@ -2,6 +2,75 @@
     padding: 5, 10
 <ListLabel@Label>:
     color: 0, 0, 0, 1
+<PriorityDropdown>:
+    dropbtn: dropbtn.__self__
+    dropdown: dropdown.__self__
+    Button:
+        id: dropbtn
+        center: self.center
+        text: '-'
+        background_normal: ''
+        # border: 0, 1, 0, 1
+        color: 0, 0, 0, 1
+        on_release: dropdown.open(self)
+        size_hint_y: None
+        height: 40
+        on_parent: dropdown.dismiss()
+
+    # Widget:
+        # on_parent: dropdown.dismiss()
+
+    DropDown:
+
+        id: dropdown
+        on_select: dropbtn.text = '{}'.format(args[1])
+        height: 40
+
+        Button:
+            text: '-'
+            size_hint_y: None
+            height: 40
+            on_release: dropdown.select(self.text)
+        Button:
+            text: 'High'
+            size_hint_y: None
+            height: 40
+            on_release: dropdown.select(self.text)
+
+        Button:
+            text: 'Normal'
+            size_hint_y: None
+            height: 40
+            on_release: dropdown.select(self.text)
+
+        Button:
+            text: 'Low'
+            size_hint_y: None
+            height: 40
+            on_release: dropdown.select(self.text)
+
+<Task>:
+    size_hint_y: None
+    canvas.before:
+        Color:
+            rgba: .5, .5, .5, 1
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height
+    size_hint_y: None
+    height: 40
+    TextInput:
+    #taskname
+        focus: True
+        hint_text: 'My new task!'
+        multiline: False
+        size_hint_x: 2
+    PriorityDropdown:
+    ListLabel:
+        text:
+    ListLabel:
+        text:
+
 
 
 <ActionSpinner@Spinner+ActionItem>
@@ -15,8 +84,10 @@
     background_normal:
     option_cls:
 
-#root
-BoxLayout:
+
+RootWidget:
+<RootWidget>:
+    taskholder: taskholder
     orientation: 'vertical'
     canvas.before:
         Color:
@@ -54,7 +125,7 @@ BoxLayout:
                 icon: 
                 on_release:
                 important: 
-    
+
     BoxLayout:
         canvas.before:
             Color:
@@ -73,9 +144,15 @@ BoxLayout:
             PaddedButton:
 
         GridLayout:
+            id: taskholder
             spacing: 0, 10
             padding: 10, 10
             cols: 1
+            Button:
+                size_hint_y: None
+                height: 40
+                text: 'Add new task'
+                on_release: root.add_list_item()
             BoxLayout:
                 size_hint_y: None
                 height: 40
@@ -112,6 +189,7 @@ BoxLayout:
                 size_hint_y: None
                 height: 40
                 TextInput:
+                    text: 'Do homework'
                     size_hint_x: 2
                 ListLabel:
                     text: 'High'
@@ -119,4 +197,6 @@ BoxLayout:
                     text: '25H'
                 ListLabel:
                     text: 'May 5'
-
+            
+            Task:
+            
