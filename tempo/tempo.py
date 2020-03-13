@@ -77,10 +77,12 @@ class RootWidget(BoxLayout):
     idscounter = NumericProperty(1)
 
     def load_tasks(self, dt):
-        with open(DATAFILE, 'r') as datafile:
-            tasks = json.load(datafile)
-            for task in tasks:
-                self.add_list_item()
+        try:
+            with open(DATAFILE, 'r') as datafile:
+                tasks = json.load(datafile)
+                self.add_list_item(tasks)
+        except FileNotFoundError:
+            print('File does not exist. Creating new one')
 
     def save_tasks(self, *args):
         data = {}
@@ -97,18 +99,15 @@ class RootWidget(BoxLayout):
         with open(DATAFILE, 'w+', encoding='utf-8') as datafile:
             json.dump(data, datafile, indent=4)
 
-    def add_list_item(self, *args):
+    def add_list_item(self, jdict=None):
         task = Task()
-        # taskdata = TASKDATA.format()
-        if not args:
+        if not jdict:
             self.taskholder.add_widget(Builder.load_string(TASKDATA.format(taskname='', priority='-', time='', deadline='')))
             self.idscounter += 1
         else:
-            tasks = args[0]
-            for t in tasks:
+            for t in jdict.values():
                 self.taskholder.add_widget(Builder.load_string(TASKDATA.format(taskname=t['taskname'], priority=t['priority'], time=t['time'], deadline=t['deadline'])))
                 self.idscounter += 1
-        # self.taskholder.add_widget(task)
 
 
 class TempoApp(App):
