@@ -2,7 +2,23 @@
     padding: 5, 10
 <ListLabel@Label>:
     color: 0, 0, 0, 1
+
+<PrioritySpinner>:
+    text_autoupdate: True
+    color: 0, 0, 0, 1
+    values: ('-', 'High', 'Normal', 'Low')
+    size_hint_y: None
+    height: 40
+    background_normal: ''
+
+<TaskHolder@GridLayout>:
+    id: taskholder
+    spacing: 0, 10
+    padding: 10, 10
+    cols: 1
+
 <PriorityDropdown>:
+    #! to remove
     dropbtn: dropbtn.__self__
     dropdown: dropdown.__self__
     Button:
@@ -48,6 +64,7 @@
             size_hint_y: None
             height: 40
             on_release: dropdown.select(self.text)
+    
 
 <Task>:
     size_hint_y: None
@@ -59,17 +76,52 @@
             rectangle: self.x, self.y, self.width, self.height
     size_hint_y: None
     height: 40
-    TextInput:
-    #taskname
-        focus: True
-        hint_text: 'My new task!'
-        multiline: False
-        size_hint_x: 2
-    PriorityDropdown:
-    ListLabel:
-        text:
-    ListLabel:
-        text:
+    # Widget:
+    #     id: checkbox
+    #     size_hint: 0.2, 0.2
+        # on_touch_down: print(self.center, self.size)
+        # canvas: 
+        #     Color:
+        #         rgba: .5, .5, .5, 1
+        #     Line:
+        #         width: 1
+        #         # rectangle: self.x + self.width / 4, self.y + self.height / 4, self.width - self.width / 4, self.height - self.height / 4
+        #         rectangle: self.x + self.width / 4, self.y + self.height / 4, self.width - 15, self.height - 15 
+        #         # pos: self.x - self.width / 4, self.height / 16
+    # AnchorLayout:
+    #     size_hint: 0.2, 0.2
+    #     anchor_x: 'center'
+    #     anchor_y: 'top'
+    #     # color: 1, 1, 1, 1
+    # CheckBox:
+    #     size_hint: 0.2, 0.2
+        # size: 10, 10
+        # canvas:
+        #     Color:
+        #         rgb: 1, 0, 0
+        #     Rectangle:
+        #         pos: self.pos
+        #         size: self.size
+        
+
+    # TextInput:
+    # #taskname
+    #     focus: True
+    #     hint_text: 'My new task!'
+    #     multiline: False
+    #     size_hint_x: 2
+    # # PriorityDropdown:
+    # Spinner:
+    #     text: '-'
+    #     color: 0, 0, 0, 1
+    #     values: ('-', 'High', 'Normal', 'Low')
+    #     size_hint_y: None
+    #     height: 40
+    #     background_normal: ''
+    # ListLabel:
+    #     text:
+    # ListLabel:
+    #     text:
 
 
 
@@ -85,6 +137,7 @@
     option_cls:
 
 
+############################# ROOT #########################
 RootWidget:
 <RootWidget>:
     taskholder: taskholder
@@ -116,7 +169,7 @@ RootWidget:
                 icon: 
                 on_release:
             ActionButton:
-                text: 'Previous screen'
+                # text: 'Previous screen'
                 icon: 
                 on_release: 
 
@@ -132,19 +185,18 @@ RootWidget:
                 rgb: 1, 1, 1, 1
             Rectangle:
                 size: self.size
+####################### Sidebar ########################
         BoxLayout:
-        # Sidebar
             padding: 10
             orientation: 'vertical'
             size_hint_x: None
             size: 70, self.height
-            # add some more buttons
-            PaddedButton:
-            PaddedButton:
-            PaddedButton:
 
+            PaddedButton:
+            PaddedButton:
+            PaddedButton:
+################## List ####################
         GridLayout:
-            id: taskholder
             spacing: 0, 10
             padding: 10, 10
             cols: 1
@@ -157,11 +209,6 @@ RootWidget:
                 size_hint_y: None
                 height: 40
                 canvas.before:
-                    # Color:
-                    #     rgb: .5, .5, .5, 1
-                    # Rectangle:
-                    #     size: self.size
-                    #     pos: self.pos
                     Color:
                         rgb: .5, .5, .5, 1
                     Line:
@@ -177,26 +224,26 @@ RootWidget:
                 ListLabel:
                     text: 'Deadline'
                 
-            
-            BoxLayout:
-                size_hint_y: None
-                canvas.before:
-                    Color:
-                        rgba: .5, .5, .5, 1
-                    Line:
-                        width: 1
-                        rectangle: self.x, self.y, self.width, self.height
-                size_hint_y: None
-                height: 40
-                TextInput:
-                    text: 'Do homework'
-                    size_hint_x: 2
-                ListLabel:
-                    text: 'High'
-                ListLabel:
-                    text: '25H'
-                ListLabel:
-                    text: 'May 5'
-            
-            Task:
-            
+############### FIRST ELEMENT ####################
+            TaskHolder:
+                id: taskholder
+                # BoxLayout:
+                #     size_hint_y: None
+                #     canvas.before:
+                #         Color:
+                #             rgba: .5, .5, .5, 1
+                #         Line:
+                #             width: 1
+                #             rectangle: self.x, self.y, self.width, self.height
+                #     size_hint_y: None
+                #     height: 40
+                #     TextInput:
+                #         text: 'Do homework'
+                #         size_hint_x: 2
+                #     ListLabel:
+                #         text: 'High'
+                #     ListLabel:
+                #         text: '25H'
+                #     ListLabel:
+                #         text: 'May 5'
+#########
