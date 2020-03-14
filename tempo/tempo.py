@@ -108,6 +108,9 @@ class RootWidget(BoxLayout):
             for t in jdict.values():
                 self.taskholder.add_widget(Builder.load_string(TASKDATA.format(taskname=t['taskname'], priority=t['priority'], time=t['time'], deadline=t['deadline'])))
                 self.idscounter += 1
+    
+    def remove_list_item(self):
+        pass
 
 
 class TempoApp(App):
