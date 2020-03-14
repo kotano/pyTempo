@@ -1,5 +1,6 @@
 import json
 import os
+from msilib.schema import CheckBox
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -30,18 +31,23 @@ Task:
     priority: priority.__self__
     time: time.__self__
     deadline: deadline.__self__
+    checkbox: checkbox.__self__
 
     # on_parent: app.root.save_tasks(self.taskname.text, self.priority.text, self.time.text, self.deadline.text)
     
     # checkbox
     CheckBox:
-        size_hint: 0.2, 0.2
+        id: checkbox
+        active: {active}
+        size_hint: None, 1
+        width: 20
         pos: root.center
     
     # taskname
     TextInput:
-        text: '{taskname}'
         id: taskname
+        text: '{taskname}'
+        write_tab: False
         focus: True
         hint_text: 'My new task!'
         multiline: False
@@ -59,6 +65,10 @@ Task:
         id: deadline
         text: '{deadline}' 
 ''')
+
+
+class TaskStatus(CheckBox):
+    pass
 
 class Task(BoxLayout):
     pass
@@ -89,6 +99,7 @@ class RootWidget(BoxLayout):
         counter = 1
         for task in self.taskholder.children:
             data.update({counter:{
+                'active': task.checkbox.active,
                 'taskname': task.taskname.text,
                 'priority': task.priority.text,
                 'time': task.time.text,
@@ -102,11 +113,11 @@ class RootWidget(BoxLayout):
     def add_list_item(self, jdict=None):
         task = Task()
         if not jdict:
-            self.taskholder.add_widget(Builder.load_string(TASKDATA.format(taskname='', priority='-', time='', deadline='')))
+            self.taskholder.add_widget(Builder.load_string(TASKDATA.format(active=False, taskname='', priority='-', time='', deadline='')))
             self.idscounter += 1
         else:
             for t in jdict.values():
-                self.taskholder.add_widget(Builder.load_string(TASKDATA.format(taskname=t['taskname'], priority=t['priority'], time=t['time'], deadline=t['deadline'])))
+                self.taskholder.add_widget(Builder.load_string(TASKDATA.format(active=t['active'], taskname=t['taskname'], priority=t['priority'], time=t['time'], deadline=t['deadline'])))
                 self.idscounter += 1
     
     def remove_list_item(self):

@@ -68,12 +68,18 @@
 
 <Task>:
     size_hint_y: None
+    # canvas.before:
+    #     Color:
+    #         rgba: .5, .5, .5, 1
+    #     Line:
+    #         width: 1
+    #         rectangle: self.x, self.y, self.width, self.height
     canvas.before:
         Color:
-            rgba: .5, .5, .5, 1
+            rgb: .5, .5, .5, 1
         Line:
+            points: self.x, self.y - 4, self.x + self.width, self.y -4
             width: 1
-            rectangle: self.x, self.y, self.width, self.height
     size_hint_y: None
     height: 40
 
@@ -165,7 +171,7 @@ RootWidget:
                         rgb: .5, .5, .5, 1
                     Line:
                         points: self.x, self.y, self.x + self.width, self.y
-                        width: 1
+                        width: 2
                 ListLabel:
                     size_hint_x: 2
                     text: 'Tasks'
