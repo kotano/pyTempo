@@ -56,14 +56,12 @@ Task:
                         text: '{priority}'
 
 #> task name popup
-                    TextInput:
+                    DefaultInput:
                         id: taskname
                         text: '{taskname}'
                         font_size: 18
-                        write_tab: False
                         focus: True
                         hint_text: 'Enter task name'
-                        multiline: False
                         size_hint: 0.8, 1
 
 #> timeline
@@ -119,6 +117,7 @@ Task:
                         size_hint_x: 0.9
                         opacity: 0.5
                         CheckBox:
+                            id: subcheckbox
                             active: False
                             disabled: True
                             size_hint: None, 1
@@ -131,13 +130,15 @@ Task:
                             hint_text: 'Create new subtask'
                             multiline: False
                             write_tab: False
-                            on_focus: subtask.opacity=1
+                            # on_text: subcheckbox.disabled=False
+                            on_focus: 
+                                subtask.opacity=1;
+                                subcheckbox.disabled=False;
                             on_text_validate: app.root.add_subtask(subtaskholder)
 #> notes #      
                 AnchorLayout:
                     anchor_x: 'center'
-                    # anchor_y: 'center'
-                    TextInput:
+                    DefaultInput:
                         canvas.after:
                             Color:
                                 rgba: 0, 0, 0, 1
@@ -146,12 +147,10 @@ Task:
                                 rectangle: self.x, self.y, self.width, self.height 
                         id: notes
                         text: '{notes}'
-                        background_normal: ''
+                        multiline: True
                         hint_text: 'Notes...'
                         size_hint: 0.9, 0.9
-                        # pos: self.x + self.width/4 ,self.y
-                        pos_x: root.width / 4
-                        height: 100
+                        # height: 100
 # footer popup
                 BoxLayout:
                     size_hint_y: None

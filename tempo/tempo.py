@@ -30,9 +30,9 @@ from task import SUBTASK, TASK
 DATAFILE = os.path.join(os.path.dirname(__file__), 'data.json')
 
 
-# TODO Remove unused modules
-# TODO Comment some code
-# TODO Subtasks
+# TODO - Remove unused modules
+# TODO - Comment some code
+# TODO + Subtasks
 
 class Task(BoxLayout):
     pass
@@ -61,7 +61,6 @@ class RootWidget(BoxLayout):
         except (FileNotFoundError):
             print('File does not exist. Creating new one')
 
-# TODO + Foolproof
 # TODO +- Make undo when wrong data / take data from save?
     def set_time(self, instance, time, val, startdate, deadline):
         if not val:
