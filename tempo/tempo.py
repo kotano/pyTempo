@@ -30,38 +30,20 @@ from task import SUBTASK, TASK
 DATAFILE = os.path.join(os.path.dirname(__file__), 'data.json')
 
 
-class TaskStatus(CheckBox):
-    pass
-
-class DateInput(TextInput):
-    pass
-
+# TODO Remove unused modules
+# TODO Comment some code
+# TODO Subtasks
 
 class Task(BoxLayout):
     pass
 
-
-class PriorityDropdown(BoxLayout):
+class Subtask(Task):
     pass
-
-
-class PrioritySpinner(Spinner):
-    pass
-
 
 class RootWidget(BoxLayout):
     taskholder = ObjectProperty()
     task_ids = ListProperty([])
     idscounter = NumericProperty(1)
-
-    def set_time_on_focus(self, value, starttime, deadline):
-        if value:
-            print('User focused', instance)
-            return '1'
-        else:
-            print('User defocused', instance)
-            return self.set_time(starttime, deadline)
-
 
     def load_tasks(self, dt):
         try:
@@ -78,21 +60,25 @@ class RootWidget(BoxLayout):
                     self.taskholder.add_widget(Builder.load_string(widget))
         except (FileNotFoundError):
             print('File does not exist. Creating new one')
-    
-    def set_time(self, time, val, startdate, deadline):
+
+# TODO + Foolproof
+# TODO +- Make undo when wrong data / take data from save?
+    def set_time(self, instance, time, val, startdate, deadline):
         if not val:
             try:
-                start = dates.convert_date() if startdate.text == '' else  [
-                    int(x) for x in startdate.text.split('.')][::-1]
-                end = dates.convert_date() if deadline.text == '' else [
-                    int(x) for x in deadline.text.split('.')][::-1]
-            except ValueError:
+                start = [int(x) for x in startdate.text.split('.')][::-1]
+                end = [int(x) for x in deadline.text.split('.')][::-1]
+                start = datetime.date(*start)
+                end = datetime.date(*end)
+            except (ValueError, TypeError) as e:
                 print('You have entered wrong data')
+                # time.text = ''
+                # for x in instance.text:
+                instance.do_undo()
             else:
                 res = dates.find_time(start, end)
                 time.text = str(res)
                 print(start, end)
-                
                 return res
 
     def save_tasks(self, *args):
@@ -108,6 +94,7 @@ class RootWidget(BoxLayout):
                 'progress': task.progress.text,
                 'deadline': task.deadline.text.split('.'),
                 'notes': task.notes.text,
+                # TODO Subtasks save
             }})
             print(data)
             counter += 1
@@ -121,9 +108,13 @@ class RootWidget(BoxLayout):
             startdate=dates.convert_date(), time='', progress='0', deadline='',
             notes=''
             )
-        # widget = TASK
         self.taskholder.add_widget(Builder.load_string(widget))
         self.taskholder.children[0].popup.open()
+
+
+    def add_subtask(self, instance):
+        widget = SUBTASK.format(subactive=False, subtaskname='')
+        instance.add_widget(Builder.load_string(widget))
 
 
 
@@ -131,12 +122,9 @@ class RootWidget(BoxLayout):
 class TempoApp(App):
     def build(self):
         app = RootWidget()
-        try:
-            Clock.schedule_once(app.load_tasks)
-        except Exception as e:
-            print(e)
-
+        Clock.schedule_once(app.load_tasks)
         Clock.schedule_interval(app.save_tasks, 15)
+        
         return app
 
 

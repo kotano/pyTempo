@@ -3,26 +3,42 @@
 <ListLabel@Label>:
     color: 0, 0, 0, 1
 
-<DateInput>:
+<DefaultInput@TextInput>:
+    background_normal: ''
+    write_tab: False
+    multiline: False
+    canvas.after:
+        Color:
+            rgba: 0.5, 0.5, 0.5, 1
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height
+
+
+<DateInput@DefaultInput>:
+    write_tab: False
+
+    border: 1, 1, 1, 1
     multiline: False
     on_text_validate:
+    background_normal: ''
 
-<PrioritySpinner>:
+
+<PrioritySpinner@Spinner>:
     text_autoupdate: True
     color: 0, 0, 0, 1
     values: ('-', 'High', 'Normal', 'Low')
     size_hint_y: None
     height: 40
     background_normal: ''
-
 <TaskHolder@GridLayout>:
     id: taskholder
     spacing: 0, 10
     padding: 10, 10
     cols: 1
 
-<PriorityDropdown>:
-    #! to remove
+# TODO remove dropdown
+<PriorityDropdown@BoxLayout>:
     dropbtn: dropbtn.__self__
     dropdown: dropdown.__self__
     Button:
@@ -69,10 +85,10 @@
             height: 40
             on_release: dropdown.select(self.text)
     
-
+#@ TASK #
 <Task>:
     size_hint_y: None
-    canvas.before:
+    canvas.after:
         Color:
             rgb: .5, .5, .5, 1
         Line:
@@ -80,6 +96,11 @@
             width: 1
     size_hint_y: None
     height: 40
+
+#@ Subtask
+<Subtask>:
+    padding: 5, 5
+    background_normal: ''    
 
 <ActionSpinner@Spinner+ActionItem>
     canvas.before:
@@ -93,7 +114,7 @@
     option_cls:
 
 
-############################# ROOT #########################
+######################## ROOT #########################
 RootWidget:
 <RootWidget>:
     taskholder: taskholder
@@ -141,7 +162,7 @@ RootWidget:
                 rgb: 1, 1, 1, 1
             Rectangle:
                 size: self.size
-####################### Sidebar ########################
+# Sidebar #
         BoxLayout:
             padding: 10
             orientation: 'vertical'
@@ -151,7 +172,7 @@ RootWidget:
             PaddedButton:
             PaddedButton:
             PaddedButton:
-################## List ####################
+# Content # 
         GridLayout:
             spacing: 0, 10
             padding: 10, 10
@@ -180,7 +201,7 @@ RootWidget:
                 ListLabel:
                     text: 'Deadline'
                 
-############### TASKHOLDER ####################
+# TASKHOLDER #
             TaskHolder:
                 id: taskholder
                 # BoxLayout:

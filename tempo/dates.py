@@ -12,9 +12,7 @@ def convert_date(d=date.today()):
 
 
 def find_time(starttime, deadline):
-    start = datetime.date(*starttime)
-    end = datetime.date(*deadline)
-    delta = end - start
+    delta = deadline - starttime
     delta = delta.total_seconds()//3600//HOURSPERDAY
     return delta
     
