@@ -72,7 +72,7 @@ Task:
                     height: 50
 
 #> task start date
-                    TextInput:
+                    DateInput:
                         id: startdate
                         size_hint_x: 0.25
                         text: '{startdate}'
@@ -88,11 +88,15 @@ Task:
                         ListLabel:
                             id: time
                             text: '{time}'
+                            on_parent: print('Hello')
+                                # if self. :self.text = app.set_time(startdate.text, deadline.text)
 #> deadline                    
-                    TextInput:
+                    DateInput:
                         size_hint_x: 0.25
                         id: deadline
                         text: '{deadline}'
+                        on_focus: app.root.set_time(time, self.focus, startdate, deadline)
+                        # on_focus: self.text = app.set_time(startdate.text, deadline.text)
                         
                 
 #> notes popup

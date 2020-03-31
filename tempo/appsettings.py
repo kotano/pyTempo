@@ -1,0 +1,1 @@
+HOURSPERDAY = 6

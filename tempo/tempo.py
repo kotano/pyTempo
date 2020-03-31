@@ -2,7 +2,7 @@ import json
 import os
 from collections import OrderedDict
 import datetime
-import core
+import dates
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -33,16 +33,8 @@ DATAFILE = os.path.join(os.path.dirname(__file__), 'data.json')
 class TaskStatus(CheckBox):
     pass
 
-# class DateInput(TextInput):
-
-#     pat = re.compile('[^0-9]')
-#     def insert_text(self, substring, from_undo=False):
-#         pat = self.pat
-#         if '.' in self.text:
-#             s = re.sub(pat, '', substring)
-#         else:
-#             s = '.'.join([re.sub(pat, '', s) for s in substring.split('.', 1)])
-#         return super(Sta, self).insert_text(s, from_undo=from_undo)
+class DateInput(TextInput):
+    pass
 
 
 class Task(BoxLayout):
@@ -62,6 +54,15 @@ class RootWidget(BoxLayout):
     task_ids = ListProperty([])
     idscounter = NumericProperty(1)
 
+    def set_time_on_focus(self, value, starttime, deadline):
+        if value:
+            print('User focused', instance)
+            return '1'
+        else:
+            print('User defocused', instance)
+            return self.set_time(starttime, deadline)
+
+
     def load_tasks(self, dt):
         try:
             with open(DATAFILE, 'r') as datafile:
@@ -69,13 +70,30 @@ class RootWidget(BoxLayout):
                 for t in tasks.values():
                     widget = TASK.format(
                         active=t['active'], taskname=t['taskname'],
-                        priority=t['priority'], startdate='.'.join(t['startdate']),
+                        priority=t['priority'],
+                        startdate='.'.join(t['startdate']),
                         time=t['time'], progress=t['progress'],
                         deadline='.'.join(t['deadline']), notes=t['notes']
                     )
                     self.taskholder.add_widget(Builder.load_string(widget))
         except (FileNotFoundError):
             print('File does not exist. Creating new one')
+    
+    def set_time(self, time, val, startdate, deadline):
+        if not val:
+            try:
+                start = dates.convert_date() if startdate.text == '' else  [
+                    int(x) for x in startdate.text.split('.')][::-1]
+                end = dates.convert_date() if deadline.text == '' else [
+                    int(x) for x in deadline.text.split('.')][::-1]
+            except ValueError:
+                print('You have entered wrong data')
+            else:
+                res = dates.find_time(start, end)
+                time.text = str(res)
+                print(start, end)
+                
+                return res
 
     def save_tasks(self, *args):
         data = {}
@@ -100,12 +118,14 @@ class RootWidget(BoxLayout):
     def add_list_item(self):
         widget = TASK.format(
             active=False, taskname='', priority='-',
-            startdate=core.convert_date(), time='', progress='', deadline='',
+            startdate=dates.convert_date(), time='', progress='0', deadline='',
             notes=''
             )
         # widget = TASK
         self.taskholder.add_widget(Builder.load_string(widget))
         self.taskholder.children[0].popup.open()
+
+
 
 
 class TempoApp(App):
@@ -116,7 +136,7 @@ class TempoApp(App):
         except Exception as e:
             print(e)
 
-        Clock.schedule_interval(app.save_tasks, 5)
+        Clock.schedule_interval(app.save_tasks, 15)
         return app
 
 
