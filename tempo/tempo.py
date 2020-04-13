@@ -46,6 +46,7 @@ class RootWidget(BoxLayout):
     idscounter = NumericProperty(1)
 
     def load_tasks(self, dt):
+        # loads task from data.json if exists
         try:
             with open(DATAFILE, 'r') as datafile:
                 tasks = json.load(datafile)
