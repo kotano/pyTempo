@@ -37,7 +37,7 @@
     padding: 10, 10
     cols: 1
 
-# TODO remove dropdown
+
 <PriorityDropdown@BoxLayout>:
     dropbtn: dropbtn.__self__
     dropdown: dropdown.__self__
@@ -53,11 +53,7 @@
         height: 40
         on_parent: dropdown.dismiss()
 
-    # Widget:
-        # on_parent: dropdown.dismiss()
-
     DropDown:
-
         id: dropdown
         on_select: dropbtn.text = '{}'.format(args[1])
         height: 40
@@ -84,8 +80,8 @@
             size_hint_y: None
             height: 40
             on_release: dropdown.select(self.text)
-    
-#@ TASK #
+
+# TASK #
 <Task>:
     size_hint_y: None
     canvas.after:
@@ -97,10 +93,10 @@
     size_hint_y: None
     height: 40
 
-#@ Subtask
+# Subtask
 <Subtask>:
     padding: 5, 5
-    background_normal: ''    
+    background_normal: ''
 
 <ActionSpinner@Spinner+ActionItem>
     canvas.before:
@@ -128,33 +124,17 @@ RootWidget:
     ActionBar:
         # size_hint_y: 0.2
         height: '50dp'
+        # background_color: .70, .88, .87, .9
+        # background_image: ''
         ActionView:
             id: av
             ActionPrevious:
                 with_previous: False
-                title:
+                title: ''
+                app_icon: './doc/sources/logo.png'
                 on_release:
+                background_normal: ''
 
-            # ActionSpinner:
-            #     id: spnr
-            #     important: True
-            #     text: 'Jump to Screen'
-            #     values: 
-            #     on_text:
-            ActionToggleButton:
-                text: 
-                icon: 
-                on_release:
-            ActionButton:
-                # text: 'Previous screen'
-                icon: 
-                on_release: 
-
-            ActionButton:
-                text: 
-                icon: 
-                on_release:
-                important: 
 
     BoxLayout:
         canvas.before:
@@ -162,7 +142,7 @@ RootWidget:
                 rgb: 1, 1, 1, 1
             Rectangle:
                 size: self.size
-# Sidebar #
+# Sidebar
         BoxLayout:
             padding: 10
             orientation: 'vertical'
@@ -172,7 +152,7 @@ RootWidget:
             PaddedButton:
             PaddedButton:
             PaddedButton:
-# Content # 
+# Content
         GridLayout:
             spacing: 0, 10
             padding: 10, 10
@@ -200,27 +180,7 @@ RootWidget:
                     text: 'Time'
                 ListLabel:
                     text: 'Deadline'
-                
-# TASKHOLDER #
+
+# TASKHOLDER
             TaskHolder:
                 id: taskholder
-                # BoxLayout:
-                #     size_hint_y: None
-                #     canvas.before:
-                #         Color:
-                #             rgba: .5, .5, .5, 1
-                #         Line:
-                #             width: 1
-                #             rectangle: self.x, self.y, self.width, self.height
-                #     size_hint_y: None
-                #     height: 40
-                #     TextInput:
-                #         text: 'Do homework'
-                #         size_hint_x: 2
-                #     ListLabel:
-                #         text: 'High'
-                #     ListLabel:
-                #         text: '25H'
-                #     ListLabel:
-                #         text: 'May 5'
-#########

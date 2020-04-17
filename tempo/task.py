@@ -96,9 +96,8 @@ Task:
                         ListLabel:
                             id: time
                             text: '{time}'
-                            on_parent: print('Hello')
-                                # if self. :self.text = app.set_time(startdate.text, deadline.text)
-#> deadline #                 
+
+#> deadline          
                     DateInput:
                         size_hint_x: 0.25
                         id: deadline
@@ -107,7 +106,7 @@ Task:
                             app.root.set_time(self, time, self.focus, startdate, deadline)
                         # on_focus: self.text = app.set_time(startdate.text, deadline.text)
 
-# Subtask #     
+#> Subtask
                 GridLayout:
                     id: subtaskholder
                     cols: 1
@@ -135,7 +134,7 @@ Task:
                                 subtask.opacity=1;
                                 subcheckbox.disabled=False;
                             on_text_validate: app.root.add_subtask(subtaskholder)
-#> notes #      
+#> notes
                 AnchorLayout:
                     anchor_x: 'center'
                     DefaultInput:
@@ -147,15 +146,16 @@ Task:
                                 rectangle: self.x, self.y, self.width, self.height 
                         id: notes
                         text: '{notes}'
-                        multiline: True
+                        #! raises an exception if multiline is True and the value has \\n
+                        multiline: False
                         hint_text: 'Notes...'
                         size_hint: 0.9, 0.9
                         # height: 100
-# footer popup
+#> footer
                 BoxLayout:
                     size_hint_y: None
                     height: 50
-#> save button    
+#>> save button    
                     Button:
                         text: 'Save'
                         color: 0, 0, 0, 1
@@ -164,7 +164,7 @@ Task:
                         on_release: 
                             popup.dismiss();
                             app.root.save_tasks();
-#> delete button
+#>> delete button
                     Button:
                         text: 'Delete'
                         # min_state_time: 1
@@ -190,7 +190,6 @@ Task:
 
 # time main
     ListLabel:
-        # text: str(int(progress.text) - int(time.text))
         text: time.text
 
 # deadline main
@@ -224,8 +223,3 @@ Subtask:
         on_focus: subtask.opacity=1
         on_text_validate: app.root.add_subtask(root.parent)
 ''')
-
-
-if __name__ == "__main__":
-    import tempo
-    tempo.TempoApp().run()
