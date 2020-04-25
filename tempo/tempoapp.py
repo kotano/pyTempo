@@ -67,11 +67,18 @@ class RootWidget(BoxLayout):
         else:
             instance.opacity = 1
 
-    def complete_task(self, root, value):
+    def complete_task(self, holder, root, value):
+        '''Does task complete behavior
+
+        Parameters:
+            holder (obj): tasks container object
+            root (obj): main task object
+            value (bool): checkbox value
+        '''
         # TODO archive, smooth animation
         if value:
-            self.taskholder.remove_widget(root)
-            self.taskholder.add_widget(root)
+            holder.remove_widget(root)
+            holder.add_widget(root)
 
 # TODO Make undo when wrong data / take data from save?
     def set_time(self, instance, time, val, startdate, deadline):

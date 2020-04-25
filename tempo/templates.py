@@ -21,7 +21,7 @@ Task:
     CheckBox:
         id: checkbox
         active: {active}
-        on_active: app.root.complete_task(root, self.active)
+        on_active: app.root.complete_task(root.parent, root, self.active)
         size_hint: None, 1
         width: 20
         pos: root.center
@@ -217,7 +217,7 @@ Subtask:
         size_hint: None, 1
         width: 20
         pos: root.center
-        # on_active: app.root.complete_task(root, self.active)
+        on_active: app.root.complete_task(root.parent, root, self.active)
 
     TextInput:
         id: subtaskname
