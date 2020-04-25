@@ -1,9 +1,12 @@
+from tempo import dates
+
 TASK = ('''
 Task:
     id: task
     taskname: taskname.__self__
     priority: priority.__self__
     checkbox: checkbox.__self__
+    subtaskholder: subtaskholder.__self__
     
     popup: popup.__self__
     startdate: startdate.__self__
@@ -12,11 +15,13 @@ Task:
     deadline: deadline.__self__
     notes: notes.__self__
 
+    opacity: .2 if checkbox.active else 1
     
 # checkbox
     CheckBox:
         id: checkbox
         active: {active}
+        on_active: app.root.complete_task(root, self.active)
         size_hint: None, 1
         width: 20
         pos: root.center
@@ -111,29 +116,29 @@ Task:
                     id: subtaskholder
                     cols: 1
                 
-                    Subtask:
-                        id: subtask
-                        size_hint_x: 0.9
-                        opacity: 0.5
-                        CheckBox:
-                            id: subcheckbox
-                            active: False
-                            disabled: True
-                            size_hint: None, 1
-                            width: 20
-                            pos: root.center
+                    # Subtask:
+                    #     id: subtask
+                    #     size_hint_x: 0.9
+                    #     opacity: 0.5
+                    #     CheckBox:
+                    #         id: subcheckbox
+                    #         active: False
+                    #         disabled: True
+                    #         size_hint: None, 1
+                    #         width: 20
+                    #         pos: root.center
 
-                        TextInput:
-                            id: subtaskname
-                            background_normal: ''
-                            hint_text: 'Create new subtask'
-                            multiline: False
-                            write_tab: False
-                            # on_text: subcheckbox.disabled=False
-                            on_focus: 
-                                subtask.opacity=1;
-                                subcheckbox.disabled=False;
-                            on_text_validate: app.root.add_subtask(subtaskholder)
+                    #     TextInput:
+                    #         id: subtaskname
+                    #         background_normal: ''
+                    #         hint_text: 'Create new subtask'
+                    #         multiline: False
+                    #         write_tab: False
+                    #         # on_text: subcheckbox.disabled=False
+                    #         # on_focus: 
+                    #         #     subtask.opacity=1;
+                    #         #     subcheckbox.disabled=False;
+                    #         on_text_validate: app.root.add_subtask(subtaskholder)
 #> notes
                 AnchorLayout:
                     anchor_x: 'center'
@@ -203,6 +208,8 @@ Subtask:
     id: subtask
     subtaskname: subtaskname.__self__
     checkbox: subcheckbox.__self__
+    
+    opacity: .2 if subcheckbox.active else 1
 
     CheckBox:
         id: subcheckbox
@@ -210,6 +217,7 @@ Subtask:
         size_hint: None, 1
         width: 20
         pos: root.center
+        # on_active: app.root.complete_task(root, self.active)
 
     TextInput:
         id: subtaskname
@@ -219,7 +227,23 @@ Subtask:
         hint_text: 'Create new subtask'
         multiline: False
         write_tab: False
-        focus: True
-        on_focus: subtask.opacity=1
+        focus: {focus}
+        # on_focus: subtask.opacity=1
         on_text_validate: app.root.add_subtask(root.parent)
+    
+    Button:
+        size_hint_x: None
+        width: 15
+        on_press: print('NO!') if len(root.parent.children) <= 1 else root.parent.remove_widget(subtask)
 ''')
+
+
+default_task = TASK.format(
+            active=False, taskname='', priority='-',
+            startdate=dates.convert_date(), time='', progress='0', deadline='',
+            notes=''
+        )
+
+
+default_subtask = SUBTASK.format(subactive=False, subtaskname='', focus = True)
+first_subtask = SUBTASK.format(subactive=False, subtaskname='', focus = False)

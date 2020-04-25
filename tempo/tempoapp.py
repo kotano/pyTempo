@@ -7,10 +7,14 @@ from kivy.clock import Clock
 from kivy.lang.builder import Builder
 from kivy.properties import (ListProperty, NumericProperty, ObjectProperty,
                              StringProperty)
+from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
 
 from tempo import dates
-from tempo.task import SUBTASK, TASK
+from tempo.templates import (SUBTASK, TASK, default_subtask, default_task,
+                             first_subtask)
+
+
 
 # from KivyCalendar import CalendarWidget, DatePicker
 
@@ -38,18 +42,36 @@ class RootWidget(BoxLayout):
         try:
             with open(DATAFILE, 'r') as datafile:
                 tasks = json.load(datafile)
-                for t in tasks.values():
-                    widget = TASK.format(
-                        active=t['active'], taskname=t['taskname'],
-                        priority=t['priority'],
-                        startdate='.'.join(t['startdate']),
-                        time=t['time'], progress=t['progress'],
-                        deadline='.'.join(t['deadline']), notes=t['notes']
-                    )
-                    self.taskholder.add_widget(Builder.load_string(widget))
         except (FileNotFoundError):
-            print('File does not exist. Creating new one')
+            print('File does not exist. It will be created automatically.')
+        else:
+            for t in tasks.values():
+                widget = TASK.format(
+                    active=t['active'], taskname=t['taskname'],
+                    priority=t['priority'],
+                    startdate='.'.join(t['startdate']),
+                    time=t['time'], progress=t['progress'],
+                    deadline='.'.join(t['deadline']), notes=t['notes']
+                )
+                self.taskholder.add_widget(Builder.load_string(widget))
+                for st in t['subtasks'][::-1]:
+                    subtask = SUBTASK.format(
+                        subactive=st[0], subtaskname=st[1], focus=False)
+                    self.taskholder.children[0].subtaskholder.add_widget(
+                        Builder.load_string(subtask))
 
+    def set_opacity(self, instance, value):
+        '''If value is true, lower instance's opacity'''
+        if value:
+            return 
+        else:
+            instance.opacity = 1
+
+    def complete_task(self, root, value):
+        # TODO archive, smooth animation
+        if value:
+            self.taskholder.remove_widget(root)
+            self.taskholder.add_widget(root)
 
 # TODO Make undo when wrong data / take data from save?
     def set_time(self, instance, time, val, startdate, deadline):
@@ -57,8 +79,8 @@ class RootWidget(BoxLayout):
         
         Parameters:
             instance (obj): object that calling function
-            time (obj): reference to object that keeps
-            val (bool): instance's 'on_focus' property value
+            time (obj): reference to object to place delta time value
+            val (bool): instance's 'focus' property value
             startdate (obj): reference to task startdate textinput
             deadline (obj): reference to task deadline textinput
 
@@ -82,8 +104,7 @@ class RootWidget(BoxLayout):
                 # return res
 
     def save_tasks(self, *args):
-        ''' Save tasks to data.json
-        '''
+        ''' Save tasks to data.json'''
         data = {}
         counter = 1
         for task in self.taskholder.children[::-1]:
@@ -96,6 +117,9 @@ class RootWidget(BoxLayout):
                 'progress': task.progress.text,
                 'deadline': task.deadline.text.split('.'),
                 'notes': task.notes.text,
+                # subtasks depend on structure. Not reliable
+                'subtasks': [[s.children[2].active, s.children[1].text]
+                for s in task.subtaskholder.children],
                 # TODO Subtasks save
             }})
             print(data)
@@ -104,15 +128,13 @@ class RootWidget(BoxLayout):
         with open(DATAFILE, 'w+', encoding='utf-8') as datafile:
             json.dump(data, datafile, indent=4)
 
-    def add_list_item(self):
-        ''' Appends new task to taskholder widget'''
-        widget = TASK.format(
-            active=False, taskname='', priority='-',
-            startdate=dates.convert_date(), time='', progress='0', deadline='',
-            notes=''
-        )
-        self.taskholder.add_widget(Builder.load_string(widget))
-        self.taskholder.children[0].popup.open()
+    def add_new_task(self):
+        ''' Append new task to 'taskholder' widget'''
+        self.taskholder.add_widget(Builder.load_string(default_task))
+        last_task = self.taskholder.children[0]
+        subtskhldr = last_task.subtaskholder
+        subtskhldr.add_widget(Builder.load_string(first_subtask))
+        last_task.popup.open()
 
     def add_subtask(self, instance):
         '''Adds subtask to task
@@ -120,14 +142,14 @@ class RootWidget(BoxLayout):
         Parameters:
             instance (obj): reference to 'subtaskholder' object
         '''
-        widget = SUBTASK.format(subactive=False, subtaskname='')
-        instance.add_widget(Builder.load_string(widget))
+        # widget = SUBTASK.format(subactive=False, subtaskname='')
+        instance.add_widget(Builder.load_string(default_subtask))
 
 
 class TempoApp(App):
     '''Main application class'''
     # icon = '../doc/sources/logo.png'
-    icon = './doc/sources/logo2.png'
+    icon = './doc/sources/icon_white.png'
     def build(self):
         app = RootWidget()
         Clock.schedule_once(app.load_tasks)
