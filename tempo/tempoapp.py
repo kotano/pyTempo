@@ -15,7 +15,7 @@ from kivy.clock import Clock
 from kivy.lang.builder import Builder
 from kivy.properties import (ListProperty, NumericProperty, ObjectProperty,
                              StringProperty)
-# from kivy.uix.textinput import TextInput
+from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
 
 from tempo import dates
@@ -23,9 +23,7 @@ from tempo.templates import (SUBTASK, TASK, default_subtask, default_task,
                              first_subtask)
 
 
-
 # from KivyCalendar import CalendarWidget, DatePicker
-
 
 
 DATAFILE = os.path.join(os.path.dirname(__file__), 'data.json')
@@ -140,10 +138,9 @@ class RootWidget(BoxLayout):
                 'progress': task.progress.text,
                 'deadline': task.deadline.text.split('.'),
                 'notes': task.notes.text.replace('\n', '\\n'),
-                # subtasks depend on structure. Not reliable
+                #! subtasks depend on structure. Not reliable
                 'subtasks': [[s.children[2].active, s.children[1].text]
                 for s in task.subtaskholder.children],
-                # TODO Subtasks save
             }})
             print(data)
             counter += 1
@@ -165,7 +162,6 @@ class RootWidget(BoxLayout):
         Parameters:
             holder (obj): reference to 'subtaskholder' object
         '''
-        # widget = SUBTASK.format(subactive=False, subtaskname='')
         holder.add_widget(Builder.load_string(default_subtask))
 
 
@@ -179,5 +175,7 @@ class TempoApp(App):
 
         return app
 
+
+# FOR DEBUG
 if __name__ == "__main__":
     TempoApp().run()

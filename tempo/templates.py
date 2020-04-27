@@ -115,30 +115,6 @@ Task:
                 GridLayout:
                     id: subtaskholder
                     cols: 1
-                
-                    # Subtask:
-                    #     id: subtask
-                    #     size_hint_x: 0.9
-                    #     opacity: 0.5
-                    #     CheckBox:
-                    #         id: subcheckbox
-                    #         active: False
-                    #         disabled: True
-                    #         size_hint: None, 1
-                    #         width: 20
-                    #         pos: root.center
-
-                    #     TextInput:
-                    #         id: subtaskname
-                    #         background_normal: ''
-                    #         hint_text: 'Create new subtask'
-                    #         multiline: False
-                    #         write_tab: False
-                    #         # on_text: subcheckbox.disabled=False
-                    #         # on_focus: 
-                    #         #     subtask.opacity=1;
-                    #         #     subcheckbox.disabled=False;
-                    #         on_text_validate: app.root.add_subtask(subtaskholder)
 #> notes
                 AnchorLayout:
                     anchor_x: 'center'
@@ -151,7 +127,6 @@ Task:
                                 rectangle: self.x, self.y, self.width, self.height 
                         id: notes
                         text: '{notes}'
-                        #! raises an exception if multiline is True and the value has \\n
                         multiline: True
                         hint_text: 'Notes...'
                         size_hint: 0.9, 0.9
@@ -237,7 +212,6 @@ Subtask:
         height: 32
         color: 0, 0, 0, .5
         background_normal: './doc/sources/delete32.png'
-
         on_release: app.root._clear_input(subtask) if len(root.parent.children) <= 1 else root.parent.remove_widget(subtask)
 ''')
 
