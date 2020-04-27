@@ -152,7 +152,7 @@ Task:
                         id: notes
                         text: '{notes}'
                         #! raises an exception if multiline is True and the value has \\n
-                        multiline: False
+                        multiline: True
                         hint_text: 'Notes...'
                         size_hint: 0.9, 0.9
                         # height: 100
@@ -207,7 +207,7 @@ SUBTASK = ('''
 Subtask:
     id: subtask
     subtaskname: subtaskname.__self__
-    checkbox: subcheckbox.__self__
+    subcheckbox: subcheckbox.__self__
     
     opacity: .2 if subcheckbox.active else 1
 
@@ -232,9 +232,13 @@ Subtask:
         on_text_validate: app.root.add_subtask(root.parent)
     
     Button:
-        size_hint_x: None
-        width: 15
-        on_press: print('NO!') if len(root.parent.children) <= 1 else root.parent.remove_widget(subtask)
+        size_hint: None, None
+        width: 32
+        height: 32
+        color: 0, 0, 0, .5
+        background_normal: './doc/sources/delete32.png'
+
+        on_release: app.root._clear_input(subtask) if len(root.parent.children) <= 1 else root.parent.remove_widget(subtask)
 ''')
 
 

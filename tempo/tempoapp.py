@@ -1,3 +1,11 @@
+if __name__ == "__main__":
+    #! FOR DEBUGGING. REMOVE BEFORE Production
+    import sys
+    from os.path import dirname
+    f = dirname(__file__)
+    sys.path.append(f'{f}\\..')
+
+
 import json
 import os
 from collections import OrderedDict
@@ -7,7 +15,7 @@ from kivy.clock import Clock
 from kivy.lang.builder import Builder
 from kivy.properties import (ListProperty, NumericProperty, ObjectProperty,
                              StringProperty)
-from kivy.uix.textinput import TextInput
+# from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
 
 from tempo import dates
@@ -80,6 +88,14 @@ class RootWidget(BoxLayout):
             holder.remove_widget(root)
             holder.add_widget(root)
 
+    def _clear_input(self, instance):
+        '''Made to fix an unknown issue with
+        clearing subtask text input
+        instance (obj): subtask object reference
+        '''
+        instance.subtaskname.text = ''
+        instance.subcheckbox.active = False
+
 # TODO Make undo when wrong data / take data from save?
     def set_time(self, instance, time, val, startdate, deadline):
         '''Set text value of 'time' object to delta time
@@ -123,7 +139,7 @@ class RootWidget(BoxLayout):
                 'time': task.time.text,
                 'progress': task.progress.text,
                 'deadline': task.deadline.text.split('.'),
-                'notes': task.notes.text,
+                'notes': task.notes.text.replace('\n', '\\n'),
                 # subtasks depend on structure. Not reliable
                 'subtasks': [[s.children[2].active, s.children[1].text]
                 for s in task.subtaskholder.children],
@@ -143,19 +159,18 @@ class RootWidget(BoxLayout):
         subtskhldr.add_widget(Builder.load_string(first_subtask))
         last_task.popup.open()
 
-    def add_subtask(self, instance):
+    def add_subtask(self, holder):
         '''Adds subtask to task
         
         Parameters:
-            instance (obj): reference to 'subtaskholder' object
+            holder (obj): reference to 'subtaskholder' object
         '''
         # widget = SUBTASK.format(subactive=False, subtaskname='')
-        instance.add_widget(Builder.load_string(default_subtask))
+        holder.add_widget(Builder.load_string(default_subtask))
 
 
 class TempoApp(App):
     '''Main application class'''
-    # icon = '../doc/sources/logo.png'
     icon = './doc/sources/icon_white.png'
     def build(self):
         app = RootWidget()
@@ -163,3 +178,6 @@ class TempoApp(App):
         Clock.schedule_interval(app.save_tasks, 15)
 
         return app
+
+if __name__ == "__main__":
+    TempoApp().run()
