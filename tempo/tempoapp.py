@@ -93,21 +93,19 @@ class RootWidget(BoxLayout):
         instance.subtaskname.text = ''
         instance.subcheckbox.active = False
 
-    def sort_tasks(self, instance):
-        flag = True
-        def sort_criteria(x):
+    def sort_tasks(self, instance, flag=True):
+        lst = self.taskholder.children
+
+        def _sort_criteria(x):
             which = {'Taskname': x.taskname.text, 'Priority': x.priority.text,
             'Time': x.time.text, 'Deadline': x.deadline.text}
             return which.get(instance.text)
 
-        lst = self.taskholder.children
-        sorted_lst = sorted(lst, key=sort_criteria, reverse=flag)
+        sorted_lst = sorted(lst, key=_sort_criteria, reverse=flag)
         if lst == sorted_lst:
-            print('Nothing to do')
-            flag = not flag
-            print(flag)
-            sorted_lst = sorted(lst, key=sort_criteria, reverse=flag)
-        self.taskholder.children = sorted_lst
+            self.sort_tasks(instance, flag=not flag)
+        else:
+            self.taskholder.children = sorted_lst
 
 
 # TODO Make undo when wrong data / take data from save?
