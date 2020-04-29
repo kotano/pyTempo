@@ -66,12 +66,13 @@ class RootWidget(BoxLayout):
                     self.taskholder.children[0].subtaskholder.add_widget(
                         Builder.load_string(subtask))
 
-    def set_opacity(self, instance, value):
-        '''If value is true, lower instance's opacity'''
-        if value:
-            return 
-        else:
-            instance.opacity = 1
+    # TODO remove obsolete
+    # def set_opacity(self, instance, value):
+    #     '''If value is true, lower instance's opacity'''
+    #     if value:
+    #         return 
+    #     else:
+    #         instance.opacity = 1
 
     def complete_task(self, holder, root, value):
         '''Does task complete behavior
@@ -167,7 +168,7 @@ class RootWidget(BoxLayout):
 
 class TempoApp(App):
     '''Main application class'''
-    icon = './doc/sources/icon_white.png'
+    icon = './docs/sources/icon_white.png'
     def build(self):
         app = RootWidget()
         Clock.schedule_once(app.load_tasks)

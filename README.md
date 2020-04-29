@@ -1,6 +1,6 @@
 # Tempo
 
-<img alt="Tempo icon" align="right" height="256" src="./doc/sources/logo.png"/>
+<img alt="Tempo icon" align="right" height="256" src="./docs/sources/logo.png"/>
 
 Tempo is a task-management application that tracks your tasks / goals and evenly distributes work on them. 
 
@@ -45,7 +45,7 @@ Make sure you have installed kivy before launch.
 python .../Tempo/main.py
 ```
 After executing this command, you will see the main application window.
-<img alt="Main application window" align="" height="" src="./doc/sources/main_window.png"/>
+<img alt="Main application window" align="" height="" src="./docs/sources/main_window.png"/>
 
 ## Running the tests
 

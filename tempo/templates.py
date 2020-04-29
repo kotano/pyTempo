@@ -211,7 +211,7 @@ Subtask:
         width: 32
         height: 32
         color: 0, 0, 0, .5
-        background_normal: './doc/sources/delete32.png'
+        background_normal: './docs/sources/delete32.png'
         on_release: app.root._clear_input(subtask) if len(root.parent.children) <= 1 else root.parent.remove_widget(subtask)
 ''')
 
