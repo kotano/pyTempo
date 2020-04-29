@@ -93,12 +93,12 @@ Task:
                     BoxLayout:
 
                         size_hint_x: 0.5
-                        ListLabel:
+                        BlackLabel:
                             id: progress
                             text: '{progress}'
-                        ListLabel:
+                        BlackLabel:
                             text: 'HOURS OF'
-                        ListLabel:
+                        BlackLabel:
                             id: time
                             text: '{time}'
 
@@ -165,15 +165,15 @@ Task:
             on_release: root.popup.open()
 
 # priority main
-    ListLabel:
+    BlackLabel:
         text: priority.text
 
 # time main
-    ListLabel:
+    BlackLabel:
         text: time.text
 
 # deadline main
-    ListLabel:
+    BlackLabel:
         text: deadline.text
 ''')
 

@@ -1,6 +1,9 @@
 <PaddedButton@Button>:
     padding: 5, 10
-<ListLabel@Label>:
+<BlackLabel@Label>:
+    color: 0, 0, 0, 1
+
+<PressableLabel>:
     color: 0, 0, 0, 1
 
 <DefaultInput@TextInput>:
@@ -172,15 +175,19 @@ RootWidget:
                     Line:
                         points: self.x, self.y, self.x + self.width, self.y
                         width: 2
-                ListLabel:
+                PressableLabel:
                     size_hint_x: 2
-                    text: 'Tasks'
-                ListLabel:
+                    text: 'Taskname'
+                    on_release: root.sort_tasks(self)
+                PressableLabel:
                     text: 'Priority'
-                ListLabel:
+                    on_release: root.sort_tasks(self)
+                PressableLabel:
                     text: 'Time'
-                ListLabel:
+                    on_release: root.sort_tasks(self)
+                PressableLabel:
                     text: 'Deadline'
+                    on_release: root.sort_tasks(self)
 
 # TASKHOLDER
             TaskHolder:

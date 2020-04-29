@@ -15,14 +15,14 @@ from kivy.clock import Clock
 from kivy.lang.builder import Builder
 from kivy.properties import (ListProperty, NumericProperty, ObjectProperty,
                              StringProperty)
-from kivy.uix.textinput import TextInput
+from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
+from kivy.uix.textinput import TextInput
 
 from tempo import dates
 from tempo.templates import (SUBTASK, TASK, default_subtask, default_task,
                              first_subtask)
-
 
 # from KivyCalendar import CalendarWidget, DatePicker
 
@@ -32,6 +32,10 @@ class Task(BoxLayout):
 
 
 class Subtask(Task):
+    pass
+
+
+class PressableLabel(ButtonBehavior, Label):
     pass
 
 
@@ -89,8 +93,21 @@ class RootWidget(BoxLayout):
         instance.subtaskname.text = ''
         instance.subcheckbox.active = False
 
-    def sort_tasks(self):
-        pass
+    def sort_tasks(self, instance):
+        flag = True
+        def sort_criteria(x):
+            which = {'Taskname': x.taskname.text, 'Priority': x.priority.text,
+            'Time': x.time.text, 'Deadline': x.deadline.text}
+            return which.get(instance.text)
+
+        lst = self.taskholder.children
+        sorted_lst = sorted(lst, key=sort_criteria, reverse=flag)
+        if lst == sorted_lst:
+            print('Nothing to do')
+            flag = not flag
+            print(flag)
+            sorted_lst = sorted(lst, key=sort_criteria, reverse=flag)
+        self.taskholder.children = sorted_lst
 
 
 # TODO Make undo when wrong data / take data from save?
@@ -171,7 +188,6 @@ class TempoApp(App):
         app = RootWidget()
         Clock.schedule_once(app.load_tasks)
         Clock.schedule_interval(app.save_tasks, 15)
-
         return app
 
 # Multiplatform path to application user data 
@@ -180,5 +196,5 @@ DATAFILE = os.path.join(TempoApp().user_data_dir, 'data.json')
 
 # FOR DEBUG
 if __name__ == "__main__":
-    app = TempoApp()
-    app.run()
+    application = TempoApp()
+    application.run()
