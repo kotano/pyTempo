@@ -17,6 +17,7 @@ from kivy.properties import (ListProperty, NumericProperty, ObjectProperty,
                              StringProperty)
 from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
 
 from tempo import dates
 from tempo.templates import (SUBTASK, TASK, default_subtask, default_task,
@@ -24,9 +25,6 @@ from tempo.templates import (SUBTASK, TASK, default_subtask, default_task,
 
 
 # from KivyCalendar import CalendarWidget, DatePicker
-
-
-DATAFILE = os.path.join(os.path.dirname(__file__), 'data.json')
 
 
 class Task(BoxLayout):
@@ -40,17 +38,12 @@ class Subtask(Task):
 class RootWidget(BoxLayout):
     '''Application root widget '''
     taskholder = ObjectProperty()
-    task_ids = ListProperty([])
-    idscounter = NumericProperty(1)
 
     def load_tasks(self, *dt):
         '''Loads task data from data.json if exists.'''
         try:
             with open(DATAFILE, 'r') as datafile:
                 tasks = json.load(datafile)
-        except (FileNotFoundError):
-            print('File does not exist. It will be created automatically.')
-        else:
             for t in tasks.values():
                 widget = TASK.format(
                     active=t['active'], taskname=t['taskname'],
@@ -65,14 +58,15 @@ class RootWidget(BoxLayout):
                         subactive=st[0], subtaskname=st[1], focus=False)
                     self.taskholder.children[0].subtaskholder.add_widget(
                         Builder.load_string(subtask))
+        except (FileNotFoundError):
+            print('File does not exist. It will be created automatically.')
+        except KeyError as e:
+            msg = (str(e) + 'We were unable to load data.'
+            'Would you like to delete this task? [y/n]')
+            q = input(msg)
+            if not q.lower() == 'y':
+                app.stop() 
 
-    # TODO remove obsolete
-    # def set_opacity(self, instance, value):
-    #     '''If value is true, lower instance's opacity'''
-    #     if value:
-    #         return 
-    #     else:
-    #         instance.opacity = 1
 
     def complete_task(self, holder, root, value):
         '''Does task complete behavior
@@ -94,6 +88,10 @@ class RootWidget(BoxLayout):
         '''
         instance.subtaskname.text = ''
         instance.subcheckbox.active = False
+
+    def sort_tasks(self):
+        pass
+
 
 # TODO Make undo when wrong data / take data from save?
     def set_time(self, instance, time, val, startdate, deadline):
@@ -125,7 +123,7 @@ class RootWidget(BoxLayout):
                 time.text = str(res)
                 # return res
 
-    def save_tasks(self, *args):
+    def save_tasks(self, *dt):
         ''' Save tasks to data.json'''
         data = {}
         counter = 1
@@ -176,7 +174,11 @@ class TempoApp(App):
 
         return app
 
+# Multiplatform path to application user data 
+DATAFILE = os.path.join(TempoApp().user_data_dir, 'data.json')
+
 
 # FOR DEBUG
 if __name__ == "__main__":
-    TempoApp().run()
+    app = TempoApp()
+    app.run()
