@@ -182,6 +182,10 @@ class RootWidget(BoxLayout):
 class TempoApp(App):
     '''Main application class'''
     icon = './docs/sources/icon_white.png'
+    def on_stop(self):
+        self.root.save_tasks()
+        return True
+
     def build(self):
         app = RootWidget()
         Clock.schedule_once(app.load_tasks)

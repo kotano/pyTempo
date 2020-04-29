@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tempo"
-version = "0.2.0"
+version = "0.3.0"
 description = "Tempo is a task-management application"
 authors = ["kotano <kot4no@gmail.com>"]
 

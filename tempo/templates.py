@@ -39,6 +39,7 @@ Task:
             # background_color: 1, 1, 1, 1
             on_parent:
                 if self.parent == bl: self.parent.remove_widget(self)
+            on_dismiss: if not any((taskname.text, deadline.text, notes.text)): app.root.taskholder.remove_widget(task)
             BoxLayout:
                 canvas.before:
                     Color:
@@ -142,8 +143,8 @@ Task:
                         background_normal: ''
                         background_color: .70, .88, .87, 1
                         on_release: 
-                            popup.dismiss();
                             app.root.save_tasks();
+                            popup.dismiss();
 #>> delete button
                     Button:
                         text: 'Delete'
