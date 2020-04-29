@@ -158,6 +158,7 @@ RootWidget:
             PaddedButton:
 # Content
         GridLayout:
+            id: container
             spacing: 0, 10
             padding: 10, 10
             cols: 1
@@ -189,6 +190,12 @@ RootWidget:
                     text: 'Deadline'
                     on_release: root.sort_tasks(self)
 
-# TASKHOLDER
-            TaskHolder:
-                id: taskholder
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+    # TASKHOLDER
+                TaskHolder:
+                    id: taskholder
+                    size_hint: 1, None
+                    height: container.height
+                    on_touch_down: print(root, container.height, self.height)
