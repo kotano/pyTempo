@@ -13,16 +13,20 @@ from collections import OrderedDict
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.lang.builder import Builder
+from kivy.effects.scroll import ScrollEffect
 from kivy.properties import (ListProperty, NumericProperty, ObjectProperty,
-                             StringProperty)
+                             StringProperty, DictProperty)
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
 
 from tempo import dates
-from tempo.templates import (SUBTASK, TASK, default_subtask, default_task,
+
+from tempo.templates import (SUBTASK, TASK, COLORS, default_subtask, default_task,
                              first_subtask)
+
 
 # from KivyCalendar import CalendarWidget, DatePicker
 
@@ -39,9 +43,18 @@ class PressableLabel(ButtonBehavior, Label):
     pass
 
 
+class CustomScroll(ScrollView):
+    # effect_cls = ObjectProperty(ScrollEffect, allownone=True)
+    effect_cls = ScrollEffect
+    bar_color = COLORS['TempoBlue']
+    pass
+
+
 class RootWidget(BoxLayout):
     '''Application root widget '''
     taskholder = ObjectProperty()
+    COLORS = DictProperty(COLORS)
+    
 
     def load_tasks(self, *dt):
         '''Loads task data from data.json if exists.'''
@@ -131,7 +144,7 @@ class RootWidget(BoxLayout):
             except (ValueError, TypeError):
                 # TODO use regexp for wrong data
                 print('You have entered wrong data')
-                instance.do_undo()
+                # instance.do_undo()
             else:
                 # find delta time
                 res = dates.find_deltatime(start, end)   

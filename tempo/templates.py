@@ -1,5 +1,7 @@
 from tempo import dates
 
+COLORS = {'TempoBlue': (.70, .88, .87, .9)}
+
 TASK = ('''
 Task:
     id: task
@@ -40,6 +42,7 @@ Task:
             on_parent:
                 if self.parent == bl: self.parent.remove_widget(self)
             on_dismiss: if not any((taskname.text, deadline.text, notes.text)): app.root.taskholder.remove_widget(task)
+            
             BoxLayout:
                 canvas.before:
                     Color:
@@ -113,9 +116,14 @@ Task:
                         # on_focus: self.text = app.set_time(startdate.text, deadline.text)
 
 #> Subtask
-                GridLayout:
-                    id: subtaskholder
-                    cols: 1
+                CustomScroll:
+                    do_scroll_x: False
+
+                    GridLayout:
+                        size_hint_y: None
+                        height: popup.height - notes.height - 50
+                        id: subtaskholder
+                        cols: 1
 #> notes
                 AnchorLayout:
                     anchor_x: 'center'
@@ -141,7 +149,8 @@ Task:
                         text: 'Save'
                         color: 0, 0, 0, 1
                         background_normal: ''
-                        background_color: .70, .88, .87, 1
+                        # background_color: .70, .88, .87, 1
+                        background_color: app.root.COLORS['TempoBlue']
                         on_release: 
                             app.root.save_tasks();
                             popup.dismiss();
