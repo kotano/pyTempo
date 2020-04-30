@@ -30,7 +30,7 @@
 <PrioritySpinner@Spinner>:
     text_autoupdate: True
     color: 0, 0, 0, 1
-    values: ('-', 'High', 'Normal', 'Low')
+    values: ('-', '!!!High', '!!Normal', '!Low')
     size_hint_y: None
     height: 40
     background_normal: ''
@@ -190,7 +190,7 @@ RootWidget:
                     text: 'Deadline'
                     on_release: root.sort_tasks(self)
 
-            ScrollView:
+            CustomScroll:
                 do_scroll_x: False
                 do_scroll_y: True
 # TASKHOLDER
