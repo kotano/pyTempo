@@ -54,6 +54,9 @@ class RootWidget(BoxLayout):
     '''Application root widget '''
     taskholder = ObjectProperty()
     COLORS = DictProperty(COLORS)
+
+
+        
     
 
     def load_tasks(self, *dt):
@@ -66,7 +69,7 @@ class RootWidget(BoxLayout):
                     active=t['active'], taskname=t['taskname'],
                     priority=t['priority'],
                     startdate='.'.join(t['startdate']),
-                    time=t['time'], progress=t['progress'],
+                    deltatime=t['deltatime'], progress=t['progress'],
                     deadline='.'.join(t['deadline']), notes=t['notes']
                 )
                 self.taskholder.add_widget(Builder.load_string(widget))
@@ -111,7 +114,7 @@ class RootWidget(BoxLayout):
 
         def _sort_criteria(x):
             which = {'Taskname': x.taskname.text, 'Priority': x.priority.text,
-            'Time': x.time.text, 'Deadline': x.deadline.text}
+            'Time': x.deltatime.text, 'Deadline': x.deadline.text}
             return which.get(instance.text)
 
         sorted_lst = sorted(lst, key=_sort_criteria, reverse=flag)
@@ -122,12 +125,12 @@ class RootWidget(BoxLayout):
 
 
 # TODO Make undo when wrong data / take data from save?
-    def set_time(self, instance, time, val, startdate, deadline):
+    def set_time(self, instance, deltatime, val, startdate, deadline):
         '''Set text value of 'time' object to delta time
         
         Parameters:
             instance (obj): object that calling function
-            time (obj): reference to object to place delta time value
+            deltatime (obj): reference to object to place delta time value
             val (bool): instance's 'focus' property value
             startdate (obj): reference to task startdate textinput
             deadline (obj): reference to task deadline textinput
@@ -148,8 +151,19 @@ class RootWidget(BoxLayout):
             else:
                 # find delta time
                 res = dates.find_deltatime(start, end)   
-                time.text = str(res)
-                # return res
+                # deltatime.text = str(res)
+                deltatime.text = prioritize(arg)
+
+
+
+    def priorirtize(self, arg):
+        cont = []
+        for task in self.taskholder:
+            task.time
+        pass
+
+    
+
 
     def save_tasks(self, *dt):
         ''' Save tasks to data.json'''
@@ -161,7 +175,7 @@ class RootWidget(BoxLayout):
                 'taskname': task.taskname.text,
                 'priority': task.priority.text,
                 'startdate': task.startdate.text.split('.'),
-                'time': task.time.text,
+                'deltatime': task.deltatime.text,
                 'progress': task.progress.text,
                 'deadline': task.deadline.text.split('.'),
                 'notes': task.notes.text.replace('\n', '\\n'),

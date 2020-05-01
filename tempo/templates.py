@@ -13,7 +13,7 @@ Task:
     popup: popup.__self__
     startdate: startdate.__self__
     progress: progress.__self__
-    time: time.__self__
+    deltatime: deltatime.__self__
     deadline: deadline.__self__
     notes: notes.__self__
 
@@ -91,20 +91,20 @@ Task:
                         size_hint_x: 0.25
                         text: '{startdate}'
                         on_focus: 
-                            app.root.set_time(self, time, self.focus, startdate, deadline)
+                            app.root.set_time(self, deltatime, self.focus, startdate, deadline)
 
 #> progress bar
                     BoxLayout:
 
                         size_hint_x: 0.5
-                        BlackLabel:
+                        OnBlackLabel:
                             id: progress
                             text: '{progress}'
-                        BlackLabel:
+                        OnBlackLabel:
                             text: 'HOURS OF'
-                        BlackLabel:
-                            id: time
-                            text: '{time}'
+                        OnBlackLabel:
+                            id: deltatime
+                            text: '{deltatime}'
 
 #> deadline          
                     DateInput:
@@ -112,7 +112,7 @@ Task:
                         id: deadline
                         text: '{deadline}'
                         on_focus: 
-                            app.root.set_time(self, time, self.focus, startdate, deadline)
+                            app.root.set_time(self, deltatime, self.focus, startdate, deadline)
                         # on_focus: self.text = app.set_time(startdate.text, deadline.text)
 
 #> Subtask
@@ -175,15 +175,15 @@ Task:
             on_release: root.popup.open()
 
 # priority main
-    BlackLabel:
+    OnBlackLabel:
         text: priority.text
 
 # time main
-    BlackLabel:
-        text: time.text
+    OnBlackLabel:
+        text: deltatime.text
 
 # deadline main
-    BlackLabel:
+    OnBlackLabel:
         text: deadline.text
 ''')
 
@@ -228,7 +228,7 @@ Subtask:
 
 default_task = TASK.format(
             active=False, taskname='', priority='-',
-            startdate=dates.convert_date(), time='', progress='0', deadline='',
+            startdate=dates.convert_date(), deltatime='', progress='0', deadline='',
             notes=''
         )
 
