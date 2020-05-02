@@ -100,25 +100,32 @@ Task:
 
 #> progress bar
                     BoxLayout:
-
                         size_hint_x: 0.5
-                        Text:
-                            id: progress
-                            text: '{progress}'
-                        Text:
-                            text: 'HOURS OF'
-                        DefaultInput:
-                            id: duration
-                            text: '{duration}'
-                            hint_text: 'max' + str(app.root.find_duration(root))
-
+                        # orientation: 'vertical'
+                        BoxLayout:
+                        # size_hint_x: 0.5
+                            Text:
+                                id: progress
+                                text: '{progress}'
+                            Text:
+                                text: 'HOURS OF'
+                            DefaultInput:
+                                id: duration
+                                text: '{duration}'
+                                # on_focus:
+                                #     if self.text and self.focus == False: root._duration = int(self.text)
+                                hint_text: str(task._max_duration)
+                        BoxLayout:
+                            Text:
+                                text: str(task._max_duration)
 #> deadline          
                     DateInput:
                         size_hint_x: 0.25
                         id: deadline
                         text: '{deadline}'
                         on_focus: 
-                            if self.focus == False: root.deltatime = app.root.find_delta(startdate, deadline)
+                            if self.focus == False: root.deltatime = app.root.find_delta(startdate, deadline);
+                            app.root.refresh_data()
 
 #> Subtask
                 CustomScroll:
@@ -233,7 +240,7 @@ Subtask:
 
 default_task = TASK.format(
             active=False, taskname='', priority='-',
-            startdate=dates.convert_date(), duration='', progress='0', deadline='',
+            startdate=dates.date_to_string(), duration='', progress='0', deadline='',
             notes=''
         )
 
