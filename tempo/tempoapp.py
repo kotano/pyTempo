@@ -28,8 +28,6 @@ from tempo.templates import (SUBTASK, TASK, COLORS, default_subtask, default_tas
                              first_subtask)
 
 
-# from KivyCalendar import CalendarWidget, DatePicker
-
 
 class Task(BoxLayout):
     pass
@@ -44,7 +42,6 @@ class PressableLabel(ButtonBehavior, Label):
 
 
 class CustomScroll(ScrollView):
-    # effect_cls = ObjectProperty(ScrollEffect, allownone=True)
     effect_cls = ScrollEffect
     bar_color = COLORS['TempoBlue']
     pass
@@ -106,19 +103,18 @@ class RootWidget(BoxLayout):
         instance.subtaskname.text = ''
         instance.subcheckbox.active = False
 
-    def sort_tasks(self, instance, flag=True):
+    def sort_tasks(self, instance):
         lst = self.taskholder.children
 
-        def _sort_criteria(x):
+        def sort_criteria(x):
             which = {'Taskname': x.taskname.text, 'Priority': x.priority.text,
             'Time': x.time.text, 'Deadline': x.deadline.text}
-            return which.get(instance.text)
+            return which.get(instance.text, True)
 
-        sorted_lst = sorted(lst, key=_sort_criteria, reverse=flag)
+        sorted_lst = sorted(lst, key=sort_criteria, reverse=True)
         if lst == sorted_lst:
-            self.sort_tasks(instance, flag=not flag)
-        else:
-            self.taskholder.children = sorted_lst
+            sorted_lst = sorted(lst, key=_sort_criteria, reverse=False)
+        self.taskholder.children = sorted_lst
 
 
 # TODO Make undo when wrong data / take data from save?
