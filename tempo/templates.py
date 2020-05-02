@@ -1,6 +1,9 @@
 from tempo import dates
 
-COLORS = {'TempoBlue': (.70, .88, .87, .9)}
+COLORS = {
+    'TempoBlue': (.70, .88, .87, .9),
+    'TextColor': (0, 0, 0, 1)
+}
 
 TASK = ('''
 Task:
@@ -13,9 +16,10 @@ Task:
     popup: popup.__self__
     startdate: startdate.__self__
     progress: progress.__self__
-    deltatime: deltatime.__self__
+    duration: duration.__self__
     deadline: deadline.__self__
     notes: notes.__self__
+
 
     opacity: .2 if checkbox.active else 1
     
@@ -91,20 +95,22 @@ Task:
                         size_hint_x: 0.25
                         text: '{startdate}'
                         on_focus: 
-                            app.root.set_time(self, deltatime, self.focus, startdate, deadline)
+                            if self.focus == False: root.deltatime = app.root.find_delta(startdate, deadline)
+                            # app.root.set_time(self, deltatime, self.focus, startdate, deadline)
 
 #> progress bar
                     BoxLayout:
 
                         size_hint_x: 0.5
-                        OnBlackLabel:
+                        Text:
                             id: progress
                             text: '{progress}'
-                        OnBlackLabel:
+                        Text:
                             text: 'HOURS OF'
-                        OnBlackLabel:
-                            id: deltatime
-                            text: '{deltatime}'
+                        DefaultInput:
+                            id: duration
+                            text: '{duration}'
+                            hint_text: 'max' + str(app.root.find_duration(root))
 
 #> deadline          
                     DateInput:
@@ -112,8 +118,7 @@ Task:
                         id: deadline
                         text: '{deadline}'
                         on_focus: 
-                            app.root.set_time(self, deltatime, self.focus, startdate, deadline)
-                        # on_focus: self.text = app.set_time(startdate.text, deadline.text)
+                            if self.focus == False: root.deltatime = app.root.find_delta(startdate, deadline)
 
 #> Subtask
                 CustomScroll:
@@ -175,15 +180,15 @@ Task:
             on_release: root.popup.open()
 
 # priority main
-    OnBlackLabel:
+    Text:
         text: priority.text
 
 # time main
-    OnBlackLabel:
-        text: deltatime.text
+    Text:
+        text: duration.text
 
 # deadline main
-    OnBlackLabel:
+    Text:
         text: deadline.text
 ''')
 
@@ -228,7 +233,7 @@ Subtask:
 
 default_task = TASK.format(
             active=False, taskname='', priority='-',
-            startdate=dates.convert_date(), deltatime='', progress='0', deadline='',
+            startdate=dates.convert_date(), duration='', progress='0', deadline='',
             notes=''
         )
 

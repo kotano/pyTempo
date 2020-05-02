@@ -14,7 +14,8 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.lang.builder import Builder
 from kivy.effects.scroll import ScrollEffect
-from kivy.properties import (ListProperty, NumericProperty, ObjectProperty,
+from kivy.utils import platform
+from kivy.properties import (ListProperty, NumericProperty, ObjectProperty, 
                              StringProperty, DictProperty)
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
@@ -32,20 +33,23 @@ from tempo.templates import (SUBTASK, TASK, COLORS, default_subtask, default_tas
 
 
 class Task(BoxLayout):
+    deltatime = NumericProperty(12)
     pass
-
 
 class Subtask(Task):
     pass
 
+# class DateInput(TextInput):
+#     border = 1, 1, 1, 1
+#     pass
 
 class PressableLabel(ButtonBehavior, Label):
     pass
 
 
 class CustomScroll(ScrollView):
-    # effect_cls = ObjectProperty(ScrollEffect, allownone=True)
-    effect_cls = ScrollEffect
+    if platform == 'win':
+        effect_cls = ScrollEffect
     bar_color = COLORS['TempoBlue']
     pass
 
@@ -55,9 +59,8 @@ class RootWidget(BoxLayout):
     taskholder = ObjectProperty()
     COLORS = DictProperty(COLORS)
 
+    DURATIONS = ListProperty()
 
-        
-    
 
     def load_tasks(self, *dt):
         '''Loads task data from data.json if exists.'''
@@ -69,7 +72,7 @@ class RootWidget(BoxLayout):
                     active=t['active'], taskname=t['taskname'],
                     priority=t['priority'],
                     startdate='.'.join(t['startdate']),
-                    deltatime=t['deltatime'], progress=t['progress'],
+                    duration=t['duration'], progress=t['progress'],
                     deadline='.'.join(t['deadline']), notes=t['notes']
                 )
                 self.taskholder.add_widget(Builder.load_string(widget))
@@ -81,12 +84,17 @@ class RootWidget(BoxLayout):
         except (FileNotFoundError):
             print('File does not exist. It will be created automatically.')
         except KeyError as e:
+            # except error in case of data corruption
             msg = (str(e) + 'We were unable to load data.'
             'Would you like to delete this task? [y/n]')
             q = input(msg)
             if not q.lower() == 'y':
                 app.stop() 
 
+    def refresh_data(self, *dt):
+        for t in self.taskholder.children:
+            t.deltatime = self.find_delta(t.startdate, t.deadline)
+ 
 
     def complete_task(self, holder, root, value):
         '''Does task complete behavior
@@ -109,19 +117,28 @@ class RootWidget(BoxLayout):
         instance.subtaskname.text = ''
         instance.subcheckbox.active = False
 
-    def sort_tasks(self, instance, flag=True):
+    def sort_tasks(self, instance):
+        '''Sort tasks in tasklist
+        Parameters:
+            instance (obj): caller
+        '''
         lst = self.taskholder.children
+        if len(lst) <= 1:
+            print('Nothing to sort')
+            return
 
-        def _sort_criteria(x):
+        def sort_criteria(x):
             which = {'Taskname': x.taskname.text, 'Priority': x.priority.text,
-            'Time': x.deltatime.text, 'Deadline': x.deadline.text}
-            return which.get(instance.text)
+            'Duration': x.duration.text,
+            'Deadline': x.deadline.text[::-1],
+            }
+            return which.get(instance.text, True)
 
-        sorted_lst = sorted(lst, key=_sort_criteria, reverse=flag)
+        sorted_lst = sorted(lst, key=sort_criteria, reverse=True)
         if lst == sorted_lst:
-            self.sort_tasks(instance, flag=not flag)
-        else:
-            self.taskholder.children = sorted_lst
+            #! removed recursion
+            sorted_lst = sorted(lst, key=sort_criteria, reverse=False)
+        self.taskholder.children = sorted_lst
 
 
 # TODO Make undo when wrong data / take data from save?
@@ -150,19 +167,37 @@ class RootWidget(BoxLayout):
                 # instance.do_undo()
             else:
                 # find delta time
-                res = dates.find_deltatime(start, end)   
-                # deltatime.text = str(res)
-                deltatime.text = prioritize(arg)
+                res = dates.find_deltatime(start, end)
+                res = self.find_duration(res)
+                duration.text = str(res)
+                # deltatime.text = 
+
+    def find_delta(self, startdate, deadline):
+        try:
+            # convert dd:mm:yy to yy:mm:dd
+            start = [int(x) for x in startdate.text.split('.')][::-1]
+            end = [int(x) for x in deadline.text.split('.')][::-1]
+            # create date object
+            start = dates.date(*start)
+            end = dates.date(*end)
+        except (ValueError, TypeError):
+            print('You have entered wrong data')
+            return 0
+        else:
+            # find delta time
+            res = dates.find_deltatime(start, end)
+            return res
 
 
-
-    def priorirtize(self, arg):
-        cont = []
-        for task in self.taskholder:
-            task.time
-        pass
-
-    
+    def find_duration(self, task):
+        keep = []
+        dur = self.DURATIONS
+        for t in self.taskholder.children:
+            keep.append([t, (t.deltatime)])
+        keep = sorted(keep, key=lambda x: x[1])
+        print(keep)
+        # duration = task.deltatime - task.duration
+        return keep
 
 
     def save_tasks(self, *dt):
@@ -175,7 +210,7 @@ class RootWidget(BoxLayout):
                 'taskname': task.taskname.text,
                 'priority': task.priority.text,
                 'startdate': task.startdate.text.split('.'),
-                'deltatime': task.deltatime.text,
+                'duration': task.duration.text,
                 'progress': task.progress.text,
                 'deadline': task.deadline.text.split('.'),
                 'notes': task.notes.text.replace('\n', '\\n'),
@@ -216,7 +251,9 @@ class TempoApp(App):
     def build(self):
         app = RootWidget()
         Clock.schedule_once(app.load_tasks)
-        Clock.schedule_interval(app.save_tasks, 15)
+        Clock.schedule_once(app.refresh_data)
+        Clock.schedule_interval(app.refresh_data, 30)
+        Clock.schedule_interval(app.save_tasks, 45)
         return app
 
 # Multiplatform path to application user data 

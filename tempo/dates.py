@@ -12,7 +12,3 @@ def find_deltatime(starttime: date, endtime: date):
     delta = endtime - starttime
     delta = delta.total_seconds()//3600//HOURSPERDAY
     return delta
-
-
-if __name__ == "__main__":
-    pass
