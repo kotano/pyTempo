@@ -1,5 +1,5 @@
 if __name__ == "__main__":
-    #! FOR DEBUGGING. REMOVE BEFORE Production
+    #! FOR DEBUGGING. REMOVE BEFORE PRODUCTION
     import sys
     from os.path import dirname
     f = dirname(__file__)
@@ -28,7 +28,7 @@ from tempo import dates
 from tempo.templates import (SUBTASK, TASK, COLORS, default_subtask, default_task,
                              first_subtask)
 
-
+# NOTE: Can use KivyCalendar, but 
 # from KivyCalendar import CalendarWidget, DatePicker
 
 
@@ -82,7 +82,7 @@ class RootWidget(BoxLayout):
         except (FileNotFoundError):
             print('File does not exist. It will be created automatically.')
         except (KeyError, json.JSONDecodeError) as e:
-            # except error in case of data corruption
+            # Except error in case of data corruption
             msg = (str(e) + 'We were unable to load data.'
             'Would you like to delete this task? [y/n]')
             q = input(msg)
@@ -98,7 +98,7 @@ class RootWidget(BoxLayout):
             root (obj): main task object
             value (bool): checkbox value
         '''
-        # TODO archive, smooth animation
+        # TODO: Archive, smooth animation
         if value:
             holder.remove_widget(root)
             holder.add_widget(root)
@@ -112,7 +112,8 @@ class RootWidget(BoxLayout):
         instance.subcheckbox.active = False
 
     def sort_tasks(self, instance):
-        '''Sort tasks in tasklist
+        '''Sort tasks in tasklist.
+        
         Parameters:
             instance (obj): caller
         '''
@@ -138,50 +139,13 @@ class RootWidget(BoxLayout):
         self.taskholder.children = sorted_lst
 
 
-# TODO Make undo when wrong data / take data from save?
-    def set_time(self, instance, deltatime, val, startdate, deadline):
-        '''Set text value of 'time' object to delta time
-        
-        Parameters:
-            instance (obj): object that calling function
-            deltatime (obj): reference to object to place delta time value
-            val (bool): instance's 'focus' property value
-            startdate (obj): reference to task startdate textinput
-            deadline (obj): reference to task deadline textinput
-
-        '''
-        if not val:
-            try:
-                # convert dd:mm:yy to yy:mm:dd
-                # start = [int(x) for x in startdate.text.split('.')][::-1]
-                # end = [int(x) for x in deadline.text.split('.')][::-1]
-                # # create date object
-                # start = dates.date(*start)
-                # end = dates.date(*end)
-                start = dates.date(*start)
-                end = dates.date(*end)
-            except (ValueError, TypeError):
-                # TODO use regexp for wrong data
-                print('You have entered wrong data')
-                # instance.do_undo()
-            else:
-                # find delta time
-                res = dates.find_deltatime(start, end)
-                res = self.find_max_duration(res)
-                duration.text = str(res)
-                # deltatime.text = 
 
     def find_delta(self, startdate, deadline):
         try:
-            # convert dd:mm:yy to yy:mm:dd
-            # start = [int(x) for x in startdate.text.split('.')][::-1]
-            # end = [int(x) for x in deadline.text.split('.')][::-1]
-            # # create date object
-            # start = dates.date(*start)
-            # end = dates.date(*end)
             start = dates.convert_to_date(startdate.text)
             end = dates.convert_to_date(deadline.text)
         except (ValueError, TypeError):
+            # TODO Make undo when wrong data / take data from save?
             print('You have entered wrong data')
             return 0
         else:
@@ -191,27 +155,20 @@ class RootWidget(BoxLayout):
 
 
     def find_max_duration(self, task):
-        # TODO: Needs optimization
-        lst = self.taskholder.children
+        '''Find maximum available time for each task and return int.'''
+        # TODO: This needs optimization
         keep = []
         for t in self.taskholder.children:
             keep.append([t.deltatime, t._duration, t._max_duration])
         keep = sorted(keep, key=lambda x: x[0])
-        print(keep)
-        # me = keep.index(task.deltatime)
         my_index = keep.index([task.deltatime, task._duration, task._max_duration])
-        print(my_index)
-        # after = [x[1] for x in keep][my_index:]
         after = [x[2] for x in keep][my_index:]
         before = [x[1] for x in keep][:my_index]
-        # NOTE can add +1 to before slice to remove task._duration
-        # task._max_duration = task.deltatime - sum(before)
+        # NOTE: can add +1 to before slice to remove task._duration
         max_duration = task.deltatime - task._duration - sum(before)
         if min(after) != 0:
             max_duration = min(max_duration, min(after))
-        # print(after)
         max_duration = max(0, max_duration)
-        # max_duration = min(task.deltatime, min(after))
         task._max_duration = max_duration
         print(task._max_duration)
         return max_duration
@@ -239,7 +196,7 @@ class RootWidget(BoxLayout):
                 'progress': task.progress.text,
                 'deadline': task.deadline.text.split('.'),
                 'notes': task.notes.text.replace('\n', '\\n'),
-                # XXX subtasks depend on structure. Not reliable
+                # XXX: subtasks depend on structure. Not reliable
                 'subtasks': [[s.children[2].active, s.children[1].text]
                 for s in task.subtaskholder.children],
             }})
