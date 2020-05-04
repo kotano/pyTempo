@@ -119,33 +119,65 @@ Task:
                             on_parent: dropdown.dismiss()
                             on_release: dropdown.open(self)
 
+# Task progress dropdwn
                             DropDown:
                                 id: dropdown
-                                height: 60
+                                height: 80
 
                                 Box:
+                                    canvas.before:
+                                        Color:
+                                            rgba: app.root.COLORS['TempoBlue']
+                                        Rectangle:
+                                            size: self.size
+                                            pos: self.pos
+                                    orientation: 'vertical'
                                     size_hint_y: None
                                     height: dropdown.height
-                                    DefaultInput:
-                                        id: duration
-                                        text: '{duration}'
-                                        on_focus:
-                                            if float(self.text) > task._max_duration and self.focus == False: self.text = str(task._max_duration)
-                                        hint_text: str(task._max_duration)
+                                    Slider:
+                                        id: sl
+                                        step: 0.5
+                                        value: task._duration
+                                        max: task._max_duration
+                                        on_value: duration.text = str(self.value)
+                                    BoxLayout:
+                                        DefaultInput:
+                                            borders: 1, 1, 1, 1
+                                            canvas:
+                                                Color:
+                                                    rgba: app.root.COLORS['TempoBlue']
+                                                Line:
+                                                    width: 1
+                                                    rectangle: self.x, self.y, self.width, self.height
+                                            id: duration
+                                            text: '{duration}'
+                                            on_focus:
+                                                if float(self.text) > task._max_duration and self.focus == False: self.text = str(task._max_duration)
+                                            hint_text: str(task._max_duration)
+                                        Text:
+                                            text: str(task._max_duration)
+# Task progress info
+                            BoxLayout:
+                                orientation: 'vertical'
+                                BoxLayout:
                                     Text:
-                                        background_color: 0, 0, 0, 1
-                                        text: str(task._max_duration)
-
-                            Text:
-                                id: progress
-                                text: '{progress}'
-                            Text:
-                                text: 'HOURS OF'
-                        # BoxLayout:
-                            Text:
-                                # text: str(task._max_duration)
-                                text: duration.text
-#> deadline
+                                        id: progress
+                                        text: '{progress}'
+                                    Text:
+                                        text: 'HOURS OF'
+                                # BoxLayout:
+                                    Text:
+                                        # text: str(task._max_duration)
+                                        text: duration.text
+                                ProgressBar:
+                                    id: task_progress
+                                    size_hint: 1, None
+                                    height: 10
+                                    # value: float(progress.text)
+                                    value: 50
+                                    max: 100
+                                    # max: float(duration.text)
+#> Deadline
                     Box:
                         orientation: 'vertical' 
                         size_hint_x: 0.25

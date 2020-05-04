@@ -12,21 +12,24 @@ from collections import OrderedDict
 
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.lang.builder import Builder
 from kivy.effects.scroll import ScrollEffect
-from kivy.utils import platform
-from kivy.properties import (ListProperty, NumericProperty, ObjectProperty, 
-                             StringProperty, DictProperty)
+from kivy.lang.builder import Builder
+from kivy.properties import (DictProperty, ListProperty, NumericProperty,
+                             ObjectProperty, StringProperty)
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
+from kivy.uix.progressbar import ProgressBar
 from kivy.uix.scrollview import ScrollView
+from kivy.uix.slider import Slider
 from kivy.uix.textinput import TextInput
+from kivy.utils import platform
 
 from tempo import dates
+from tempo.templates import (COLORS, SUBTASK, TASK, default_subtask,
+                             default_task, first_subtask)
 
-from tempo.templates import (SUBTASK, TASK, COLORS, default_subtask, default_task,
-                             first_subtask)
+
 
 # NOTE: Can use KivyCalendar, if solve bug
 # from KivyCalendar import CalendarWidget, DatePicker
@@ -36,6 +39,8 @@ class Task(BoxLayout):
     deltatime = NumericProperty(12)
     _duration = NumericProperty()
     _max_duration = NumericProperty()
+    
+    COLORS = DictProperty(COLORS)
     pass
 
 class Subtask(Task):
