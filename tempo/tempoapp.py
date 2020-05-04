@@ -28,7 +28,7 @@ from tempo import dates
 from tempo.templates import (SUBTASK, TASK, COLORS, default_subtask, default_task,
                              first_subtask)
 
-# NOTE: Can use KivyCalendar, but 
+# NOTE: Can use KivyCalendar, if solve bug
 # from KivyCalendar import CalendarWidget, DatePicker
 
 
@@ -42,6 +42,9 @@ class Subtask(Task):
     pass
 
 class PressableLabel(ButtonBehavior, Label):
+    pass
+
+class PressableBoxLayout(ButtonBehavior, BoxLayout):
     pass
 
 
@@ -234,7 +237,7 @@ class TempoApp(App):
         app = RootWidget()
         Clock.schedule_once(app.load_tasks)
         Clock.schedule_once(app.refresh_data, 2)
-        Clock.schedule_interval(app.refresh_data, 15)
+        Clock.schedule_interval(app.refresh_data, 5)
         Clock.schedule_interval(app.save_tasks, 45)
         return app
 

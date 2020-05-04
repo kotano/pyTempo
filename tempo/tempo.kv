@@ -18,6 +18,13 @@
             width: 1
             rectangle: self.x, self.y, self.width, self.height
 
+<Box@BoxLayout>:
+    canvas.after:
+        Color:
+            rgba: 0.5, 0.5, 0.5, 1
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height
 
 <DateInput@DefaultInput>:
     border: 1, 1, 1, 1
@@ -37,48 +44,32 @@
     cols: 1
 
 
-<PriorityDropdown@BoxLayout>:
-    dropbtn: dropbtn.__self__
-    dropdown: dropdown.__self__
-    Button:
-        id: dropbtn
-        center: self.center
-        text: '-'
-        background_normal: ''
-        # border: 0, 1, 0, 1
-        color: 0, 0, 0, 1
-        on_release: dropdown.open(self)
-        size_hint_y: None
-        height: 40
-        on_parent: dropdown.dismiss()
+# <TaskProgress@BoxLayout>:
+<PressableBoxLayout>:
+    # dropbtn: dropbtn.__self__
+    # dropdown: dropdown.__self__
+    # Button:
+    #     id: dropbtn
+    #     center: self.center
+    #     text: '-'
+    #     background_normal: ''
+    #     # border: 0, 1, 0, 1
+    #     color: 0, 0, 0, 1
+    #     on_release: dropdown.open(self)
+    #     size_hint_y: None
+    #     height: 40
+    #     on_parent: dropdown.dismiss()
 
-    DropDown:
-        id: dropdown
-        on_select: dropbtn.text = '{}'.format(args[1])
-        height: 40
+    # DropDown:
+    #     id: dropdown
+    #     on_select: dropbtn.text = '{}'.format(args[1])
+    #     height: 40
 
-        Button:
-            text: '-'
-            size_hint_y: None
-            height: 40
-            on_release: dropdown.select(self.text)
-        Button:
-            text: 'High'
-            size_hint_y: None
-            height: 40
-            on_release: dropdown.select(self.text)
-
-        Button:
-            text: 'Normal'
-            size_hint_y: None
-            height: 40
-            on_release: dropdown.select(self.text)
-
-        Button:
-            text: 'Low'
-            size_hint_y: None
-            height: 40
-            on_release: dropdown.select(self.text)
+    #     DefaultInput:
+    #         text: '-'
+    #         size_hint_y: None
+    #         height: 40
+            # on_release: dropdown.select(self.text)
 
 # TASK #
 <Task>:
@@ -135,7 +126,7 @@ RootWidget:
                 on_release:
                 background_normal: ''
 
-
+# Container
     BoxLayout:
         canvas.before:
             Color:
@@ -152,9 +143,9 @@ RootWidget:
             PaddedButton:
             PaddedButton:
             PaddedButton:
-# Content
+# Content window
         GridLayout:
-            id: container
+            id: content_window
             spacing: 0, 10
             padding: 10, 10
             cols: 1
@@ -189,8 +180,8 @@ RootWidget:
             CustomScroll:
                 do_scroll_x: False
                 do_scroll_y: True
-# TASKHOLDER
+# Taskholder
                 TaskHolder:
                     id: taskholder
                     size_hint: 1, None
-                    height: container.height
+                    height: content_window.height

@@ -62,13 +62,13 @@ Task:
                     size_hint: 1, None
                     height: 50
                     spacing: 40, 40
-#> priority popup
+#> priority
                     PrioritySpinner:
                         size_hint: 0.1, 1
                         id: priority
                         text: '{priority}'
 
-#> task name popup
+#> task name
                     DefaultInput:
                         id: taskname
                         text: '{taskname}'
@@ -87,45 +87,76 @@ Task:
                             rectangle: self.x, self.y, self.width, self.height
                     padding: 10, 10
                     size_hint_y: None
-                    height: 50
+                    height: 100
+                    # height: 50
 
 #> task start date
-                    DateInput:
-                        id: startdate
+                    Box:
+                        orientation: 'vertical' 
                         size_hint_x: 0.25
-                        text: '{startdate}'
-                        on_focus: 
-                            if self.focus == False: root.deltatime = app.root.find_delta(startdate, deadline)
-                            # app.root.set_time(self, deltatime, self.focus, startdate, deadline)
+                        Text:
+                            text: 'Start date'                   
+                        DateInput:
+                            id: startdate
+                            text: '{startdate}'
+                            on_focus: 
+                                if self.focus == False: root.deltatime = app.root.find_delta(startdate, deadline)
 
 #> progress bar
                     BoxLayout:
                         size_hint_x: 0.5
-                        # orientation: 'vertical'
-                        BoxLayout:
-                        # size_hint_x: 0.5
+                        orientation: 'vertical'
+                        Text:
+                            text: 'Task progress'
+                        PressableBoxLayout:
+                            dropdown: dropdown.__self__
+                            center: self.center
+                            background_normal: ''
+                            # border: 0, 1, 0, 1
+                            color: 0, 0, 0, 1
+                            size_hint_y: None
+                            height: 40
+                            on_parent: dropdown.dismiss()
+                            on_release: dropdown.open(self)
+
+                            DropDown:
+                                id: dropdown
+                                height: 60
+
+                                Box:
+                                    size_hint_y: None
+                                    height: dropdown.height
+                                    DefaultInput:
+                                        id: duration
+                                        text: '{duration}'
+                                        on_focus:
+                                            if float(self.text) > task._max_duration and self.focus == False: self.text = str(task._max_duration)
+                                        hint_text: str(task._max_duration)
+                                    Text:
+                                        background_color: 0, 0, 0, 1
+                                        text: str(task._max_duration)
+
                             Text:
                                 id: progress
                                 text: '{progress}'
                             Text:
                                 text: 'HOURS OF'
-                            DefaultInput:
-                                id: duration
-                                text: '{duration}'
-                                # on_focus:
-                                #     if self.text and self.focus == False: root._duration = int(self.text)
-                                hint_text: str(task._max_duration)
-                        BoxLayout:
+                        # BoxLayout:
                             Text:
-                                text: str(task._max_duration)
-#> deadline          
-                    DateInput:
+                                # text: str(task._max_duration)
+                                text: duration.text
+#> deadline
+                    Box:
+                        orientation: 'vertical' 
                         size_hint_x: 0.25
-                        id: deadline
-                        text: '{deadline}'
-                        on_focus: 
-                            if self.focus == False: root.deltatime = app.root.find_delta(startdate, deadline);
-                            app.root.refresh_data()
+                        Text:
+                            text: 'End date' 
+                        DateInput:
+                            id: deadline
+                            text: '{deadline}'
+                            on_focus: 
+                                if self.focus == False: root.deltatime = app.root.find_delta(startdate, deadline);
+                                app.root.refresh_data()
 
 #> Subtask
                 CustomScroll:
