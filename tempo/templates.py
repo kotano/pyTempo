@@ -304,6 +304,13 @@ Subtask:
 ''')
 
 
+MINI_TASKS = '''
+MiniTask:
+    CheckBox:
+    Button:
+'''
+
+
 default_task = TASK.format(
             active=False, taskname='', priority='-',
             startdate=dates.date_to_string(), duration='', progress='0', deadline='',

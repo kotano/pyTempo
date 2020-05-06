@@ -18,9 +18,11 @@ from kivy.properties import (DictProperty, ListProperty, NumericProperty,
                              ObjectProperty, StringProperty)
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
 from kivy.uix.progressbar import ProgressBar
+from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.slider import Slider
 from kivy.uix.textinput import TextInput
@@ -29,7 +31,6 @@ from kivy.utils import platform
 from tempo import dates
 from tempo.templates import (COLORS, SUBTASK, TASK, default_subtask,
                              default_task, first_subtask)
-
 
 # NOTE: Can use KivyCalendar, if solve bug
 # from KivyCalendar import CalendarWidget, DatePicker
@@ -46,10 +47,24 @@ class Task(BoxLayout):
 class Subtask(Task):
     pass
 
+class MiniTask(BoxLayout):
+    _name = StringProperty()
+    _source = ObjectProperty()
+
 class PressableLabel(ButtonBehavior, Label):
     pass
 
 class PressableBoxLayout(ButtonBehavior, BoxLayout):
+    pass
+
+class MyScreenManager(ScreenManager):
+    fullscreen = False
+    pass
+
+class TaskScreen(Screen):
+    pass
+
+class TimerScreen(Screen):
     pass
 
 
@@ -63,9 +78,8 @@ class CustomScroll(ScrollView):
 class RootWidget(BoxLayout):
     '''Application root widget '''
     taskholder = ObjectProperty()
+    minitaskholder = ObjectProperty()
     COLORS = DictProperty(COLORS)
-
-    DURATIONS = ListProperty()
 
 
     def load_tasks(self, *dt):
@@ -154,7 +168,7 @@ class RootWidget(BoxLayout):
             end = dates.convert_to_date(deadline.text)
         except (ValueError, TypeError):
             # TODO Make undo when wrong data / take data from save?
-            print('You have entered wrong data')
+#            print('You have entered wrong data')
             return 0
         else:
             # find delta time
@@ -178,11 +192,13 @@ class RootWidget(BoxLayout):
             max_duration = min(max_duration, min(after))
         max_duration = max(0, max_duration)
         task._max_duration = max_duration
-        print(task._max_duration)
+        # print(task._max_duration)
         return max_duration
 
     def refresh_data(self, *dt):
         # XXX: Bad solution
+        if len(self.minitaskholder.children) == 0:
+            self.load_minitasks(self.minitaskholder)
         for t in self.taskholder.children:
             t.deltatime = self.find_delta(t.startdate, t.deadline)
         for t in self.taskholder.children:
@@ -231,6 +247,13 @@ class RootWidget(BoxLayout):
         '''
         holder.add_widget(Builder.load_string(default_subtask))
 
+    def load_minitasks(self, holder):
+        for x in self.taskholder.children:
+            print(x)
+            widget = MiniTask()
+            widget._source = x
+            widget._name = x.taskname.text
+            holder.add_widget(widget)
 
 class TempoApp(App):
     '''Main application class'''
@@ -240,12 +263,12 @@ class TempoApp(App):
         return True
 
     def build(self):
-        app = RootWidget()
-        Clock.schedule_once(app.load_tasks)
-        Clock.schedule_once(app.refresh_data, 2)
-        Clock.schedule_interval(app.refresh_data, 5)
-        Clock.schedule_interval(app.save_tasks, 45)
-        return app
+        root = RootWidget()
+        Clock.schedule_once(root.load_tasks)
+        Clock.schedule_once(root.refresh_data, 2)
+        Clock.schedule_interval(root.refresh_data, 5)
+        Clock.schedule_interval(root.save_tasks, 45)
+        return root
 
 # Multiplatform path to application user data 
 DATAFILE = os.path.join(TempoApp().user_data_dir, 'data.json')
