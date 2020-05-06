@@ -18,6 +18,7 @@ from kivy.properties import (DictProperty, ListProperty, NumericProperty,
                              ObjectProperty, StringProperty)
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
 from kivy.uix.progressbar import ProgressBar
 from kivy.uix.scrollview import ScrollView
@@ -28,7 +29,6 @@ from kivy.utils import platform
 from tempo import dates
 from tempo.templates import (COLORS, SUBTASK, TASK, default_subtask,
                              default_task, first_subtask)
-
 
 
 # NOTE: Can use KivyCalendar, if solve bug
@@ -182,6 +182,7 @@ class RootWidget(BoxLayout):
         return max_duration
 
     def refresh_data(self, *dt):
+        # XXX: Bad solution
         for t in self.taskholder.children:
             t.deltatime = self.find_delta(t.startdate, t.deadline)
         for t in self.taskholder.children:

@@ -91,7 +91,7 @@ Task:
                     # height: 50
 
 #> task start date
-                    Box:
+                    BoxLayout:
                         orientation: 'vertical' 
                         size_hint_x: 0.25
                         Text:
@@ -117,7 +117,8 @@ Task:
                             size_hint_y: None
                             height: 40
                             on_parent: dropdown.dismiss()
-                            on_release: dropdown.open(self)
+                            on_release: dropdown.open(self);
+
 
 # Task progress dropdwn
                             DropDown:
@@ -178,7 +179,7 @@ Task:
                                     max: 100
                                     # max: float(duration.text)
 #> Deadline
-                    Box:
+                    BoxLayout:
                         orientation: 'vertical' 
                         size_hint_x: 0.25
                         Text:
@@ -192,10 +193,12 @@ Task:
 
 #> Subtask
                 CustomScroll:
+                    id: subscroll
                     do_scroll_x: False
 
                     GridLayout:
                         size_hint_y: None
+                        # XXX: check if problems with height
                         height: popup.height - notes.height - 50
                         id: subtaskholder
                         cols: 1
