@@ -12,7 +12,7 @@ Task:
     priority: priority.__self__
     checkbox: checkbox.__self__
     subtaskholder: subtaskholder.__self__
-    
+
     popup: popup.__self__
     startdate: startdate.__self__
     progress: progress.__self__
@@ -20,9 +20,8 @@ Task:
     deadline: deadline.__self__
     notes: notes.__self__
 
-
     opacity: .2 if checkbox.active else 1
-    
+
 # checkbox
     CheckBox:
         id: checkbox

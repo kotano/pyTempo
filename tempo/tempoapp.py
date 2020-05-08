@@ -2,8 +2,8 @@ if __name__ == "__main__":
     #! FOR DEBUGGING. REMOVE BEFORE PRODUCTION
     import sys
     from os.path import dirname
-    f = dirname(__file__)
-    sys.path.append(f'{f}\\..')
+    d = dirname(__file__)
+    sys.path.append(f'{d}\\..')
 
 
 import json
@@ -14,8 +14,9 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.effects.scroll import ScrollEffect
 from kivy.lang.builder import Builder
-from kivy.properties import (DictProperty, ListProperty, NumericProperty,
-                             ObjectProperty, StringProperty)
+from kivy.properties import (DictProperty, ListProperty, NumericProperty, BooleanProperty, ObjectProperty, StringProperty)
+
+# NOTE: Maybe can move widgets to separate module
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -37,12 +38,11 @@ from tempo.templates import (COLORS, SUBTASK, TASK, default_subtask,
 
 
 class Task(BoxLayout):
-    deltatime = NumericProperty(12)
+    deltatime = NumericProperty()
     _duration = NumericProperty()
     _max_duration = NumericProperty()
-    
-    COLORS = DictProperty(COLORS)
-    pass
+    _progress = NumericProperty()
+    _in_progress = BooleanProperty(False)
 
 class Subtask(Task):
     pass
@@ -65,8 +65,21 @@ class TaskScreen(Screen):
     pass
 
 class TimerScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.c = Clock.schedule_interval(lambda dt: self.update(), 1)
+        self.counter = 1
+    def update(self):
+        # print('Update timer')
+        # print(self.counter)
+        self.counter += 1
+        pass
+
+class CalendarScreen(Screen):
     pass
 
+class DictionaryScreen(Screen):
+    pass
 
 class CustomScroll(ScrollView):
     if platform == 'win':
@@ -206,6 +219,9 @@ class RootWidget(BoxLayout):
             # HACK ...
             t._duration = t.duration.text if t.duration.text else 0
 
+# XXX: ...
+    # def start_countdown(self, task, mins):
+    #     Clock.schedule_once(lambda dt: dates.countdown(mins))
 
     def save_tasks(self, *dt):
         ''' Save tasks to data.json'''
@@ -264,6 +280,7 @@ class TempoApp(App):
 
     def build(self):
         root = RootWidget()
+        # Clock.schedule_interval(root.update_timer, 1)
         Clock.schedule_once(root.load_tasks)
         Clock.schedule_once(root.refresh_data, 2)
         Clock.schedule_interval(root.refresh_data, 5)

@@ -131,11 +131,13 @@
     # CheckBox:
     Button:
         text: root._name
-        on_press: print('Launching timer')
+        on_press:
+            print('Launching timer');
+            # app.root.start_countdown(root, 60)
 
 
 ######################## ROOT #########################
-RootWidget:
+# RootWidget:
 <RootWidget>
     taskholder: taskscreen.taskholder
     minitaskholder: minitaskholder
@@ -143,8 +145,7 @@ RootWidget:
     orientation: 'vertical'
     canvas.before:
         Color:
-            # rgba: .70, .88, .87, 1
-            rgba: 1, 1, 1, 1
+            rgb: 1, 1, 1
         Rectangle:
             size: self.size
     ActionBar:
@@ -182,15 +183,22 @@ RootWidget:
                 text: 'Timer'
                 on_release: content_window.current = 'timerscreen'
             PaddedButton:
-# Content window
+                text: 'Calendar'
+                on_release: content_window.current = 'calendarscreen'
+            PaddedButton:
+                text: 'Dictionary'
+                on_release: content_window.current = 'dictionaryscreen'
+# CONTENT
         MyScreenManager:
             id: content_window
             spacing: 0, 10
             padding: 10, 10
             cols: 1
+# Tasks
             TaskScreen:
                 id: taskscreen
                 name: 'taskscreen'
+# Timer
             TimerScreen:
                 id: timerscreen
                 name: 'timerscreen'
@@ -202,6 +210,23 @@ RootWidget:
                         on_parent: root.load_minitasks(self)
 
                     Box:
+                        orientation: 'vertical'
                         Text:
-                            text: 'Some text 2'
+                            text: '00:00'
+                        Button:
+                            text: 'Start timer'
+# Calendar
+            CalendarScreen:
+                id: calendarscreen
+                name: 'calendarscreen'
+                BoxLayout:
+                    Text:
+                        text: 'Calendar Screen. Coming soon'
+# Dictionary
+            DictionaryScreen:
+                id: dictionaryscreen
+                name: 'dictionaryscreen'
+                BoxLayout:
+                    Text:
+                        text: 'Dictionary Screen. Coming soon'
 
