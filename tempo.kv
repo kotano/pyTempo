@@ -1,8 +1,5 @@
-#:import COLORS tempo.templates.COLORS
-#:import POMODORO_DURATION tempo.dates.POMODORO_DURATION
-
 <Text@Label>
-    color: COLORS['TextColor']
+    color: app.root.COLORS['TextColor']
 
 <PaddedButton@Button>:
     padding: 5, 10
@@ -29,8 +26,6 @@
             width: 1
             rectangle: self.x, self.y, self.width, self.height
 
-<PressableBoxLayout>:
-
 <DateInput@DefaultInput>:
     border: 1, 1, 1, 1
 
@@ -42,12 +37,57 @@
     size_hint_y: None
     height: 40
     background_normal: ''
-
 <TaskHolder@GridLayout>:
     id: taskholder
     spacing: 0, 10
     padding: 10, 10
     cols: 1
+
+
+# <TaskProgress@BoxLayout>:
+<PressableBoxLayout>:
+    # dropbtn: dropbtn.__self__
+    # dropdown: dropdown.__self__
+    # Button:
+    #     id: dropbtn
+    #     center: self.center
+    #     text: '-'
+    #     background_normal: ''
+    #     # border: 0, 1, 0, 1
+    #     color: 0, 0, 0, 1
+    #     on_release: dropdown.open(self)
+    #     size_hint_y: None
+    #     height: 40
+    #     on_parent: dropdown.dismiss()
+
+    # DropDown:
+    #     id: dropdown
+    #     on_select: dropbtn.text = '{}'.format(args[1])
+    #     height: 40
+
+    #     DefaultInput:
+    #         text: '-'
+    #         size_hint_y: None
+    #         height: 40
+            # on_release: dropdown.select(self.text)
+
+# TASK #
+<Task>:
+    size_hint_y: None
+    canvas.after:
+        Color:
+            rgb: .5, .5, .5, 1
+        Line:
+            points: self.x, self.y - 4, self.x + self.width, self.y -4
+            width: 1
+    size_hint_y: None
+    height: 40
+
+
+# Subtask
+<Subtask>:
+    padding: 5, 5
+    background_normal: ''
 
 <ActionSpinner@Spinner+ActionItem>
     canvas.before:
@@ -61,93 +101,15 @@
     option_cls:
 
 
-########### SCREENS #############
-# TaskScreen
-<TaskScreen>:
-    taskholder: taskholder
-    BoxLayout:
-        orientation: 'vertical'
-        padding: 10
-        Button:
-            size_hint_y: None
-            height: 40
-            text: 'Add new task'
-            on_release: root.add_new_task()
-        BoxLayout:
-            size_hint_y: None
-            height: 40
-            canvas:
-                Color:
-                    rgb: .5, .5, .5, 1
-                Line:
-                    points: self.x, self.y, self.x + self.width, self.y
-                    width: 2
-            PressableLabel:
-                size_hint_x: 2
-                text: 'Taskname'
-                on_release: root.sort_tasks(self)
-            PressableLabel:
-                text: 'Priority'
-                on_release: root.sort_tasks(self)
-            PressableLabel:
-                text: 'Time'
-                on_release: root.sort_tasks(self)
-            PressableLabel:
-                text: 'Deadline'
-                on_release: root.sort_tasks(self)
-
-        CustomScroll:
-            do_scroll_x: False
-            do_scroll_y: True
-# Taskholder
-            TaskHolder:
-                id: taskholder
-                size_hint: 1, None
-                height: root.height - 40
-
-# TASK #
-<Task>:
-    size_hint_y: None
-    canvas:
-        Color:
-            rgb: .5, .5, .5, 1
-        Line:
-            points: self.x, self.y - 4, self.x + self.width, self.y -4
-            width: 1
-    size_hint_y: None
-    height: 40
-
-# Subtask
-<Subtask>:
-    padding: 5, 5
-    background_normal: ''
-
-# Timer screen
-<TimerScreen>:
-
-
-<MiniTask>:
-    size_hint_y: None
-    height: 40
-    # CheckBox:
-    Button:
-        text: root._name
-        on_press:
-            print('Launching timer');
-            # app.root.start_countdown(root, 60)
-
-
 ######################## ROOT #########################
-# RootWidget:
-<RootWidget>
-    taskholder: taskscreen.taskholder
-    minitaskholder: minitaskholder
-    taskscreen: taskscreen
-
+RootWidget:
+<RootWidget>:
+    taskholder: taskholder
     orientation: 'vertical'
     canvas.before:
         Color:
-            rgb: 1, 1, 1
+            # rgba: .70, .88, .87, 1
+            rgba: 1, 1, 1, 1
         Rectangle:
             size: self.size
     ActionBar:
@@ -179,59 +141,47 @@
             size: 70, self.height
 
             PaddedButton:
-                text: 'Tasks'
-                on_release: content_window.current = 'taskscreen'
             PaddedButton:
-                text: 'Timer'
-                on_release: content_window.current = 'timerscreen'
             PaddedButton:
-                text: 'Calendar'
-                on_release: content_window.current = 'calendarscreen'
-            PaddedButton:
-                text: 'Dictionary'
-                on_release: content_window.current = 'dictionaryscreen'
-# CONTENT
-        MyScreenManager:
+# Content window
+        GridLayout:
             id: content_window
             spacing: 0, 10
             padding: 10, 10
             cols: 1
-# Tasks
-            TaskScreen:
-                id: taskscreen
-                name: 'taskscreen'
-# Timer
-            TimerScreen:
-                id: timerscreen
-                name: 'timerscreen'
-                timerdisplay: timerdisplay
-                BoxLayout:
-                    GridLayout:
-                        id: minitaskholder
-                        cols: 1
-                        padding: 10
-                        on_parent: root.load_minitasks(self)
+            Button:
+                size_hint_y: None
+                height: 40
+                text: 'Add new task'
+                on_release: root.add_new_task()
+            BoxLayout:
+                size_hint_y: None
+                height: 40
+                canvas.before:
+                    Color:
+                        rgb: .5, .5, .5, 1
+                    Line:
+                        points: self.x, self.y, self.x + self.width, self.y
+                        width: 2
+                PressableLabel:
+                    size_hint_x: 2
+                    text: 'Taskname'
+                    on_release: root.sort_tasks(self)
+                PressableLabel:
+                    text: 'Priority'
+                    on_release: root.sort_tasks(self)
+                PressableLabel:
+                    text: 'Time'
+                    on_release: root.sort_tasks(self)
+                PressableLabel:
+                    text: 'Deadline'
+                    on_release: root.sort_tasks(self)
 
-                    Box:
-                        orientation: 'vertical'
-                        Text:
-                            id: timerdisplay
-                            text: str(timerscreen.POMODURATION) +':00'
-                        Button:
-                            text: 'Start timer'
-                            on_release: timerscreen.start_countdown()
-# Calendar
-            CalendarScreen:
-                id: calendarscreen
-                name: 'calendarscreen'
-                BoxLayout:
-                    Text:
-                        text: 'Calendar Screen. Coming soon'
-# Dictionary
-            DictionaryScreen:
-                id: dictionaryscreen
-                name: 'dictionaryscreen'
-                BoxLayout:
-                    Text:
-                        text: 'Dictionary Screen. Coming soon'
-
+            CustomScroll:
+                do_scroll_x: False
+                do_scroll_y: True
+# Taskholder
+                TaskHolder:
+                    id: taskholder
+                    size_hint: 1, None
+                    height: content_window.height

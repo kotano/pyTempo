@@ -1,21 +1,72 @@
-from kivy.app import App
-from collections import OrderedDict
-import os
-import json
+if __name__ == "__main__":
+    #! FOR DEBUGGING. REMOVE BEFORE PRODUCTION
+    import sys
+    from os.path import dirname
+    f = dirname(__file__)
+    sys.path.append(f'{f}\\..')
 
-# NOTE: 'widgets' module contains typical objects to import
-# so i use star* import
-from tempo.widgets import *  # noqa: F403
+
+import json
+import os
+from collections import OrderedDict
+
+from kivy.app import App
+from kivy.clock import Clock
+from kivy.effects.scroll import ScrollEffect
+from kivy.lang.builder import Builder
+from kivy.properties import (DictProperty, ListProperty, NumericProperty,
+                             ObjectProperty, StringProperty)
+from kivy.uix.behaviors import ButtonBehavior
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.dropdown import DropDown
+from kivy.uix.label import Label
+from kivy.uix.progressbar import ProgressBar
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.slider import Slider
+from kivy.uix.textinput import TextInput
+from kivy.utils import platform
+
+from tempo import dates
+from tempo.templates import (COLORS, SUBTASK, TASK, default_subtask,
+                             default_task, first_subtask)
+
 
 # NOTE: Can use KivyCalendar, if solve bug
 # from KivyCalendar import CalendarWidget, DatePicker
 
 
+class Task(BoxLayout):
+    deltatime = NumericProperty(12)
+    _duration = NumericProperty()
+    _max_duration = NumericProperty()
+    
+    COLORS = DictProperty(COLORS)
+    pass
+
+class Subtask(Task):
+    pass
+
+class PressableLabel(ButtonBehavior, Label):
+    pass
+
+class PressableBoxLayout(ButtonBehavior, BoxLayout):
+    pass
+
+
+class CustomScroll(ScrollView):
+    if platform == 'win':
+        effect_cls = ScrollEffect
+    bar_color = COLORS['TempoBlue']
+    pass
+
+
 class RootWidget(BoxLayout):
     '''Application root widget '''
     taskholder = ObjectProperty()
-    minitaskholder = ObjectProperty()
     COLORS = DictProperty(COLORS)
+
+    DURATIONS = ListProperty()
+
 
     def load_tasks(self, *dt):
         '''Loads task data from data.json if exists.'''
@@ -41,10 +92,61 @@ class RootWidget(BoxLayout):
         except (KeyError, json.JSONDecodeError) as e:
             # Except error in case of data corruption
             msg = (str(e) + 'We were unable to load data.'
-                   'Would you like to delete this task? [y/n]')
+            'Would you like to delete this task? [y/n]')
             q = input(msg)
             if not q.lower() == 'y':
-                app.stop()
+                app.stop() 
+ 
+
+    def complete_task(self, holder, root, value):
+        '''Does task complete behavior
+
+        Parameters:
+            holder (obj): tasks container object
+            root (obj): main task object
+            value (bool): checkbox value
+        '''
+        # TODO: Archive, smooth animation
+        if value:
+            holder.remove_widget(root)
+            holder.add_widget(root)
+
+    def _clear_input(self, instance):
+        '''Made to fix an unknown issue with
+        clearing subtask text input
+        instance (obj): subtask object reference
+        '''
+        instance.subtaskname.text = ''
+        instance.subcheckbox.active = False
+
+    def sort_tasks(self, instance):
+        '''Sort tasks in tasklist.
+        
+        Parameters:
+            instance (obj): caller
+        '''
+        lst = self.taskholder.children
+        if len(lst) <= 1:
+            print('Nothing to sort')
+            return
+
+
+        def sort_criteria(x):
+            which = {
+            'Taskname': x.taskname.text, 
+            'Priority': x.priority.text,
+            'Duration': x.duration.text,
+            'Deadline': x.deadline.text[::-1], # FIXME
+            }
+            return which.get(instance.text, True)
+
+        sorted_lst = sorted(lst, key=sort_criteria, reverse=True)
+        if lst == sorted_lst:
+            # UNDONE removed recursion
+            sorted_lst = sorted(lst, key=sort_criteria, reverse=False)
+        self.taskholder.children = sorted_lst
+
+
 
     def find_delta(self, startdate, deadline):
         try:
@@ -59,6 +161,7 @@ class RootWidget(BoxLayout):
             res = dates.find_deltatime(start, end)
             return res
 
+
     def find_max_duration(self, task):
         '''Find maximum available time for each task and return int.'''
         # TODO: This needs optimization
@@ -66,8 +169,7 @@ class RootWidget(BoxLayout):
         for t in self.taskholder.children:
             keep.append([t.deltatime, t._duration, t._max_duration])
         keep = sorted(keep, key=lambda x: x[0])
-        my_index = keep.index(
-            [task.deltatime, task._duration, task._max_duration])
+        my_index = keep.index([task.deltatime, task._duration, task._max_duration])
         after = [x[2] for x in keep][my_index:]
         before = [x[1] for x in keep][:my_index]
         # NOTE: can add +1 to before slice to remove task._duration
@@ -76,13 +178,11 @@ class RootWidget(BoxLayout):
             max_duration = min(max_duration, min(after))
         max_duration = max(0, max_duration)
         task._max_duration = max_duration
-        # print(task._max_duration)
+        print(task._max_duration)
         return max_duration
 
     def refresh_data(self, *dt):
         # XXX: Bad solution
-        if len(self.minitaskholder.children) == 0:
-            self.load_minitasks(self.minitaskholder)
         for t in self.taskholder.children:
             t.deltatime = self.find_delta(t.startdate, t.deadline)
         for t in self.taskholder.children:
@@ -90,9 +190,6 @@ class RootWidget(BoxLayout):
             # HACK ...
             t._duration = t.duration.text if t.duration.text else 0
 
-# XXX: ...
-    # def start_countdown(self, task, mins):
-    #     Clock.schedule_once(lambda dt: dates.countdown(mins))
 
     def save_tasks(self, *dt):
         ''' Save tasks to data.json'''
@@ -110,7 +207,7 @@ class RootWidget(BoxLayout):
                 'notes': task.notes.text.replace('\n', '\\n'),
                 # XXX: subtasks depend on structure. Not reliable
                 'subtasks': [[s.children[2].active, s.children[1].text]
-                             for s in task.subtaskholder.children],
+                for s in task.subtaskholder.children],
             }})
             # print(data)
             counter += 1
@@ -118,33 +215,39 @@ class RootWidget(BoxLayout):
         with open(DATAFILE, 'w+', encoding='utf-8') as datafile:
             json.dump(data, datafile, indent=4)
 
-    def load_minitasks(self, holder):
-        for x in self.taskholder.children:
-            widget = MiniTask()
-            widget._source = x
-            widget._name = x.taskname.text
-            holder.add_widget(widget)
+    def add_new_task(self):
+        ''' Append new task to 'taskholder' widget'''
+        self.taskholder.add_widget(Builder.load_string(default_task))
+        last_task = self.taskholder.children[0]
+        subtskhldr = last_task.subtaskholder
+        subtskhldr.add_widget(Builder.load_string(first_subtask))
+        last_task.popup.open()
+
+    def add_subtask(self, holder):
+        '''Adds subtask to task
+        
+        Parameters:
+            holder (obj): reference to 'subtaskholder' object
+        '''
+        holder.add_widget(Builder.load_string(default_subtask))
 
 
 class TempoApp(App):
     '''Main application class'''
     icon = './docs/sources/icon_white.png'
-
     def on_stop(self):
         self.root.save_tasks()
         return True
 
     def build(self):
-        root = RootWidget()
-        # Clock.schedule_interval(root.update_timer, 1)
-        Clock.schedule_once(root.load_tasks)
-        Clock.schedule_once(root.refresh_data, 2)
-        Clock.schedule_interval(root.refresh_data, 5)
-        Clock.schedule_interval(root.save_tasks, 45)
-        return root
+        app = RootWidget()
+        Clock.schedule_once(app.load_tasks)
+        Clock.schedule_once(app.refresh_data, 2)
+        Clock.schedule_interval(app.refresh_data, 5)
+        Clock.schedule_interval(app.save_tasks, 45)
+        return app
 
-
-# Multiplatform path to application user data
+# Multiplatform path to application user data 
 DATAFILE = os.path.join(TempoApp().user_data_dir, 'data.json')
 
 
