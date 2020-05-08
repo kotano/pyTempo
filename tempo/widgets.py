@@ -119,7 +119,8 @@ class TimerScreen(Screen):
     def _track_time(self, value, task=None):
         total = (value * 60) - self.count
         if task:
-            task._progress += self.count / 3600
+            task._progress += 1/3600
+            print(task._progress)
         if total == 0:
             self.trigger_countdown()
         mins = total // 60

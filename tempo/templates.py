@@ -20,6 +20,8 @@ Task:
     deadline: deadline.__self__
     notes: notes.__self__
 
+    _progress: float({progress})
+
     opacity: .2 if checkbox.active else 1
 
 # checkbox
@@ -162,7 +164,7 @@ Task:
                                 BoxLayout:
                                     Text:
                                         id: progress
-                                        text: '{progress}'
+                                        text: str(root._progress)[:4]
                                     Text:
                                         text: 'HOURS OF'
                                 # BoxLayout:

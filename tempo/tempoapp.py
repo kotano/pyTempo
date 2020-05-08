@@ -105,7 +105,7 @@ class RootWidget(BoxLayout):
                 'priority': task.priority.text,
                 'startdate': task.startdate.text.split('.'),
                 'duration': task.duration.text,
-                'progress': task.progress.text,
+                'progress': task._progress,
                 'deadline': task.deadline.text.split('.'),
                 'notes': task.notes.text.replace('\n', '\\n'),
                 # XXX: subtasks depend on structure. Not reliable
