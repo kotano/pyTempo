@@ -1,9 +1,10 @@
-
 from kivy.clock import Clock
 from kivy.effects.scroll import ScrollEffect
 from kivy.lang.builder import Builder
-from kivy.properties import (DictProperty, ListProperty, NumericProperty, BooleanProperty, ObjectProperty, StringProperty)
 from kivy.utils import platform
+from kivy.properties import (
+    DictProperty, ListProperty, NumericProperty,
+    BooleanProperty, ObjectProperty, StringProperty)
 
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
@@ -17,18 +18,20 @@ from kivy.uix.slider import Slider
 from kivy.uix.textinput import TextInput
 
 from tempo import dates
-from tempo.templates import (COLORS, SUBTASK, TASK, default_subtask,
-                             default_task, first_subtask)
+from tempo.templates import (
+    COLORS, SUBTASK, TASK, default_subtask,
+    default_task, first_subtask)
 
 
 class MyScreenManager(ScreenManager):
     fullscreen = False
     pass
 
+
 class TaskScreen(Screen):
     def sort_tasks(self, instance):
         '''Sort tasks in tasklist.
-        
+
         Parameters:
             instance (obj): caller
         '''
@@ -37,13 +40,12 @@ class TaskScreen(Screen):
             print('Nothing to sort')
             return
 
-
         def sort_criteria(x):
             which = {
-            'Taskname': x.taskname.text, 
-            'Priority': x.priority.text,
-            'Duration': x.duration.text,
-            'Deadline': x.deadline.text[::-1], # FIXME
+                'Taskname': x.taskname.text,
+                'Priority': x.priority.text,
+                'Duration': x.duration.text,
+                'Deadline': x.deadline.text[::-1],  # FIXME
             }
             return which.get(instance.text, True)
 
@@ -63,12 +65,12 @@ class TaskScreen(Screen):
 
     def add_subtask(self, holder):
         '''Adds subtask to task
-        
+
         Parameters:
             holder (obj): reference to 'subtaskholder' object
         '''
         holder.add_widget(Builder.load_string(default_subtask))
-    
+
     def _clear_input(self, instance):
         '''Made to fix an unknown issue with
         clearing subtask text input
@@ -92,23 +94,52 @@ class TaskScreen(Screen):
 
     pass
 
+
 class TimerScreen(Screen):
+    timerdisplay = ObjectProperty()
+    POMODURATION = NumericProperty(dates.POMODORO_DURATION)
+    count = NumericProperty(0)
+    active = BooleanProperty(False)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.c = Clock.schedule_interval(lambda dt: self.update(), 1)
         self.counter = 1
+
+    def start_countdown(self, task=None):
+        if self.active is not False:
+            self.process.cancel()
+            self.count = 0
+            self.active = False
+            return
+        if not task:
+            self.process = Clock.schedule_interval(
+                lambda dt: self._track_time(self.count), 1)
+        pass
+        self.active = True
+
+    def _track_time(self, value):
+        mins = value // 60
+        secs = value % 60
+        self.timerdisplay.text = '{}:{}'.format(mins, secs)
+        self.count += 1
+
     def update(self):
         # print('Update timer')
         # print(self.counter)
         self.counter += 1
         pass
 
+
 class CalendarScreen(Screen):
     pass
+
 
 class DictionaryScreen(Screen):
     pass
 
+
+# WIDGETS
 class Task(BoxLayout):
     deltatime = NumericProperty()
     _duration = NumericProperty()
@@ -116,15 +147,19 @@ class Task(BoxLayout):
     _progress = NumericProperty()
     _in_progress = BooleanProperty(False)
 
+
 class Subtask(Task):
     pass
+
 
 class MiniTask(BoxLayout):
     _name = StringProperty()
     _source = ObjectProperty()
 
+
 class PressableLabel(ButtonBehavior, Label):
     pass
+
 
 class PressableBoxLayout(ButtonBehavior, BoxLayout):
     pass

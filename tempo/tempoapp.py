@@ -1,16 +1,12 @@
-if __name__ == "__main__":
-    #! FOR DEBUGGING. REMOVE BEFORE PRODUCTION
-    import sys
-    from os.path import dirname
-    d = dirname(__file__)
-    sys.path.append(f'{d}\\..')
-
-import json
-import os
-from collections import OrderedDict
 from kivy.app import App
+from collections import OrderedDict
+import os
+import json
 
-from tempo.widgets import *
+# NOTE: 'widgets' module contains typical objects to import
+# so i use star* import
+from tempo.widgets import *  # noqa: F403
+
 # NOTE: Can use KivyCalendar, if solve bug
 # from KivyCalendar import CalendarWidget, DatePicker
 
@@ -20,7 +16,6 @@ class RootWidget(BoxLayout):
     taskholder = ObjectProperty()
     minitaskholder = ObjectProperty()
     COLORS = DictProperty(COLORS)
-
 
     def load_tasks(self, *dt):
         '''Loads task data from data.json if exists.'''
@@ -46,11 +41,10 @@ class RootWidget(BoxLayout):
         except (KeyError, json.JSONDecodeError) as e:
             # Except error in case of data corruption
             msg = (str(e) + 'We were unable to load data.'
-            'Would you like to delete this task? [y/n]')
+                   'Would you like to delete this task? [y/n]')
             q = input(msg)
             if not q.lower() == 'y':
-                app.stop() 
- 
+                app.stop()
 
     def find_delta(self, startdate, deadline):
         try:
@@ -58,13 +52,12 @@ class RootWidget(BoxLayout):
             end = dates.convert_to_date(deadline.text)
         except (ValueError, TypeError):
             # TODO Make undo when wrong data / take data from save?
-#            print('You have entered wrong data')
+            print('You have entered wrong data')
             return 0
         else:
             # find delta time
             res = dates.find_deltatime(start, end)
             return res
-
 
     def find_max_duration(self, task):
         '''Find maximum available time for each task and return int.'''
@@ -73,7 +66,8 @@ class RootWidget(BoxLayout):
         for t in self.taskholder.children:
             keep.append([t.deltatime, t._duration, t._max_duration])
         keep = sorted(keep, key=lambda x: x[0])
-        my_index = keep.index([task.deltatime, task._duration, task._max_duration])
+        my_index = keep.index(
+            [task.deltatime, task._duration, task._max_duration])
         after = [x[2] for x in keep][my_index:]
         before = [x[1] for x in keep][:my_index]
         # NOTE: can add +1 to before slice to remove task._duration
@@ -116,14 +110,13 @@ class RootWidget(BoxLayout):
                 'notes': task.notes.text.replace('\n', '\\n'),
                 # XXX: subtasks depend on structure. Not reliable
                 'subtasks': [[s.children[2].active, s.children[1].text]
-                for s in task.subtaskholder.children],
+                             for s in task.subtaskholder.children],
             }})
             # print(data)
             counter += 1
         data = OrderedDict(sorted(data.items(), key=lambda t: t[0]))
         with open(DATAFILE, 'w+', encoding='utf-8') as datafile:
             json.dump(data, datafile, indent=4)
-
 
     def load_minitasks(self, holder):
         for x in self.taskholder.children:
@@ -132,9 +125,11 @@ class RootWidget(BoxLayout):
             widget._name = x.taskname.text
             holder.add_widget(widget)
 
+
 class TempoApp(App):
     '''Main application class'''
     icon = './docs/sources/icon_white.png'
+
     def on_stop(self):
         self.root.save_tasks()
         return True
@@ -148,7 +143,8 @@ class TempoApp(App):
         Clock.schedule_interval(root.save_tasks, 45)
         return root
 
-# Multiplatform path to application user data 
+
+# Multiplatform path to application user data
 DATAFILE = os.path.join(TempoApp().user_data_dir, 'data.json')
 
 
