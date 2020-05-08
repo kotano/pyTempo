@@ -26,7 +26,7 @@ Task:
     CheckBox:
         id: checkbox
         active: {active}
-        on_active: app.root.complete_task(root.parent, root, self.active)
+        on_active: app.root.taskscreen.complete_task(root.parent, root, self.active)
         size_hint: None, 1
         width: 20
         pos: root.center
@@ -279,7 +279,7 @@ Subtask:
         size_hint: None, 1
         width: 20
         pos: root.center
-        on_active: app.root.complete_task(root.parent, root, self.active)
+        on_active: app.root.taskscreen.complete_task(root.parent, root, self.active)
 
     TextInput:
         id: subtaskname
@@ -291,7 +291,7 @@ Subtask:
         write_tab: False
         focus: {focus}
         # on_focus: subtask.opacity=1
-        on_text_validate: app.root.add_subtask(root.parent)
+        on_text_validate: app.root.taskscreen.add_subtask(root.parent)
     
     Button:
         size_hint: None, None
@@ -299,7 +299,7 @@ Subtask:
         height: 32
         color: 0, 0, 0, .5
         background_normal: './docs/sources/delete32.png'
-        on_release: app.root._clear_input(subtask) if len(root.parent.children) <= 1 else root.parent.remove_widget(subtask)
+        on_release: app.root.taskscreen._clear_input(subtask) if len(root.parent.children) <= 1 else root.parent.remove_widget(subtask)
 ''')
 
 

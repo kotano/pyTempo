@@ -71,7 +71,7 @@
             size_hint_y: None
             height: 40
             text: 'Add new task'
-            on_release: app.root.add_new_task()
+            on_release: root.add_new_task()
         BoxLayout:
             size_hint_y: None
             height: 40
@@ -141,7 +141,8 @@
 <RootWidget>
     taskholder: taskscreen.taskholder
     minitaskholder: minitaskholder
-    # content_window: content_window
+    taskscreen: taskscreen
+
     orientation: 'vertical'
     canvas.before:
         Color:

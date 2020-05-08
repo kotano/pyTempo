@@ -21,6 +21,93 @@ from tempo.templates import (COLORS, SUBTASK, TASK, default_subtask,
                              default_task, first_subtask)
 
 
+class MyScreenManager(ScreenManager):
+    fullscreen = False
+    pass
+
+class TaskScreen(Screen):
+    def sort_tasks(self, instance):
+        '''Sort tasks in tasklist.
+        
+        Parameters:
+            instance (obj): caller
+        '''
+        lst = self.taskholder.children
+        if len(lst) <= 1:
+            print('Nothing to sort')
+            return
+
+
+        def sort_criteria(x):
+            which = {
+            'Taskname': x.taskname.text, 
+            'Priority': x.priority.text,
+            'Duration': x.duration.text,
+            'Deadline': x.deadline.text[::-1], # FIXME
+            }
+            return which.get(instance.text, True)
+
+        sorted_lst = sorted(lst, key=sort_criteria, reverse=True)
+        if lst == sorted_lst:
+            # UNDONE removed recursion
+            sorted_lst = sorted(lst, key=sort_criteria, reverse=False)
+        self.taskholder.children = sorted_lst
+
+    def add_new_task(self):
+        ''' Append new task to 'taskholder' widget'''
+        self.taskholder.add_widget(Builder.load_string(default_task))
+        last_task = self.taskholder.children[0]
+        subtskhldr = last_task.subtaskholder
+        subtskhldr.add_widget(Builder.load_string(first_subtask))
+        last_task.popup.open()
+
+    def add_subtask(self, holder):
+        '''Adds subtask to task
+        
+        Parameters:
+            holder (obj): reference to 'subtaskholder' object
+        '''
+        holder.add_widget(Builder.load_string(default_subtask))
+    
+    def _clear_input(self, instance):
+        '''Made to fix an unknown issue with
+        clearing subtask text input
+        instance (obj): subtask object reference
+        '''
+        instance.subtaskname.text = ''
+        instance.subcheckbox.active = False
+
+    def complete_task(self, holder, root, value):
+        '''Does task complete behavior
+
+        Parameters:
+            holder (obj): tasks container object
+            root (obj): main task object
+            value (bool): checkbox value
+        '''
+        # TODO: Archive, smooth animation
+        if value:
+            holder.remove_widget(root)
+            holder.add_widget(root)
+
+    pass
+
+class TimerScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.c = Clock.schedule_interval(lambda dt: self.update(), 1)
+        self.counter = 1
+    def update(self):
+        # print('Update timer')
+        # print(self.counter)
+        self.counter += 1
+        pass
+
+class CalendarScreen(Screen):
+    pass
+
+class DictionaryScreen(Screen):
+    pass
 
 class Task(BoxLayout):
     deltatime = NumericProperty()
@@ -42,29 +129,6 @@ class PressableLabel(ButtonBehavior, Label):
 class PressableBoxLayout(ButtonBehavior, BoxLayout):
     pass
 
-class MyScreenManager(ScreenManager):
-    fullscreen = False
-    pass
-
-class TaskScreen(Screen):
-    pass
-
-class TimerScreen(Screen):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.c = Clock.schedule_interval(lambda dt: self.update(), 1)
-        self.counter = 1
-    def update(self):
-        # print('Update timer')
-        # print(self.counter)
-        self.counter += 1
-        pass
-
-class CalendarScreen(Screen):
-    pass
-
-class DictionaryScreen(Screen):
-    pass
 
 class CustomScroll(ScrollView):
     if platform == 'win':
