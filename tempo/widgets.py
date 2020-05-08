@@ -97,31 +97,34 @@ class TaskScreen(Screen):
 
 class TimerScreen(Screen):
     timerdisplay = ObjectProperty()
-    POMODURATION = NumericProperty(dates.POMODORO_DURATION)
-    count = NumericProperty(0)
+    POMODURATION = dates.POMODORO_DURATION
+    count = NumericProperty(1)
     active = BooleanProperty(False)
+    diff = ListProperty([POMODURATION, '00'])
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.c = Clock.schedule_interval(lambda dt: self.update(), 1)
-        self.counter = 1
-
-    def start_countdown(self, task=None):
-        if self.active is not False:
+    def trigger_countdown(self, task=None):
+        if self.active is True:
             self.process.cancel()
-            self.count = 0
+            self.count = 1
             self.active = False
             return
         if not task:
             self.process = Clock.schedule_interval(
-                lambda dt: self._track_time(self.count), 1)
-        pass
+                lambda dt: self._track_time(self.POMODURATION), 1)
+        else:
+            self.process = Clock.schedule_interval(
+                lambda dt: self._track_time(self.POMODURATION, task), 1)
         self.active = True
 
-    def _track_time(self, value):
-        mins = value // 60
-        secs = value % 60
-        self.timerdisplay.text = '{}:{}'.format(mins, secs)
+    def _track_time(self, value, task=None):
+        total = (value * 60) - self.count
+        if task:
+            task._progress += self.count / 3600
+        if total == 0:
+            self.trigger_countdown()
+        mins = total // 60
+        secs = total % 60
+        self.diff = mins, secs
         self.count += 1
 
     def update(self):
@@ -135,7 +138,7 @@ class CalendarScreen(Screen):
     pass
 
 
-class DictionaryScreen(Screen):
+class DiaryScreen(Screen):
     pass
 
 
