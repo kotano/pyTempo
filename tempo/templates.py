@@ -12,7 +12,7 @@ Task:
     priority: priority.__self__
     checkbox: checkbox.__self__
     subtaskholder: subtaskholder.__self__
-    
+
     popup: popup.__self__
     startdate: startdate.__self__
     progress: progress.__self__
@@ -20,18 +20,17 @@ Task:
     deadline: deadline.__self__
     notes: notes.__self__
 
-
     opacity: .2 if checkbox.active else 1
-    
+
 # checkbox
     CheckBox:
         id: checkbox
         active: {active}
-        on_active: app.root.complete_task(root.parent, root, self.active)
+        on_active: app.root.taskscreen.complete_task(root.parent, root, self.active)
         size_hint: None, 1
         width: 20
         pos: root.center
-    
+
 # TASKNAME # POPUP
     BoxLayout:
         size_hint_x: 2
@@ -46,7 +45,7 @@ Task:
             on_parent:
                 if self.parent == bl: self.parent.remove_widget(self)
             on_dismiss: if not any((taskname.text, deadline.text, notes.text)): app.root.taskholder.remove_widget(task)
-            
+
             BoxLayout:
                 canvas.before:
                     Color:
@@ -92,14 +91,14 @@ Task:
 
 #> task start date
                     BoxLayout:
-                        orientation: 'vertical' 
+                        orientation: 'vertical'
                         size_hint_x: 0.25
                         Text:
-                            text: 'Start date'                   
+                            text: 'Start date'
                         DateInput:
                             id: startdate
                             text: '{startdate}'
-                            on_focus: 
+                            on_focus:
                                 if self.focus == False: root.deltatime = app.root.find_delta(startdate, deadline)
 
 #> progress bar
@@ -180,14 +179,14 @@ Task:
                                     # max: float(duration.text)
 #> Deadline
                     BoxLayout:
-                        orientation: 'vertical' 
+                        orientation: 'vertical'
                         size_hint_x: 0.25
                         Text:
-                            text: 'End date' 
+                            text: 'End date'
                         DateInput:
                             id: deadline
                             text: '{deadline}'
-                            on_focus: 
+                            on_focus:
                                 if self.focus == False: root.deltatime = app.root.find_delta(startdate, deadline);
                                 app.root.refresh_data()
 
@@ -211,7 +210,7 @@ Task:
                                 rgba: 0, 0, 0, 1
                             Line:
                                 width: 1
-                                rectangle: self.x, self.y, self.width, self.height 
+                                rectangle: self.x, self.y, self.width, self.height
                         id: notes
                         text: '{notes}'
                         multiline: True
@@ -222,14 +221,14 @@ Task:
                 BoxLayout:
                     size_hint_y: None
                     height: 50
-#>> save button    
+#>> save button
                     Button:
                         text: 'Save'
                         color: 0, 0, 0, 1
                         background_normal: ''
                         # background_color: .70, .88, .87, 1
                         background_color: app.root.COLORS['TempoBlue']
-                        on_release: 
+                        on_release:
                             app.root.save_tasks();
                             popup.dismiss();
 #>> delete button
@@ -271,7 +270,7 @@ Subtask:
     id: subtask
     subtaskname: subtaskname.__self__
     subcheckbox: subcheckbox.__self__
-    
+
     opacity: .2 if subcheckbox.active else 1
 
     CheckBox:
@@ -280,7 +279,7 @@ Subtask:
         size_hint: None, 1
         width: 20
         pos: root.center
-        on_active: app.root.complete_task(root.parent, root, self.active)
+        on_active: app.root.taskscreen.complete_task(root.parent, root, self.active)
 
     TextInput:
         id: subtaskname
@@ -292,24 +291,31 @@ Subtask:
         write_tab: False
         focus: {focus}
         # on_focus: subtask.opacity=1
-        on_text_validate: app.root.add_subtask(root.parent)
-    
+        on_text_validate: app.root.taskscreen.add_subtask(root.parent)
+
     Button:
         size_hint: None, None
         width: 32
         height: 32
         color: 0, 0, 0, .5
         background_normal: './docs/sources/delete32.png'
-        on_release: app.root._clear_input(subtask) if len(root.parent.children) <= 1 else root.parent.remove_widget(subtask)
+        on_release: app.root.taskscreen._clear_input(subtask) if len(root.parent.children) <= 1 else root.parent.remove_widget(subtask)
 ''')
 
 
+MINI_TASKS = '''
+MiniTask:
+    CheckBox:
+    Button:
+'''
+
+
 default_task = TASK.format(
-            active=False, taskname='', priority='-',
-            startdate=dates.date_to_string(), duration='', progress='0', deadline='',
-            notes=''
-        )
+    active=False, taskname='', priority='-',
+    startdate=dates.date_to_string(), duration='', progress='0', deadline='',
+    notes=''
+)
 
 
-default_subtask = SUBTASK.format(subactive=False, subtaskname='', focus = True)
-first_subtask = SUBTASK.format(subactive=False, subtaskname='', focus = False)
+default_subtask = SUBTASK.format(subactive=False, subtaskname='', focus=True)
+first_subtask = SUBTASK.format(subactive=False, subtaskname='', focus=False)
