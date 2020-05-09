@@ -5,7 +5,7 @@ from kivy.lang.builder import Builder
 from kivy.utils import platform
 from kivy.properties import (
     DictProperty, ListProperty, NumericProperty,
-    BooleanProperty, ObjectProperty, StringProperty)
+    BooleanProperty, ObjectProperty, StringProperty, Property)
 
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
@@ -103,11 +103,12 @@ class TimerScreen(Screen):
     active = BooleanProperty(False)
     angle = NumericProperty(360)
     display = ListProperty([POMODURATION.defaultvalue, '00'])
+    current_task = None
 
-    def trigger_countdown(self, task=None):
+    def trigger_countdown(self, task=current_task):
+        self.current_task = task
         if self.active is True:
             self.process.cancel()
-            self.count = 1
             self.active = False
             return
         if not task:
@@ -118,6 +119,15 @@ class TimerScreen(Screen):
                 lambda dt: self._track_time(self.POMODURATION, task), 1)
         self.active = True
 
+    def _stop_timer(self):
+        if self.active is True:
+            self.process.cancel()
+            self.active = False
+            self.current_task = None
+            self.count = 1
+            self.angle = 360
+            self.display = [self.POMODURATION, '00']
+
     def _track_time(self, value, task=None):
         total = (value * 60) - self.count
         print(total)
@@ -125,7 +135,7 @@ class TimerScreen(Screen):
             task._progress += 1/3600
             print(task._progress)
         if total == 0:
-            self.trigger_countdown()
+            self._stop_timer()
         mins = total // 60
         secs = total % 60
         self.display = mins, secs
@@ -136,12 +146,6 @@ class TimerScreen(Screen):
         step = (self.POMODURATION * 60) / 360
         res = self.count // step
         return res
-
-    def update(self):
-        # print('Update timer')
-        # print(self.counter)
-        self.counter += 1
-        pass
 
 
 class CalendarScreen(Screen):
@@ -187,7 +191,7 @@ class CustomScroll(ScrollView):
 
 
 class LongpressButton(Factory.Button):
-    __events__ = ('on_long_press', 'on_long_release')
+    __events__ = ('on_long_press',)
 
     long_press_time = Factory.NumericProperty(1)
 
@@ -199,13 +203,16 @@ class LongpressButton(Factory.Button):
             self._clockev.cancel()
 
     def _do_long_press(self, dt):
-        self.dispatch('on_long_press')
+        self.disabled = True
         self.state = 'normal'
+        Clock.schedule_once(self._unblock, 1)
+        self.dispatch('on_long_press')
 
     def on_long_press(self, *largs):
         pass
 
-
+    def _unblock(self, dt):
+        self.disabled = False
 # btn = LongpressButton(
 #             long_press_time=3,
 #             on_press=lambda w: setattr(w, 'text', 'short press!'),

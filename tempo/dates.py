@@ -3,7 +3,7 @@ import time
 from datetime import date
 
 HOURSPERDAY = 6
-POMODORO_DURATION = 25
+POMODORO_DURATION = 1
 POMODORO_REST = 5
 
 

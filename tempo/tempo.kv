@@ -192,7 +192,7 @@
                 text: 'Calendar'
                 on_release: content_window.current = 'calendarscreen'
             PaddedButton:
-                text: 'Dictionary'
+                text: 'Diary'
                 on_release: content_window.current = 'diaryscreen'
 # CONTENT
         MyScreenManager:
@@ -232,13 +232,9 @@
 
                             color: COLORS['TextColor']
                             id: timerdisplay
-                            outline_color: 1, 1, 0
                             text: '{}:{}'.format(*timerscreen.display)
-                            on_release: timerscreen.trigger_countdown()
-                            on_long_press: print('Long press')
-                            # background_down: 
-                            # background_normal: 'atlas://docs/defaulttheme/button'
-                            # background_normal: 'atlas://data/images/defaulttheme/button'
+                            on_press: timerscreen.trigger_countdown(timerscreen.current_task)
+                            on_long_press: timerscreen._stop_timer()
                             background_normal: ''
                         # Button:
                         #     text: 'Start timer'
