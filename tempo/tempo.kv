@@ -8,6 +8,7 @@
     padding: 5, 10
 
 <PressableLabel>:
+    background_normal: ''
     color: 0, 0, 0, 1
 
 <DefaultInput@TextInput>:
@@ -76,6 +77,7 @@
         BoxLayout:
             size_hint_y: None
             height: 40
+            padding: 0, 2
             canvas:
                 Color:
                     rgb: .5, .5, .5, 1
@@ -103,7 +105,8 @@
             TaskHolder:
                 id: taskholder
                 size_hint: 1, None
-                height: root.height - 40
+                # height: 10 + 50 * len(self.children) 
+                height: 15 + self.children[0].height * len(self.children) if len(self.children) else self.parent.height
 
 # TASK #
 <Task>:
@@ -215,11 +218,11 @@
 
                     Box:
                         orientation: 'vertical'
-                        PressableLabel:
-                        # Button:
-                            canvas.before:
+                        # PressableLabel:
+                        LongpressButton:
+                            canvas:
                                 Color:
-                                    rgba: 1, .1, 0, 0.9
+                                    rgba: 1, .1, 0, 0.5
                                 Ellipse:
                                     pos: self.center_x  - self.width / 4, self.center_y - self.width / 4
                                     size: self.width / 2, self.width / 2
@@ -232,6 +235,11 @@
                             outline_color: 1, 1, 0
                             text: '{}:{}'.format(*timerscreen.display)
                             on_release: timerscreen.trigger_countdown()
+                            on_long_press: print('Long press')
+                            # background_down: 
+                            # background_normal: 'atlas://docs/defaulttheme/button'
+                            # background_normal: 'atlas://data/images/defaulttheme/button'
+                            background_normal: ''
                         # Button:
                         #     text: 'Start timer'
 # Calendar

@@ -1,3 +1,4 @@
+from kivy.factory import Factory
 from kivy.clock import Clock
 from kivy.effects.scroll import ScrollEffect
 from kivy.lang.builder import Builder
@@ -134,9 +135,6 @@ class TimerScreen(Screen):
     def _circle(self):
         step = (self.POMODURATION * 60) / 360
         res = self.count // step
-        print(step)
-        print(self.count)
-        print(res)
         return res
 
     def update(self):
@@ -172,7 +170,8 @@ class MiniTask(BoxLayout):
     _source = ObjectProperty()
 
 
-class PressableLabel(ButtonBehavior, Label):
+# class PressableLabel(ButtonBehavior, Label, Button):
+class PressableLabel(Button):
     pass
 
 
@@ -185,3 +184,29 @@ class CustomScroll(ScrollView):
         effect_cls = ScrollEffect
     bar_color = COLORS['TempoBlue']
     pass
+
+
+class LongpressButton(Factory.Button):
+    __events__ = ('on_long_press', 'on_long_release')
+
+    long_press_time = Factory.NumericProperty(1)
+
+    def on_state(self, instance, value):
+        if value == 'down':
+            lpt = self.long_press_time
+            self._clockev = Clock.schedule_once(self._do_long_press, lpt)
+        else:
+            self._clockev.cancel()
+
+    def _do_long_press(self, dt):
+        self.dispatch('on_long_press')
+        self.state = 'normal'
+
+    def on_long_press(self, *largs):
+        pass
+
+
+# btn = LongpressButton(
+#             long_press_time=3,
+#             on_press=lambda w: setattr(w, 'text', 'short press!'),
+#             on_long_press=lambda w: setattr(w, 'text', 'long press!'))

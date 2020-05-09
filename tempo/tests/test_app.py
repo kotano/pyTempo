@@ -10,7 +10,6 @@ def test_app_run():
             tempoapp.Clock.schedule_once(self.stop, 3)
             super().build()
     TestApp().run()
-            
 
 
 def test_find_deltatime():
