@@ -215,12 +215,25 @@
 
                     Box:
                         orientation: 'vertical'
-                        Text:
+                        PressableLabel:
+                        # Button:
+                            canvas.before:
+                                Color:
+                                    rgba: 1, .1, 0, 0.9
+                                Ellipse:
+                                    pos: self.center_x  - self.width / 4, self.center_y - self.width / 4
+                                    size: self.width / 2, self.width / 2
+                                    # source: './docs/sources/logo.png'
+                                    angle_start: 0
+                                    angle_end: timerscreen.angle
+
+                            color: COLORS['TextColor']
                             id: timerdisplay
-                            text: '{}:{}'.format(*timerscreen.diff)
-                        Button:
-                            text: 'Start timer'
+                            outline_color: 1, 1, 0
+                            text: '{}:{}'.format(*timerscreen.display)
                             on_release: timerscreen.trigger_countdown()
+                        # Button:
+                        #     text: 'Start timer'
 # Calendar
             CalendarScreen:
                 id: calendarscreen

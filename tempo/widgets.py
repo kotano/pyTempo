@@ -97,10 +97,11 @@ class TaskScreen(Screen):
 
 class TimerScreen(Screen):
     timerdisplay = ObjectProperty()
-    POMODURATION = dates.POMODORO_DURATION
+    POMODURATION = NumericProperty(dates.POMODORO_DURATION)
     count = NumericProperty(1)
     active = BooleanProperty(False)
-    diff = ListProperty([POMODURATION, '00'])
+    angle = NumericProperty(360)
+    display = ListProperty([POMODURATION.defaultvalue, '00'])
 
     def trigger_countdown(self, task=None):
         if self.active is True:
@@ -118,6 +119,7 @@ class TimerScreen(Screen):
 
     def _track_time(self, value, task=None):
         total = (value * 60) - self.count
+        print(total)
         if task:
             task._progress += 1/3600
             print(task._progress)
@@ -125,8 +127,17 @@ class TimerScreen(Screen):
             self.trigger_countdown()
         mins = total // 60
         secs = total % 60
-        self.diff = mins, secs
+        self.display = mins, secs
+        self.angle = self._circle()
         self.count += 1
+
+    def _circle(self):
+        step = (self.POMODURATION * 60) / 360
+        res = self.count // step
+        print(step)
+        print(self.count)
+        print(res)
+        return res
 
     def update(self):
         # print('Update timer')

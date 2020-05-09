@@ -215,6 +215,7 @@ Task:
                                 rectangle: self.x, self.y, self.width, self.height
                         id: notes
                         text: '{notes}'
+                        markup: True
                         multiline: True
                         hint_text: 'Notes...'
                         size_hint: 0.9, 0.9
