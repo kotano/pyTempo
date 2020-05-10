@@ -2,4 +2,4 @@
 ## Hello world
 ### This is test
 
-1. [Project readme](../../README.md)
+1. [Project readme](README.md)
