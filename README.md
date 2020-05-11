@@ -1,6 +1,6 @@
 # Tempo
 
-<img alt="Tempo icon" align="right" height="256" src="./docs/sources/logo.png"/>
+<img alt="Tempo icon" align="right" height="256" src="https://kotano.github.io/Tempo/docs/sources/logo.png"/>
 
 Tempo is a task-management application that tracks your tasks / goals and evenly distributes work on them. 
 
