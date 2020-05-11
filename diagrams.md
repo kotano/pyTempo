@@ -17,14 +17,14 @@ permalink: /docs/diagrams/
 </div>
 -->
 <h2>Sequence diagram</h2>
-<object data="./docs/diagrams/Sequence Diagram.txt" width="80%">
+<object data="./docs/diagrams/Sequenece_diagram.txt" width="80%">
 </object>
 
 <h2>Statechart diagram</h2>
-<object data="./docs/diagrams/statechart diagram.txt" width="80%">
+<object data="./docs/diagrams/Statechart_diagram.txt" width="80%">
 </object>
 
 <h2>Use case diagram</h2>
-<object data="./docs/diagrams/use case diagram.txt" width="80%">
+<object data="./docs/diagrams/Use_case_diagram.txt" width="80%">
 </object>
 

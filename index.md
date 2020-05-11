@@ -2,18 +2,29 @@
 title: "Tempo"
 ---
 <div>
+  <a href=https://kotano.github.io/Tempo/readme>
+    <span>
+      Readme
+    </span>
+  </a>
+
+  <a href=https://kotano.github.io/Tempo/posts>
+    <span>
+      Posts
+    </span>
+  </a>
+
+  <a href=https://kotano.github.io/Tempo/docs/diagrams>
   <span>
-    <a href=https://kotano.github.io/Tempo/readme>Readme</a>
+    Diagrams
   </span>
-  <span>
-    <a href=https://kotano.github.io/Tempo/posts>Posts</a>
-  </span>
-  <span>
-    <a href=https://kotano.github.io/Tempo/docs/diagrams>Diagrams</a>
-  </span>
-  <span>
-    <a href=https://kotano.github.io/Tempo/about>About</a>
-  </span>
+  </a>
+
+  <a href=https://kotano.github.io/Tempo/about>
+    <span>
+      About
+    </span>
+  </a>
 </div>
 
 
