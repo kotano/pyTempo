@@ -3,9 +3,7 @@ title: "Tempo"
 ---
 
 
-{% include_relative README.md %}
-
-1. [Project readme](README.md)
+1. [Project readme](https://kotano.github.io/Tempo/readme)
 
 
 <!-- {% include_relative README.md %}
