@@ -1,15 +1,12 @@
 import datetime
-from .. import tempoapp
 
-from tempo import dates, tempoapp
+# from tempo import tempoapp
 
 
-def test_app_run():
-    class TestApp(tempoapp.TempoApp):
-        def build(self):
-            tempoapp.Clock.schedule_once(self.stop, 3)
-            super().build()
-    TestApp().run()
+# class TestApp(tempoapp.TempoApp):
+#     def build(self):
+#         tempoapp.Clock.schedule_once(self.stop, 3)
+#         super().build()
 
 
 def test_find_deltatime():
