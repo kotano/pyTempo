@@ -1,9 +1,20 @@
 ---
 title: "Tempo"
 ---
-
-
-1. [Project readme](https://kotano.github.io/Tempo/readme)
+<div>
+  <span>
+    <a href=https://kotano.github.io/Tempo/readme>Readme</a>
+  </span>
+  <span>
+    <a href=https://kotano.github.io/Tempo/posts>Posts</a>
+  </span>
+  <span>
+    <a href=https://kotano.github.io/Tempo/docs/diagrams>Diagrams</a>
+  </span>
+  <span>
+    <a href=https://kotano.github.io/Tempo/about>About</a>
+  </span>
+</div>
 
 
 <!-- {% include_relative README.md %}
