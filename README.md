@@ -1,4 +1,4 @@
-# [Tempo](https://kotano.github.io/Tempo)
+# [Tempo](https://kotano.github.io/Tempo/)
 
 <img alt="Tempo icon" align="right" height="256" src="https://kotano.github.io/Tempo/docs/sources/logo.png"/>
 
