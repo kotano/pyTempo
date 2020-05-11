@@ -17,8 +17,9 @@ permalink: /docs/diagrams/
 </div>
 -->
 
+
 <h2>Sequence diagram</h2>
-<object data="https://kotano.github.io/Tempo/docs/diagrams/Sequenece_diagram.txt" width="80%">
+<object data="https://kotano.github.io/Tempo/docs/diagrams/Sequence_diagram.txt" width="80%">
 </object>
 
 <h2>Statechart diagram</h2>
