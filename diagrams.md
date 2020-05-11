@@ -16,15 +16,16 @@ permalink: /docs/diagrams/
       width="95%"></iframe></p>
 </div>
 -->
+
 <h2>Sequence diagram</h2>
-<object data="./docs/diagrams/Sequenece_diagram.txt" width="80%">
+<object data="https://kotano.github.io/Tempo/docs/diagrams/Sequenece_diagram.txt" width="80%">
 </object>
 
 <h2>Statechart diagram</h2>
-<object data="./docs/diagrams/Statechart_diagram.txt" width="80%">
+<object data="https://kotano.github.io/Tempo/docs/diagrams/Statechart_diagram.txt" width="80%">
 </object>
 
 <h2>Use case diagram</h2>
-<object data="./docs/diagrams/Use_case_diagram.txt" width="80%">
+<object data="https://kotano.github.io/Tempo/docs/diagrams/Use_case_diagram.txt" width="80%">
 </object>
 
