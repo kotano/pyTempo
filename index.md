@@ -4,6 +4,9 @@
 
 1. [Project readme](README.md)
 
+
+{% include_relative README.md %}
+
 <link href='README.md' type='text/css'>
 
 <p>&nbsp;</p>
