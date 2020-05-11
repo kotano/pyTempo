@@ -1,5 +1,6 @@
 ---
 title: 'Posts'
+permalink: '/posts/'
 ---
 
 | [Readme] | [Posts] | [Docs] | [About] |
