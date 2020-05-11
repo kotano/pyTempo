@@ -1,6 +1,6 @@
 # [Tempo](https://kotano.github.io/Tempo/docs/sources/logo.png)
 
-<img alt="Tempo icon" align="right" height="256" src="./docs/sources/logo.png"/>
+<img alt="Tempo icon" align="right" height="256" src="https://kotano.github.io/Tempo/docs/sources/logo.png"/>
 
 Tempo is a task-management application that tracks your tasks / goals and evenly distributes work on them. 
 
@@ -84,3 +84,7 @@ projectdir$ flake8
 * **Elizabeth Aleksandrova** - *Tester* - [eliz0106](https://github.com/eliz0106)
 * **David Naumov** - *Project Manager*
 * **Anastasiya Yesareva** - *Analitics*
+
+## Website
+
+<https://kotano.github.io/Tempo>
