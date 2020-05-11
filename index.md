@@ -2,44 +2,16 @@
 title: "Tempo"
 ---
 
-<div>
-  <a href=https://kotano.github.io/Tempo/readme>
-    <span>
-      Readme
-    </span>
-  </a>
+| [Readme] | [Posts] | [Docs] | [About] |
+|--------|-------|------|-------|
+[Readme]: <https://kotano.github.io/Tempo/readme>
+[Posts]: <https://kotano.github.io/Tempo/posts>
+[Docs]: <https://kotano.github.io/Tempo/docs>
+[About]: <https://kotano.github.io/Tempo/about>
 
-  <a href=https://kotano.github.io/Tempo/posts>
-    <span>
-      Posts
-    </span>
-  </a>
-
-  <a href=https://kotano.github.io/Tempo/docs/diagrams>
-  <span>
-    Diagrams
-  </span>
-  </a>
-
-  <a href=https://kotano.github.io/Tempo/about>
-    <span>
-      About
-    </span>
-  </a>
-</div>
+# Welcome to Tempo project website
+Feel free to explore site to know more about Tempo
 
 
 
-
-<p>&nbsp;</p>
-<p>Sequence diagram</p>
-<p>&nbsp;</p>
-<div id="list">
-  <p><iframe src="https://kotano.github.io/Tempo/docs/diagrams/Sequence_diagram.txt" frameborder="0" height="400"
-      width="95%"></iframe></p>
-</div>
-
-<object data="./README.md" width="300" height="200">
-Readme
-</object>
 
