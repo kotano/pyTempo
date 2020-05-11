@@ -1,6 +1,8 @@
+---
 layout: page
 title: "Readme"
-permalink: /files/readme
+permalink: /files/readme/
+---
 
 {% include_relative README.md %}
 
