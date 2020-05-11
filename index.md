@@ -4,6 +4,7 @@
 
 1. [Project readme](README.md)
 
+<link href='README.md' type='text/css'>
 
 <p>&nbsp;</p>
 <p>README.txt</p>
