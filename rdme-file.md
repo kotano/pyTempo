@@ -11,5 +11,6 @@ permalink: /readme/
 [Docs]: <https://kotano.github.io/Tempo/docs>
 [About]: <https://kotano.github.io/Tempo/about>
 
-{% include_relative README.md %}
+<a href='https://kotano.github.io/Tempo/README.md' download>Download this file</a>
 
+{% include_relative README.md %}
