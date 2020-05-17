@@ -1,4 +1,4 @@
-# [Tempo](https://kotano.github.io/Tempo/docs/sources/logo.png)
+# [Tempo](https://kotano.github.io/Tempo/)
 
 <img alt="Tempo icon" align="right" height="256" src="https://kotano.github.io/Tempo/docs/sources/logo.png"/>
 
@@ -45,7 +45,7 @@ Make sure you have installed kivy before launch.
 python .../Tempo/main.py
 ```
 After executing this command, you will see the main application window.
-<img alt="Main application window" align="" height="300" src="./docs/sources/main_window.png"/>
+<img alt="Main application window" align="" height="" src="https://kotano.github.io/Tempo/docs/sources/main_window.png"/>
 
 ## Running the tests
 
