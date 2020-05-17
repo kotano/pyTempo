@@ -1,10 +1,9 @@
-from kivy.app import App
-from collections import OrderedDict
-import os
 import json
+import os
+from collections import OrderedDict
 
-# NOTE: 'widgets' module contains typical objects to import
-# so i use star* import
+from kivy.app import App
+
 from tempo.widgets import *  # noqa: F403
 
 # NOTE: Can use KivyCalendar, if solve bug
