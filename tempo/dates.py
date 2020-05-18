@@ -13,7 +13,7 @@ def date_to_string(d=date.today()):
 
 
 def convert_to_date(arg):
-    '''Convert list or str in dd:mm:yy: format and return date object.'''
+    '''Convert list or str in dd:mm:yy: format to date object and return it.'''
     if isinstance(arg, str):
         res = [int(x) for x in arg.split('.')][::-1]
         return date(*res)
@@ -27,6 +27,7 @@ def find_deltatime(starttime: date, endtime: date):
     return hours
 
 def find_worktime(hours):
+    '''Find available work time per day. Return int'''
     days = hours // 24
     work_hours = days * HOURSPERDAY
     return work_hours

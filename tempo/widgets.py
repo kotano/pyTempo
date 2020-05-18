@@ -158,11 +158,12 @@ class DiaryScreen(Screen):
 
 # WIDGETS
 class Task(BoxLayout):
-    deltatime = NumericProperty()
     _duration = NumericProperty()
     _max_duration = NumericProperty()
     _progress = NumericProperty()
-    _in_progress = BooleanProperty(False)
+    
+    deltatime = NumericProperty()
+    in_progress = BooleanProperty(False)
 
 
 class Subtask(Task):

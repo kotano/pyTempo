@@ -23,11 +23,14 @@ class RootWidget(BoxLayout):
                 tasks = json.load(datafile)
             for t in tasks.values():
                 widget = TASK.format(
-                    active=t['active'], taskname=t['taskname'],
+                    active=t['active'],
+                    taskname=t['taskname'],
                     priority=t['priority'],
                     startdate='.'.join(t['startdate']),
-                    duration=t['duration'], progress=t['progress'],
-                    deadline='.'.join(t['deadline']), notes=t['notes']
+                    duration=t['duration'],
+                    progress=t['progress'],
+                    deadline='.'.join(t['deadline']),
+                    notes=t['notes']
                 )
                 self.taskholder.add_widget(Builder.load_string(widget))
                 for st in t['subtasks'][::-1]:
@@ -40,7 +43,7 @@ class RootWidget(BoxLayout):
         except (KeyError, json.JSONDecodeError) as e:
             # Except error in case of data corruption
             msg = (str(e) + 'We were unable to load data.'
-                   'Would you like to delete this task? [y/n]')
+                   'Would you like to delete this tasks? [y/n]')
             q = input(msg)
             if not q.lower() == 'y':
                 app.stop()
@@ -49,17 +52,20 @@ class RootWidget(BoxLayout):
         try:
             start = dates.convert_to_date(startdate.text)
             end = dates.convert_to_date(deadline.text)
-        except (ValueError, TypeError):
+        except (ValueError, TypeError) as e:
+            print(e)
             # TODO Make undo when wrong data / take data from save?
             print('You have entered wrong data')
             return 0
         else:
             # find delta time
-            res = dates.find_deltatime(start, end)
-            return res
+            hours = dates.find_deltatime(start, end)
+            worktime = dates.find_worktime(hours)
+            return worktime
 
     def find_max_duration(self, task):
         '''Find maximum available time for each task and return int.'''
+        # XXX: UNSTABLE
         # TODO: This needs optimization
         keep = []
         for t in self.taskholder.children:
@@ -67,16 +73,16 @@ class RootWidget(BoxLayout):
         keep = sorted(keep, key=lambda x: x[0])
         my_index = keep.index(
             [task.deltatime, task._duration, task._max_duration])
-        after = [x[2] for x in keep][my_index:]
         before = [x[1] for x in keep][:my_index]
+        after = [x[2]-x[1] for x in keep][my_index+1:]
         # NOTE: can add +1 to before slice to remove task._duration
-        max_duration = task.deltatime - task._duration - sum(before)
-        if min(after) != 0:
+        max_duration = task.deltatime - sum(before)
+        if after:
             max_duration = min(max_duration, min(after))
         max_duration = max(0, max_duration)
         task._max_duration = max_duration
-        # print(task._max_duration)
         return max_duration
+
 
     def refresh_data(self, *dt):
         # XXX: Bad solution
@@ -88,10 +94,6 @@ class RootWidget(BoxLayout):
             t.duration.hint_text = str(self.find_max_duration(t))
             # HACK ...
             t._duration = t.duration.text if t.duration.text else 0
-
-# XXX: ...
-    # def start_countdown(self, task, mins):
-    #     Clock.schedule_once(lambda dt: dates.countdown(mins))
 
     def save_tasks(self, *dt):
         ''' Save tasks to data.json'''
@@ -111,7 +113,6 @@ class RootWidget(BoxLayout):
                 'subtasks': [[s.children[2].active, s.children[1].text]
                              for s in task.subtaskholder.children],
             }})
-            # print(data)
             counter += 1
         data = OrderedDict(sorted(data.items(), key=lambda t: t[0]))
         with open(DATAFILE, 'w+', encoding='utf-8') as datafile:
@@ -137,7 +138,7 @@ class TempoApp(App):
         root = RootWidget()
         # Clock.schedule_interval(root.update_timer, 1)
         Clock.schedule_once(root.load_tasks)
-        Clock.schedule_once(root.refresh_data, 2)
+        Clock.schedule_once(root.refresh_data, 10)
         Clock.schedule_interval(root.refresh_data, 5)
         Clock.schedule_interval(root.save_tasks, 45)
         return root

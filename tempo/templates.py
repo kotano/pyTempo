@@ -21,6 +21,7 @@ Task:
     notes: notes.__self__
 
     _progress: float({progress})
+    _max_duration: task.deltatime
 
     opacity: .2 if checkbox.active else 1
 
