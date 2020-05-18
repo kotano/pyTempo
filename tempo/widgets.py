@@ -1,12 +1,11 @@
-from kivy.factory import Factory
 from kivy.clock import Clock
 from kivy.effects.scroll import ScrollEffect
+from kivy.factory import Factory
 from kivy.lang.builder import Builder
-from kivy.utils import platform
-from kivy.properties import (
-    DictProperty, ListProperty, NumericProperty,
-    BooleanProperty, ObjectProperty, StringProperty, Property)
-
+from kivy.properties import (BooleanProperty, DictProperty, ListProperty,
+                             NumericProperty, ObjectProperty, Property,
+                             StringProperty)
+from kivy.uix.actionbar import ActionBar
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -17,11 +16,12 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.slider import Slider
 from kivy.uix.textinput import TextInput
+from kivy.utils import platform
 
 from tempo import dates
-from tempo.templates import (
-    COLORS, SUBTASK, TASK, default_subtask,
-    default_task, first_subtask)
+from tempo.templates import (COLORS, SUBTASK, TASK, default_subtask,
+                             default_task, first_subtask)
+
 
 
 class MyScreenManager(ScreenManager):

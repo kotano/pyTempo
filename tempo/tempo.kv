@@ -139,6 +139,7 @@
         on_press:
             print('Launching timer');
             app.root.timerscreen.trigger_countdown(root._source);
+            app.root.ids.actionlabel.text = root._name
 
 
 ######################## ROOT #########################
@@ -168,6 +169,11 @@
                 app_icon: './docs/sources/logo.png'
                 on_release:
                 background_normal: ''
+            ActionLabel:
+                id: actionlabel
+                size_hint_x: 3
+                text: 'Some text'
+
 
 # Container
     BoxLayout:
@@ -188,7 +194,9 @@
                 on_release: content_window.current = 'taskscreen'
             PaddedButton:
                 text: 'Timer'
-                on_release: content_window.current = 'timerscreen'
+                on_release:
+                    content_window.current = 'timerscreen';
+                    root.load_minitasks(minitaskholder)
             PaddedButton:
                 text: 'Calendar'
                 on_release: content_window.current = 'calendarscreen'
@@ -215,7 +223,7 @@
                         id: minitaskholder
                         cols: 1
                         padding: 10
-                        on_parent: root.load_minitasks(self)
+                        # on_parent: root.load_minitasks(self)
 
                     Box:
                         orientation: 'vertical'

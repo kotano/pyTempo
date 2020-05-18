@@ -75,7 +75,6 @@ class RootWidget(BoxLayout):
             [task.deltatime, task._duration, task._max_duration])
         before = [x[1] for x in keep][:my_index]
         after = [x[2]-x[1] for x in keep][my_index+1:]
-        # NOTE: can add +1 to before slice to remove task._duration
         max_duration = task.deltatime - sum(before)
         if after:
             max_duration = min(max_duration, min(after))
@@ -119,7 +118,8 @@ class RootWidget(BoxLayout):
             json.dump(data, datafile, indent=4)
 
     def load_minitasks(self, holder):
-        for x in self.taskholder.children:
+        holder.clear_widgets()
+        for x in self.taskholder.children[::-1]:
             widget = MiniTask()
             widget._source = x
             widget._name = x.taskname.text
