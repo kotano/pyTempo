@@ -105,8 +105,9 @@
             TaskHolder:
                 id: taskholder
                 size_hint: 1, None
-                # height: 10 + 50 * len(self.children) 
-                height: 15 + self.children[0].height * len(self.children) if len(self.children) else self.parent.height
+                # height: 50 + self.children[0].height * len(self.children) if len(self.children) else self.parent.height
+                # TODO: Find some constant to use instead of magic nums
+                height: 50 + 50 * len(self.children)
 
 # TASK #
 <Task>:

@@ -1,0 +1,50 @@
+{
+    "1": {
+        "active": false,
+        "taskname": "Test task",
+        "priority": "!!!High",
+        "startdate": [
+            "17",
+            "05",
+            "2020"
+        ],
+        "duration": "",
+        "progress": 0,
+        "deadline": [
+            "23",
+            "06",
+            "2020"
+        ],
+        "notes": "Some note",
+        "subtasks": [
+            [
+                false,
+                "Some subtask"
+            ]
+        ]
+    },
+    "2": {
+        "active": false,
+        "taskname": "Another task",
+        "priority": "!!Normal",
+        "startdate": [
+            "17",
+            "05",
+            "2020"
+        ],
+        "duration": "",
+        "progress": 0,
+        "deadline": [
+            "23",
+            "06",
+            "2020"
+        ],
+        "notes": "",
+        "subtasks": [
+            [
+                false,
+                ""
+            ]
+        ]
+    }
+}
