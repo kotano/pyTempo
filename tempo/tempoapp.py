@@ -15,7 +15,6 @@ if platform == 'win':
     Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 
-
 class RootWidget(BoxLayout):
     '''Application root widget '''
     taskholder = ObjectProperty()
@@ -123,17 +122,31 @@ class RootWidget(BoxLayout):
             json.dump(data, datafile, indent=4)
 
     def load_minitasks(self, holder):
-        holder.clear_widgets()
-        for x in self.taskholder.children[::-1]:
+        tasklist = self.taskholder.children
+        minilist = [x._source for x in holder.children]
+
+        def _make_mini(src):
+            # Create minitask element with reference to source task
             widget = MiniTask()
-            widget._source = x
-            widget._name = x.taskname.text
-            holder.add_widget(widget)
+            widget._source = src
+            widget._name = src.taskname.text
+            return widget
+
+        for x in tasklist[::-1]:
+            # Add new items to holder
+            if x in minilist:
+                continue
+            holder.add_widget(_make_mini(x))
+
+        for x in holder.children:
+            # Remove old items from holder
+            if x._source not in tasklist:
+                holder.remove_widget(x)
 
 
 class TempoApp(App):
     '''Main application class'''
-    icon = './docs/sources/icon_white.png'
+    icon = './data/icons/icon_white.png'
 
     def on_stop(self):
         self.root.save_tasks()

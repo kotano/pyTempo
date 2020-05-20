@@ -193,7 +193,7 @@ Task:
                             text: '{deadline}'
                             on_focus:
                                 if self.focus == False: root.deltatime = app.root.find_delta(startdate, deadline);
-                                app.root.refresh_data()
+                                # app.root.refresh_data()
 
 #> Subtask
                 CustomScroll:
@@ -304,7 +304,7 @@ Subtask:
         width: 32
         height: 32
         color: 0, 0, 0, .5
-        background_normal: './docs/sources/delete32.png'
+        background_normal: './data/icons/delete32.png'
         on_release: app.root.taskscreen._clear_input(subtask) if len(root.parent.children) <= 1 else root.parent.remove_widget(subtask)
 ''')
 

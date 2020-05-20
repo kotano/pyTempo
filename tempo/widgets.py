@@ -26,6 +26,7 @@ from tempo.templates import (COLORS, SUBTASK, TASK, default_subtask,
                              default_task, first_subtask)
 
 
+
 class MyScreenManager(ScreenManager):
     fullscreen = False
     pass
@@ -90,12 +91,9 @@ class TaskScreen(Screen):
             root (obj): main task object
             value (bool): checkbox value
         '''
-        # TODO: Archive, smooth animation
         if value:
             holder.remove_widget(root)
             holder.add_widget(root)
-
-    pass
 
 
 class TimerScreen(Screen):
@@ -231,7 +229,3 @@ class LongpressButton(Factory.Button):
 
     def _unblock(self, dt):
         self.disabled = False
-# btn = LongpressButton(
-#             long_press_time=3,
-#             on_press=lambda w: setattr(w, 'text', 'short press!'),
-#             on_long_press=lambda w: setattr(w, 'text', 'long press!'))
