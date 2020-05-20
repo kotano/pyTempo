@@ -4,8 +4,10 @@
 <Text@Label>
     color: COLORS['TextColor']
 
-<PaddedButton@Button>:
-    padding: 5, 10
+<ScreenButton@ToggleButton>:
+    group: 'screen'
+    allow_no_selection: False
+    background_normal: ''
 
 <PressableLabel>:
     background_normal: ''
@@ -134,7 +136,9 @@
     size_hint_y: None
     height: 40
     # CheckBox:
-    Button:
+    ToggleButton:
+        group: 'minitasks'
+        allow_no_selection: True
         text: root._name
         on_press:
             print('Launching timer');
@@ -156,6 +160,8 @@
             rgb: 1, 1, 1
         Rectangle:
             size: self.size
+
+# Action bar
     ActionBar:
         # size_hint_y: 0.2
         height: '50dp'
@@ -171,8 +177,7 @@
                 background_normal: ''
             ActionLabel:
                 id: actionlabel
-                size_hint_x: 3
-                text: 'Some text'
+                text: 'Select task on timer screen to start working'
 
 
 # Container
@@ -184,24 +189,49 @@
                 size: self.size
 # Sidebar
         Box:
-            padding: 10
+            padding: 5, 10
             orientation: 'vertical'
             size_hint_x: None
             size: 70, self.height
 
-            PaddedButton:
-                text: 'Tasks'
+            ScreenButton:
+                id: list_button
+                on_parent: self.state = 'down'
+                canvas.after:
+                    Rectangle:
+                        # Icon size is 45x45
+                        size: self.width, 50
+                        pos: self.x, self.center_y - 25
+                        source: './docs/sources/list_icon.png'
                 on_release: content_window.current = 'taskscreen'
-            PaddedButton:
-                text: 'Timer'
+            ScreenButton:
+                id: timer_button
+                canvas.after:
+                    Rectangle:
+                        # Icon size is 50x50
+                        size: self.width, 50
+                        pos: self.x, self.center_y - 25
+                        source: './docs/sources/timer_icon.png'
                 on_release:
                     content_window.current = 'timerscreen';
                     root.load_minitasks(minitaskholder)
-            PaddedButton:
-                text: 'Calendar'
+            ScreenButton:
+                id: calendar_button
+                canvas.after:
+                    Rectangle:
+                        # Icon size is 50x50
+                        size: self.width, 50
+                        pos: self.x, self.center_y - 25
+                        source: './docs/sources/calendar_icon.png'
                 on_release: content_window.current = 'calendarscreen'
-            PaddedButton:
-                text: 'Diary'
+            ScreenButton:
+                id: diary_button
+                canvas.after:
+                    Rectangle:
+                        # Icon size is 50x50
+                        size: self.width, 50
+                        pos: self.x, self.center_y - 25
+                        source: './docs/sources/diary_icon.png'
                 on_release: content_window.current = 'diaryscreen'
 # CONTENT
         MyScreenManager:
@@ -218,6 +248,7 @@
                 id: timerscreen
                 name: 'timerscreen'
                 timerdisplay: timerdisplay
+                minitaskholder: minitaskholder
                 BoxLayout:
                     GridLayout:
                         id: minitaskholder
@@ -243,7 +274,9 @@
                             id: timerdisplay
                             text: '{}:{}'.format(*timerscreen.display)
                             on_press: timerscreen.trigger_countdown(timerscreen.current_task)
-                            on_long_press: timerscreen._stop_timer()
+                            on_long_press:
+                                timerscreen.stop_timer();
+                                app.root.ids.actionlabel.text = 'No active tasks'
                             background_normal: ''
                         # Button:
                         #     text: 'Start timer'
@@ -252,8 +285,11 @@
                 id: calendarscreen
                 name: 'calendarscreen'
                 BoxLayout:
-                    Text:
-                        text: 'Calendar Screen. Coming soon'
+                    CalendarView:
+                        strip: False
+                        halign: 'right'
+                        color: 0, 0, 0, 1
+                        text: (self.endar)
 # Dictionary
             DiaryScreen:
                 id: diaryscreen

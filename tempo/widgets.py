@@ -1,3 +1,5 @@
+import calendar
+
 from kivy.clock import Clock
 from kivy.effects.scroll import ScrollEffect
 from kivy.factory import Factory
@@ -16,12 +18,12 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.slider import Slider
 from kivy.uix.textinput import TextInput
+from kivy.uix.togglebutton import ToggleButton
 from kivy.utils import platform
 
 from tempo import dates
 from tempo.templates import (COLORS, SUBTASK, TASK, default_subtask,
                              default_task, first_subtask)
-
 
 
 class MyScreenManager(ScreenManager):
@@ -98,6 +100,7 @@ class TaskScreen(Screen):
 
 class TimerScreen(Screen):
     timerdisplay = ObjectProperty()
+    minitaskholder = ObjectProperty()
     POMODURATION = NumericProperty(dates.POMODORO_DURATION)
     count = NumericProperty(1)
     active = BooleanProperty(False)
@@ -119,14 +122,16 @@ class TimerScreen(Screen):
                 lambda dt: self._track_time(self.POMODURATION, task), 1)
         self.active = True
 
-    def _stop_timer(self):
+    def stop_timer(self):
         if self.active is True:
             self.process.cancel()
+            self.angle = 360
             self.active = False
             self.current_task = None
             self.count = 1
-            self.angle = 360
             self.display = [self.POMODURATION, '00']
+            self._reset_minitasks_state()
+
 
     def _track_time(self, value, task=None):
         total = (value * 60) - self.count
@@ -135,7 +140,8 @@ class TimerScreen(Screen):
             task._progress += 1/3600
             print(task._progress)
         if total == 0:
-            self._stop_timer()
+            self.stop_timer()
+            return
         mins = total // 60
         secs = total % 60
         self.display = mins, secs
@@ -147,6 +153,10 @@ class TimerScreen(Screen):
         res = self.count // step
         return res
 
+    def _reset_minitasks_state(self):
+        for t in self.minitaskholder.children:
+            for b in t.children:
+                b.state = 'normal'
 
 class CalendarScreen(Screen):
     pass
@@ -155,6 +165,12 @@ class CalendarScreen(Screen):
 class DiaryScreen(Screen):
     pass
 
+class CalendarView(Label):
+    # cal = calendar.Calendar().monthdatescalendar(dates.cur_year, dates.cur_month)
+    cal = calendar.TextCalendar(0)
+    endar = cal.formatmonth(dates.cur_year, dates.cur_month)
+    print(endar)
+    c = StringProperty(endar)
 
 # WIDGETS
 class Task(BoxLayout):
@@ -189,6 +205,7 @@ class CustomScroll(ScrollView):
         effect_cls = ScrollEffect
     bar_color = COLORS['TempoBlue']
     pass
+
 
 
 class LongpressButton(Factory.Button):

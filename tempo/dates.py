@@ -1,10 +1,14 @@
 import sys
 import time
 from datetime import date
+import datetime
 
 HOURSPERDAY = 6
 POMODORO_DURATION = 25
 POMODORO_REST = 5
+
+cur_month = date.today().month
+cur_year = date.today().year
 
 
 def date_to_string(d=date.today()):

@@ -9,6 +9,12 @@ from tempo.widgets import *  # noqa: F403
 # NOTE: Can use KivyCalendar, if solve bug
 # from KivyCalendar import CalendarWidget, DatePicker
 
+# Disable multitouch on Windows
+if platform == 'win':
+    from kivy.config import Config
+    Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
+
+
 
 class RootWidget(BoxLayout):
     '''Application root widget '''
@@ -82,17 +88,16 @@ class RootWidget(BoxLayout):
         task._max_duration = max_duration
         return max_duration
 
-
-    def refresh_data(self, *dt):
-        # XXX: Bad solution
-        if len(self.minitaskholder.children) == 0:
-            self.load_minitasks(self.minitaskholder)
-        for t in self.taskholder.children:
-            t.deltatime = self.find_delta(t.startdate, t.deadline)
-        for t in self.taskholder.children:
-            t.duration.hint_text = str(self.find_max_duration(t))
-            # HACK ...
-            t._duration = t.duration.text if t.duration.text else 0
+    # def refresh_data(self, *dt):
+    #     # XXX: Bad solution
+    #     if len(self.minitaskholder.children) == 0:
+    #         self.load_minitasks(self.minitaskholder)
+    #     for t in self.taskholder.children:
+    #         t.deltatime = self.find_delta(t.startdate, t.deadline)
+    #     for t in self.taskholder.children:
+    #         t.duration.hint_text = str(self.find_max_duration(t))
+    #         # HACK ...
+    #         t._duration = t.duration.text if t.duration.text else 0
 
     def save_tasks(self, *dt):
         ''' Save tasks to data.json'''
@@ -136,10 +141,9 @@ class TempoApp(App):
 
     def build(self):
         root = RootWidget()
-        # Clock.schedule_interval(root.update_timer, 1)
         Clock.schedule_once(root.load_tasks)
-        Clock.schedule_once(root.refresh_data, 10)
-        Clock.schedule_interval(root.refresh_data, 5)
+        # Clock.schedule_once(root.refresh_data, 10)
+        # Clock.schedule_interval(root.refresh_data, 5)
         Clock.schedule_interval(root.save_tasks, 45)
         return root
 

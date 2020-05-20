@@ -143,6 +143,7 @@ Task:
                                         value: task._duration
                                         max: task._max_duration
                                         on_value: duration.text = str(self.value)
+# Duration
                                     BoxLayout:
                                         DefaultInput:
                                             borders: 1, 1, 1, 1
@@ -155,6 +156,7 @@ Task:
                                             id: duration
                                             text: '{duration}'
                                             on_focus:
+                                                if not self.text: self.text = '0'
                                                 if float(self.text) > task._max_duration and self.focus == False: self.text = str(task._max_duration)
                                             hint_text: str(task._max_duration)
                                         Text:
