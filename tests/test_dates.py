@@ -15,8 +15,9 @@ def test_find_worktime():
 
 
 def test_date_to_string():
-    date = datetime.date(2020, 6, 22)
-    assert '22.06.2020' == dates.date_to_string(date)
+    d = datetime.date(2020, 6, 22)
+    assert '22.06.2020' == dates.date_to_string(d)
+
 
 def test_convert_to_date():
     s = '22.06.2020'

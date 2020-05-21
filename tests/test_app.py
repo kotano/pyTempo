@@ -10,8 +10,10 @@ class AppTest(tempoapp.TempoApp):
     def on_stop(self):
         return True
 
+    def sched_stop(self, sec):
+        tempoapp.Clock.schedule_once(lambda dt: self.stop(), sec)
+
     def build(self):
-        # tempoapp.Clock.schedule_once(lambda dt: self.stop(), 1.5)
         root = tempoapp.RootWidget()
         return root
 
@@ -20,18 +22,9 @@ class Mock(dict):
     pass
 
 
-# @pytest.fixture
-# def app_launch():
-#     app = AppTest()
-#     app.run()
-#     return app
-
-
-# @pytest.mark.skip
 # def test_load_tasks(monkeypatch):
-#     monkeypatch.setattr(tempoapp, 'DATAFILE', 'tempo/tests/fixtures/data.json')
+#     monkeypatch.setattr(tempoapp, 'DATAFILE', 'tests/fixtures/data.json')
 #     r = app.root
-#     app.stop()
 #     f = r.load_tasks()
 #     assert 0
 
@@ -41,5 +34,5 @@ def test_find_delta():
     enddate = Mock()
     startdate.text = '22.06.2020'
     enddate.text = '23.06.2020'
-    f = RootWidget().find_delta
+    f = RootWidget().get_worktime
     assert f(startdate, enddate) == 6

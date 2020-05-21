@@ -53,25 +53,38 @@ class RootWidget(BoxLayout):
             if not q.lower() == 'y':
                 app.stop()
 
-    def find_delta(self, startdate, deadline):
+    def get_worktime(self, startdate, deadline):
+        '''Compute full work time for task and handle exceptions. Return int.
+
+            Parameters:
+                startdate(obj): Task startdate textinput object
+                deadline(obj): Task deadline textinput object
+        '''
         try:
             start = dates.convert_to_date(startdate.text)
             end = dates.convert_to_date(deadline.text)
         except (ValueError, TypeError) as e:
             print(e)
-            # TODO Make undo when wrong data / take data from save?
+            # TODO: Make undo when wrong data / take data from save?
             print('You have entered wrong data')
             return 0
         else:
-            # find delta time
+            # Find delta time
             hours = dates.find_deltatime(start, end)
             worktime = dates.find_worktime(hours)
             return worktime
 
+    # NOTE: This func is disabled due restructuring of the applictaion.
     def find_max_duration(self, task):
-        '''Find maximum available time for each task and return int.'''
+        '''Find maximum available time for each task and return int.
+
+            This code is a part of application main algorithm.
+            It may be hard for understanding
+             if you don't have an idea how it should work.
+        '''
         # XXX: UNSTABLE
         # TODO: This needs optimization
+        # FIXME: Unpredictable results
         keep = []
         for t in self.taskholder.children:
             keep.append([t.deltatime, t._duration, t._max_duration])
@@ -88,18 +101,15 @@ class RootWidget(BoxLayout):
         return max_duration
 
     # def refresh_data(self, *dt):
-    #     # XXX: Bad solution
-    #     if len(self.minitaskholder.children) == 0:
-    #         self.load_minitasks(self.minitaskholder)
     #     for t in self.taskholder.children:
-    #         t.deltatime = self.find_delta(t.startdate, t.deadline)
+    #         t.deltatime = self.get_worktime(t.startdate, t.deadline)
     #     for t in self.taskholder.children:
     #         t.duration.hint_text = str(self.find_max_duration(t))
     #         # HACK ...
     #         t._duration = t.duration.text if t.duration.text else 0
 
     def save_tasks(self, *dt):
-        ''' Save tasks to data.json'''
+        ''' Save tasks to .json file'''
         data = {}
         counter = 1
         for task in self.taskholder.children[::-1]:
@@ -122,6 +132,9 @@ class RootWidget(BoxLayout):
             json.dump(data, datafile, indent=4)
 
     def load_minitasks(self, holder):
+        '''Populate minitaskholder on timer screen using
+        original tasks from taskholder.
+        '''
         tasklist = self.taskholder.children
         minilist = [x._source for x in holder.children]
 
@@ -149,14 +162,13 @@ class TempoApp(App):
     icon = './data/icons/icon_white.png'
 
     def on_stop(self):
+        # Save tasks before exit
         self.root.save_tasks()
         return True
 
     def build(self):
         root = RootWidget()
         Clock.schedule_once(root.load_tasks)
-        # Clock.schedule_once(root.refresh_data, 10)
-        # Clock.schedule_interval(root.refresh_data, 5)
         Clock.schedule_interval(root.save_tasks, 45)
         return root
 

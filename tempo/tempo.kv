@@ -176,12 +176,11 @@
             ActionPrevious:
                 id: actiontitle
                 with_previous: False
-                title: 'Select task on timer screen'
+                title: 'Select task on timer screen to start working'
                 app_icon: './data/icons/logo.png'
                 on_release:
                 background_normal: ''
             ActionLabel:
-                # text: 'Select task on timer screen to start working'
 
 
 # Container
@@ -203,7 +202,7 @@
                 on_parent: self.state = 'down'
                 canvas.after:
                     Rectangle:
-                        # Icon size is 45x45
+                        # Icon size is 50x50
                         size: self.width, 50
                         pos: self.x, self.center_y - 25
                         source: './data/icons/list_icon.png'
@@ -254,11 +253,16 @@
                 timerdisplay: timerdisplay
                 minitaskholder: minitaskholder
                 BoxLayout:
-                    GridLayout:
-                        id: minitaskholder
-                        cols: 1
-                        padding: 10
-                        # on_parent: root.load_minitasks(self)
+                    CustomScroll:
+                        do_scroll_x: False
+                        do_scroll_y: True
+                        GridLayout:
+                            id: minitaskholder
+                            size_hint_y: None
+                            cols: 1
+                            padding: 10
+                            height: 100 + 40 * len(self.children)
+                            # on_parent: root.load_minitasks(self)
 
                     Box:
                         orientation: 'vertical'

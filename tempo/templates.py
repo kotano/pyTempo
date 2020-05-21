@@ -1,3 +1,20 @@
+'''This module contains templates for Tempo.
+
+TASK template is needed in order to load saved task data
+It has complex and difficult structure so it is better to keep him here.
+
+TASK template should be filled with named arguments:
+    active(bool):, checkbox state
+    taskname(str): task name
+    priority(str): has 4 options ['-', '!Low', '!!Normal', '!!!High']
+    startdate(str): date in 'dd:mm:yy' format
+    duration(numeric): time which you want to spend on task
+    progress(numeric): amount of work spent on task
+    deadline(str): date in 'dd:mm:yy' format
+    notes(str): task notes
+'''
+
+
 from tempo import dates
 
 COLORS = {
@@ -102,7 +119,7 @@ Task:
                             id: startdate
                             text: '{startdate}'
                             on_focus:
-                                if self.focus == False: root.deltatime = app.root.find_delta(startdate, deadline)
+                                if self.focus == False: root.deltatime = app.root.get_worktime(startdate, deadline)
 
 #> progress bar
                     BoxLayout:
@@ -192,7 +209,7 @@ Task:
                             id: deadline
                             text: '{deadline}'
                             on_focus:
-                                if self.focus == False: root.deltatime = app.root.find_delta(startdate, deadline);
+                                if self.focus == False: root.deltatime = app.root.get_worktime(startdate, deadline);
                                 # app.root.refresh_data()
 
 #> Subtask
@@ -307,13 +324,6 @@ Subtask:
         background_normal: './data/icons/delete32.png'
         on_release: app.root.taskscreen._clear_input(subtask) if len(root.parent.children) <= 1 else root.parent.remove_widget(subtask)
 ''')
-
-
-MINI_TASKS = '''
-MiniTask:
-    CheckBox:
-    Button:
-'''
 
 
 default_task = TASK.format(

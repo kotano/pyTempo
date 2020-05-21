@@ -112,12 +112,8 @@ class TimerScreen(Screen):
             self.process.cancel()
             self.active = False
             return
-        if not task:
-            self.process = Clock.schedule_interval(
-                lambda dt: self._track_time(self.POMODURATION), 1)
-        else:
-            self.process = Clock.schedule_interval(
-                lambda dt: self._track_time(self.POMODURATION, task), 1)
+        self.process = Clock.schedule_interval(
+            lambda dt: self._track_time(self.POMODURATION, task), 1)
         self.active = True
 
     def stop_timer(self):
@@ -133,10 +129,10 @@ class TimerScreen(Screen):
 
     def _track_time(self, value, task=None):
         total = (value * 60) - self.count
-        print(total)
+        # print(total)
         if task:
             task._progress += 1/3600
-            print(task._progress)
+            # print(task._progress)
         if total == 0:
             self.stop_timer()
             return
@@ -164,10 +160,8 @@ class DiaryScreen(Screen):
     pass
 
 class CalendarView(Label):
-    # cal = calendar.Calendar().monthdatescalendar(dates.cur_year, dates.cur_month)
     cal = calendar.TextCalendar(0)
     endar = cal.formatmonth(dates.cur_year, dates.cur_month)
-    print(endar)
     c = StringProperty(endar)
 
 # WIDGETS
