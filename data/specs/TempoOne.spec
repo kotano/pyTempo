@@ -2,21 +2,15 @@
 
 block_cipher = None
 
-added_files = [
-    ('../Tempo/data/icons', 'icons'),
-    ('../Tempo/data/fonts', 'fonts'),
-]
-
 icons = [
-    ('../Tempo/data/icons/', '../Tempo'),
-    ('../Tempo/data/fonts/', '../Tempo'),
+    ('../Tempod/data/icons/', '../Tempod'),
+    ('../Tempod/data/fonts/', '../Tempod'),
 ]
 
-
-a = Analysis(['..\\Tempo\\main.py'],
-             pathex=['S:\\Users\\ahuda\\code\\demos'],
+a = Analysis(['..\\Tempod\\main.py'],
+             pathex=['S:\\Users\\ahuda\\Code\\demos'],
              binaries=[],
-             datas=added_files,
+             datas=[],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
@@ -27,7 +21,7 @@ a = Analysis(['..\\Tempo\\main.py'],
              noarchive=False)
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
-exe = EXE(pyz, Tree('..\\Tempo\\tempo'),
+exe = EXE(pyz, Tree('..\\Tempod\\'),
           a.scripts,
           a.binaries,
           a.zipfiles,
@@ -40,13 +34,4 @@ exe = EXE(pyz, Tree('..\\Tempo\\tempo'),
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=False)
-
-coll = COLLECT(exe, Tree('..\\Tempo\\tempo')
-               a.binaries,
-               a.zipfiles,
-               a.datas,
-               strip=False,
-               upx=True,
-               upx_exclude=[],
-               name='Tempo')
+          console=False )
