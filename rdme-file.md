@@ -11,6 +11,7 @@ permalink: /readme/
 [Posts]: <https://kotano.github.io/Tempo/posts>
 [Docs]: <https://kotano.github.io/Tempo/docs>
 [About]: <https://kotano.github.io/Tempo/about>
+----
 
 <a href='https://kotano.github.io/Tempo/README.md' download>Download this file</a>
 
