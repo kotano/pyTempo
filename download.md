@@ -16,13 +16,15 @@ Welcome to Tempo download page
 
 ## Windows
 
-<a href=https://clck.ru/NbUeG download><button>Download</button></a>
+<a href='https://clck.ru/NbUeG' download><button>Download</button></a>
+
 
 ## Android
 Our Android app will be available soon.  
 But you still can push the button :\)
 
-<a href=https://clck.ru/NbVHz download><button>Button</button></a>
+
+<a href='https://clck.ru/NbVHz' download><button>Button</button></a>
 
 
 # Feedback
