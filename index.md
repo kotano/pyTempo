@@ -10,6 +10,7 @@ title: "Tempo"
 [Posts]: <https://kotano.github.io/Tempo/posts>
 [Docs]: <https://kotano.github.io/Tempo/docs>
 [About]: <https://kotano.github.io/Tempo/about>
+----
 
 # Welcome to Tempo project website
 Tempo is a task-management application that tracks your tasks and goals and evenly distributes work on them.
