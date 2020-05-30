@@ -335,3 +335,77 @@ default_task = TASK.format(
 
 default_subtask = SUBTASK.format(subactive=False, subtaskname='', focus=True)
 first_subtask = SUBTASK.format(subactive=False, subtaskname='', focus=False)
+
+
+# >>> STORY <<<
+STORY = '''
+Story:
+    id: story
+    postnum: {postnum}
+    creation: {creation}
+    fullheight: storytext.height + sum(x.height for x in self.children[1:])
+    _text: letter.text
+
+    Popup:
+        id: popup
+        size_hint: 0.9, 0.9
+        title: "Write your story"
+        # background_color: 1, 1, 1, 1
+        on_parent:
+            if self.parent == story: self.parent.remove_widget(self)
+        on_dismiss:
+            root.refresh_height();
+            root.parent.height = app.root.collect_height(root.parent, 50);
+            if not any((letter.text,)): app.root.diaryscreen.undo_story(root);
+
+        Box:
+            orientation: 'vertical'
+
+            DefaultInput:
+                id: letter
+                focus: True
+                multiline: True
+                hint_text: 'Some text'
+                on_text: root._text = self.text; root.set_title()
+
+            Button:
+                text: 'Delete'
+                on_press:
+                    root.parent.remove_widget(root);
+                    popup.dismiss();
+
+
+    Box:
+        size_hint: 1, None
+        height: 40
+        Text:
+            halign: 'left'
+
+            text: '-'.join([str(x) for x in root.creation])
+            # text: ('{{}}-{{}}-{{}}'.format(*root.creation))
+        Text:
+            refresh_text: lambda: root._text.split('\\n')[0][:15]
+            # text: root._text.split('\\n')[0][:15]
+            # text: self.refresh_text()
+            text: root._title
+        Text:
+            halign: 'right'
+            text: 'Post №' + str(root.postnum)
+# Storytext
+    PressableLabel:
+        id: storytext
+        size_hint_y: None
+        size: self.texture_size
+        text_size: self.size[0]-5, None
+        hint_text: 'Some text'
+        text: letter.text
+        halign: 'left'
+        valign: 'top'
+        on_press: popup.open()
+
+# TODO: Add completed tasks 
+    # Box:
+    #     id: completed_tasks
+    #     size_hint_y: 0.5
+
+'''

@@ -1,9 +1,10 @@
 #:import COLORS tempo.templates.COLORS
-#:import POMODORO_DURATION tempo.dates.POMODORO_DURATION
+#:import dates tempo.dates
 
 <Widget>:
     # Setting application main font
     font_name: './data/fonts/RobotoMono-Regular'
+
 
 <Text@Label>
     color: COLORS['TextColor']
@@ -28,7 +29,7 @@
             width: 1
             rectangle: self.x, self.y, self.width, self.height
 
-<Box@BoxLayout>:
+<Box>:
     canvas.after:
         Color:
             rgba: 0.5, 0.5, 0.5, 1
@@ -55,6 +56,8 @@
     spacing: 0, 10
     padding: 10, 10
     cols: 1
+
+
 
 <ActionSpinner@Spinner+ActionItem>
     canvas.before:
@@ -132,7 +135,7 @@
     padding: 5, 5
     background_normal: ''
 
-# Timer screen
+# TIMERSCREEN
 <TimerScreen>:
 
 
@@ -145,9 +148,25 @@
         allow_no_selection: True
         text: root._name
         on_press:
+            self.state = 'down'
             print('Launching timer');
             app.root.timerscreen.trigger_countdown(root._source);
             app.root.ids.actiontitle.title = root._name
+
+
+# DIARYSCREEN
+<DiaryScreen>:
+
+<Story>:
+    canvas.after:
+        Color:
+            rgba: 0.5, 0.5, 0.5, 1
+        Line:
+            width: 3
+            rectangle: self.x, self.y, self.width, self.height
+
+    orientation: 'vertical'
+    size_hint_y: None
 
 
 ######################## ROOT #########################
@@ -155,8 +174,10 @@
 <RootWidget>
     taskholder: taskscreen.taskholder
     minitaskholder: minitaskholder
+    storyholder: storyholder
     taskscreen: taskscreen
     timerscreen: timerscreen
+    diaryscreen: diaryscreen
 
     orientation: 'vertical'
     canvas.before:
@@ -242,11 +263,11 @@
             spacing: 0, 10
             padding: 10, 10
             cols: 1
-# Tasks
+# TASKS
             TaskScreen:
                 id: taskscreen
                 name: 'taskscreen'
-# Timer
+# TIMER
             TimerScreen:
                 id: timerscreen
                 name: 'timerscreen'
@@ -262,11 +283,9 @@
                             cols: 1
                             padding: 10
                             height: 100 + 40 * len(self.children)
-                            # on_parent: root.load_minitasks(self)
 
                     Box:
                         orientation: 'vertical'
-                        # PressableLabel:
                         LongpressButton:
                             canvas:
                                 Color:
@@ -286,9 +305,8 @@
                                 timerscreen.stop_timer();
                                 app.root.ids.actiontitle.title = 'No active tasks'
                             background_normal: ''
-                        # Button:
-                        #     text: 'Start timer'
-# Calendar
+
+# CALENDAR
             CalendarScreen:
                 id: calendarscreen
                 name: 'calendarscreen'
@@ -298,11 +316,31 @@
                         halign: 'right'
                         color: 0, 0, 0, 1
                         text: (self.endar)
-# Dictionary
+# DIARY
             DiaryScreen:
                 id: diaryscreen
+                storyholder: storyholder
                 name: 'diaryscreen'
-                BoxLayout:
-                    Text:
-                        text: 'Diary Screen. Coming soon'
-
+                Box:
+                    orientation: 'vertical'
+                    Button:
+                        size_hint_y: 0.1
+                        text: 'Add new story'
+                        on_press:
+                            app.root.print_message('Adding new story');
+                            diaryscreen.add_story()
+                    CustomScroll:
+# Storyholder
+                        GridLayout:
+                            id: storyholder
+                            cols: 1
+                            orientation: 'vertical'
+                            padding: 40
+                            spacing: 10
+                            size_hint: 1, None
+                            # height: 200 + 200 * len(self.children)
+                            # height: sum(x.fullheight for x in self.children)
+                            height: 200 + sum(x.height for x in self.children)
+                            # on_height: for x in self.children: print('children', x.height); print(self.height)
+                            # on_height: app.root.collect_height(self)
+                            on_children: self.height = app.root.collect_height(self)

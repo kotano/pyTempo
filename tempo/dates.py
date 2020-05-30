@@ -9,11 +9,16 @@ POMODORO_REST = 5
 
 cur_month = date.today().month
 cur_year = date.today().year
+cur_date = date.today()
 
 
 def date_to_string(d=date.today()):
     '''Return dd:mm:yy format string from date object.'''
     return d.strftime("%d.%m.%Y")
+
+def date_to_list(d=date.today()):
+    '''Return dd:mm:yy format list from date object.'''
+    return [d.year, d.month, d.day]
 
 
 def convert_to_date(arg):
@@ -29,6 +34,7 @@ def find_deltatime(starttime: date, endtime: date):
     delta = endtime - starttime
     hours = delta.total_seconds()//3600
     return hours
+
 
 def find_worktime(hours):
     '''Find available work time per day. Return int'''

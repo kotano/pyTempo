@@ -4,54 +4,37 @@ from collections import OrderedDict
 
 from kivy.app import App
 
+from tempo import config
 from tempo.widgets import *  # noqa: F403
 
 # NOTE: Can use KivyCalendar, if solve bug
 # from KivyCalendar import CalendarWidget, DatePicker
 
-# Disable multitouch on Windows
-if platform == 'win':
-    from kivy.config import Config
-    Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
-
+# >>> App <<<
 class RootWidget(BoxLayout):
     '''Application root widget '''
+    diaryscreen = ObjectProperty()
+
+    storyholder = ObjectProperty()
     taskholder = ObjectProperty()
     minitaskholder = ObjectProperty()
     COLORS = DictProperty(COLORS)
 
-    def load_tasks(self, *dt):
-        '''Loads task data from data.json if exists.'''
-        try:
-            with open(DATAFILE, 'r') as datafile:
-                tasks = json.load(datafile)
-            for t in tasks.values():
-                widget = TASK.format(
-                    active=t['active'],
-                    taskname=t['taskname'],
-                    priority=t['priority'],
-                    startdate='.'.join(t['startdate']),
-                    duration=t['duration'],
-                    progress=t['progress'],
-                    deadline='.'.join(t['deadline']),
-                    notes=t['notes']
-                )
-                self.taskholder.add_widget(Builder.load_string(widget))
-                for st in t['subtasks'][::-1]:
-                    subtask = SUBTASK.format(
-                        subactive=st[0], subtaskname=st[1], focus=False)
-                    self.taskholder.children[0].subtaskholder.add_widget(
-                        Builder.load_string(subtask))
-        except (FileNotFoundError):
-            print('File does not exist. It will be created automatically.')
-        except (KeyError, json.JSONDecodeError) as e:
-            # Except error in case of data corruption
-            msg = (str(e) + 'We were unable to load data.'
-                   'Would you like to delete this tasks? [y/n]')
-            q = input(msg)
-            if not q.lower() == 'y':
-                app.stop()
+    def print_message(self, msg):
+        '''Temporarily display message on action bar'''
+        def _set_title(m):
+            self.ids.actiontitle.title = m
+
+        prev = self.ids.actiontitle.title
+        # TODO: Make safe intersection of two messages
+        Clock.schedule_once(lambda dt: _set_title(prev), 3)
+        _set_title(msg)
+
+    def collect_height(self, instance, extra=0):
+        total = sum(c.height+extra for c in instance.children)
+        print('children height', total)
+        return total
 
     def get_worktime(self, startdate, deadline):
         '''Compute full work time for task and handle exceptions. Return int.
@@ -74,7 +57,7 @@ class RootWidget(BoxLayout):
             worktime = dates.find_worktime(hours)
             return worktime
 
-    # NOTE: This func is disabled due restructuring of the applictaion.
+    # NOTE: This func is disabled due to restructuring of the applictaion.
     def find_max_duration(self, task):
         '''Find maximum available time for each task and return int.
 
@@ -108,6 +91,38 @@ class RootWidget(BoxLayout):
     #         # HACK ...
     #         t._duration = t.duration.text if t.duration.text else 0
 
+    def load_tasks(self, *dt):
+        '''Loads task data from data.json if exists.'''
+        try:
+            with open(TASKFILE, 'r') as datafile:
+                tasks = json.load(datafile)
+            for t in tasks.values():
+                widget = TASK.format(
+                    active=t['active'],
+                    taskname=t['taskname'],
+                    priority=t['priority'],
+                    startdate='.'.join(t['startdate']),
+                    duration=t['duration'],
+                    progress=t['progress'],
+                    deadline='.'.join(t['deadline']),
+                    notes=t['notes']
+                )
+                self.taskholder.add_widget(Builder.load_string(widget))
+                for st in t['subtasks'][::-1]:
+                    subtask = SUBTASK.format(
+                        subactive=st[0], subtaskname=st[1], focus=False)
+                    self.taskholder.children[0].subtaskholder.add_widget(
+                        Builder.load_string(subtask))
+        except (FileNotFoundError):
+            print('File does not exist. It will be created automatically.')
+        except (KeyError, json.JSONDecodeError) as e:
+            # Except error in case of data corruption
+            msg = (str(e) + 'We were unable to load data.'
+                   'Would you like to delete this tasks? [y/n]')
+            q = input(msg)
+            if not q.lower() == 'y':
+                app.stop()
+
     def save_tasks(self, *dt):
         ''' Save tasks to .json file'''
         data = {}
@@ -128,7 +143,7 @@ class RootWidget(BoxLayout):
             }})
             counter += 1
         data = OrderedDict(sorted(data.items(), key=lambda t: t[0]))
-        with open(DATAFILE, 'w+', encoding='utf-8') as datafile:
+        with open(TASKFILE, 'w+', encoding='utf-8') as datafile:
             json.dump(data, datafile, indent=4)
 
     def load_minitasks(self, holder):
@@ -156,6 +171,23 @@ class RootWidget(BoxLayout):
             if x._source not in tasklist:
                 holder.remove_widget(x)
 
+    # def save_stories(self, *dt):
+    #     ''' Save stories to .json file'''
+    #     data = {}
+    #     counter = 1
+    #     for story in self.storyholder.children[::-1]:
+    #         data.update({counter: {
+    #             'text': story._text,
+    #             'postnum': story.postnum
+    #             'creation': story.creation
+    #             # 'completed_tasks': [[s.children[2].active, s.children[1].text]
+    #             #              for s in task.subtaskholder.children],
+    #         }})
+    #         counter += 1
+    #     data = OrderedDict(sorted(data.items(), key=lambda t: t[0]))
+    #     with open(STORYFILE, 'w+', encoding='utf-8') as storyfile:
+    #         json.dump(data, storyfile, indent=4)
+
 
 class TempoApp(App):
     '''Main application class'''
@@ -174,7 +206,9 @@ class TempoApp(App):
 
 
 # Multiplatform path to application user data
-DATAFILE = os.path.join(TempoApp().user_data_dir, 'data.json')
+datadir = TempoApp().user_data_dir
+TASKFILE = os.path.join(datadir, 'tasks.json')
+STORYFILE = os.path.join(datadir, 'stories.json')
 
 
 # FOR DEBUG

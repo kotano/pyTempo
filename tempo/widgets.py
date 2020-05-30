@@ -19,12 +19,58 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.slider import Slider
 from kivy.uix.textinput import TextInput
 from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.widget import Widget
+from kivy.uix.popup import Popup
 from kivy.utils import platform
 
+from tempo.tempoapp import App
 from tempo import dates
-from tempo.templates import (COLORS, SUBTASK, TASK, default_subtask,
-                             default_task, first_subtask)
+from tempo.templates import (
+    COLORS, STORY, SUBTASK, TASK,
+    default_subtask, default_task, first_subtask)
 
+
+# >>> WIDGETS <<<
+class PressableLabel(Button):
+    pass
+
+
+class PressableBoxLayout(ButtonBehavior, BoxLayout):
+    pass
+
+
+class CustomScroll(ScrollView):
+    if platform == 'win':
+        effect_cls = ScrollEffect
+    bar_color = COLORS['TempoBlue']
+    pass
+
+
+class LongpressButton(Factory.Button):
+    __events__ = ('on_long_press',)
+
+    long_press_time = Factory.NumericProperty(1)
+
+    def on_state(self, instance, value):
+        if value == 'down':
+            lpt = self.long_press_time
+            self._clockev = Clock.schedule_once(self._do_long_press, lpt)
+        else:
+            self._clockev.cancel()
+
+    def _do_long_press(self, dt):
+        self.disabled = True
+        self.state = 'normal'
+        Clock.schedule_once(self._unblock, 0.5)
+        self.dispatch('on_long_press')
+
+    def on_long_press(self, *largs):
+        pass
+
+    def _unblock(self, dt):
+        self.disabled = False
+
+# >>> SCREENS <<<
 
 
 class MyScreenManager(ScreenManager):
@@ -32,6 +78,7 @@ class MyScreenManager(ScreenManager):
     pass
 
 
+# TASKS
 class TaskScreen(Screen):
     def sort_tasks(self, instance):
         '''Sort tasks in tasklist.
@@ -96,6 +143,20 @@ class TaskScreen(Screen):
             holder.add_widget(root)
 
 
+class Task(BoxLayout):
+    _duration = NumericProperty()
+    _max_duration = NumericProperty()
+    _progress = NumericProperty()
+
+    deltatime = NumericProperty()
+    in_progress = BooleanProperty(False)
+
+
+class Subtask(Task):
+    pass
+
+
+# TIMER
 class TimerScreen(Screen):
     timerdisplay = ObjectProperty()
     minitaskholder = ObjectProperty()
@@ -126,7 +187,6 @@ class TimerScreen(Screen):
             self.display = [self.POMODURATION, '00']
             self._reset_minitasks_state()
 
-
     def _track_time(self, value, task=None):
         total = (value * 60) - self.count
         # print(total)
@@ -152,74 +212,74 @@ class TimerScreen(Screen):
             for b in t.children:
                 b.state = 'normal'
 
-class CalendarScreen(Screen):
-    pass
-
-
-class DiaryScreen(Screen):
-    pass
-
-class CalendarView(Label):
-    cal = calendar.TextCalendar(0)
-    endar = cal.formatmonth(dates.cur_year, dates.cur_month)
-    c = StringProperty(endar)
-
-# WIDGETS
-class Task(BoxLayout):
-    _duration = NumericProperty()
-    _max_duration = NumericProperty()
-    _progress = NumericProperty()
-    
-    deltatime = NumericProperty()
-    in_progress = BooleanProperty(False)
-
-
-class Subtask(Task):
-    pass
-
 
 class MiniTask(BoxLayout):
     _name = StringProperty()
     _source = ObjectProperty()
 
 
-# class PressableLabel(ButtonBehavior, Label, Button):
-class PressableLabel(Button):
+# CALENDAR
+class CalendarScreen(Screen):
     pass
 
 
-class PressableBoxLayout(ButtonBehavior, BoxLayout):
+class CalendarView(Label):
+    cal = calendar.TextCalendar(0)
+    endar = cal.formatmonth(dates.cur_year, dates.cur_month)
+    c = StringProperty(endar)
+
+
+# DIARY
+class DiaryScreen(Screen):
+    storyholder = ObjectProperty()
+    storylist = ListProperty()
+    storycount = NumericProperty()
+
+    def count_postnum(self):
+        lst = [1, ]
+        for x in self.storyholder.children:
+            lst.append(x.postnum)
+        r = max(lst) + 1
+        self.storycount = r
+
+    def undo_story(self, instance):
+        self.storyholder.remove_widget(instance)
+        self.storycount -= 1
+
+    def add_story(self, isnew=True):
+        widget = STORY.format(
+            postnum=self.storycount,
+            creation=dates.date_to_list()
+        )
+        self.storyholder.add_widget(
+            Builder.load_string(widget),
+            index=len(self.storyholder.children))
+        self.count_postnum()
+        self.storyholder.children[-1].ids.popup.open()
+        # self.storyholder.add_widget(Builder.load_string(STORY))
+
+
+class Box(BoxLayout):
     pass
 
 
-class CustomScroll(ScrollView):
-    if platform == 'win':
-        effect_cls = ScrollEffect
-    bar_color = COLORS['TempoBlue']
-    pass
-
-
-
-class LongpressButton(Factory.Button):
-    __events__ = ('on_long_press',)
-
-    long_press_time = Factory.NumericProperty(1)
-
-    def on_state(self, instance, value):
-        if value == 'down':
-            lpt = self.long_press_time
-            self._clockev = Clock.schedule_once(self._do_long_press, lpt)
-        else:
-            self._clockev.cancel()
-
-    def _do_long_press(self, dt):
-        self.disabled = True
-        self.state = 'normal'
-        Clock.schedule_once(self._unblock, 1)
-        self.dispatch('on_long_press')
-
-    def on_long_press(self, *largs):
+class Story(Box):
+    '''Story widget'''
+    fullheight = NumericProperty()
+    creation = ListProperty()
+    postnum = NumericProperty()
+    _text = StringProperty()
+    _title = StringProperty()
+    
+    def refresh_values(self):
+        set_title()
+        refresh_height()
         pass
 
-    def _unblock(self, dt):
-        self.disabled = False
+    def set_title(self):
+        self._title = self._text.split('\n')[0][:20]
+
+    def refresh_height(self):
+        # self.fullheight = sum(x.height for x in self.children)
+        print('Refreshing height...')
+        self.height = sum(x.height for x in self.children)
