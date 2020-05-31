@@ -343,8 +343,9 @@ Story:
     id: story
     postnum: {postnum}
     creation: {creation}
-    fullheight: storytext.height + sum(x.height for x in self.children[1:])
-    _text: letter.text
+    _text: '{storytext}'
+    # fullheight: storytext.height + sum(x.height for x in self.children[1:])
+    # _text: letter.text
 
     Popup:
         id: popup
@@ -366,12 +367,14 @@ Story:
                 focus: True
                 multiline: True
                 hint_text: 'Some text'
+                text: root._text
                 on_text: root._text = self.text; root.set_title()
 
             Button:
                 text: 'Delete'
                 on_press:
-                    root.parent.remove_widget(root);
+                    # root.parent.remove_widget(root);
+                    # letter.text = '';
                     popup.dismiss();
 
 
@@ -385,8 +388,6 @@ Story:
             # text: ('{{}}-{{}}-{{}}'.format(*root.creation))
         Text:
             refresh_text: lambda: root._text.split('\\n')[0][:15]
-            # text: root._text.split('\\n')[0][:15]
-            # text: self.refresh_text()
             text: root._title
         Text:
             halign: 'right'

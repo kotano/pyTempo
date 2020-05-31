@@ -171,22 +171,51 @@ class RootWidget(BoxLayout):
             if x._source not in tasklist:
                 holder.remove_widget(x)
 
-    # def save_stories(self, *dt):
-    #     ''' Save stories to .json file'''
-    #     data = {}
-    #     counter = 1
-    #     for story in self.storyholder.children[::-1]:
-    #         data.update({counter: {
-    #             'text': story._text,
-    #             'postnum': story.postnum
-    #             'creation': story.creation
-    #             # 'completed_tasks': [[s.children[2].active, s.children[1].text]
-    #             #              for s in task.subtaskholder.children],
-    #         }})
-    #         counter += 1
-    #     data = OrderedDict(sorted(data.items(), key=lambda t: t[0]))
-    #     with open(STORYFILE, 'w+', encoding='utf-8') as storyfile:
-    #         json.dump(data, storyfile, indent=4)
+    def load_stories(self, *dt):
+        '''Loads story data from data.json if exists.'''
+        try:
+            with open(STORYFILE, 'r') as storyfile:
+                stories = json.load(storyfile)
+            for s in stories.values():
+                widget = STORY.format(
+                    postnum=s['postnum'],
+                    creation=s['creation'],
+                    storytext=s['storytext'],
+                    # completed='.'.join(t['startdate']),
+                )
+                self.storyholder.add_widget(Builder.load_string(widget))
+                # for st in t['subtasks'][::-1]:
+                #     subtask = SUBTASK.format(
+                #         subactive=st[0], subtaskname=st[1], focus=False)
+                #     self.taskholder.children[0].subtaskholder.add_widget(
+                #         Builder.load_string(subtask))
+        except (FileNotFoundError):
+            print('File does not exist. It will be created automatically.')
+        except (KeyError, json.JSONDecodeError) as e:
+            # Except error in case of data corruption
+            msg = (str(e) + 'We were unable to load data.'
+                   'Would you like to delete all data? [y/n]')
+            q = input(msg)
+            if not q.lower() == 'y':
+                application.stop()
+
+    def save_stories(self, *dt):
+        ''' Save stories to .json file'''
+        data = {}
+        counter = 1
+        for story in self.storyholder.children[::-1]:
+            data.update({counter: {
+                'storytext': story._text,
+                'postnum': story.postnum,
+                'creation': story.creation,
+                'storytext': story._text.replace('\n', '\\n'),
+                # 'completed_tasks': [[s.children[2].active, s.children[1].text]
+                #              for s in task.subtaskholder.children],
+            }})
+            counter += 1
+        data = OrderedDict(sorted(data.items(), key=lambda t: t[0]))
+        with open(STORYFILE, 'w+', encoding='utf-8') as storyfile:
+            json.dump(data, storyfile, indent=4)
 
 
 class TempoApp(App):
@@ -196,12 +225,15 @@ class TempoApp(App):
     def on_stop(self):
         # Save tasks before exit
         self.root.save_tasks()
+        self.root.save_stories()
         return True
 
     def build(self):
         root = RootWidget()
-        Clock.schedule_once(root.load_tasks)
+        Clock.schedule_once(root.load_tasks, 0.1)
+        Clock.schedule_once(root.load_stories, 0.1)
         Clock.schedule_interval(root.save_tasks, 45)
+        Clock.schedule_interval(root.save_stories, 45)
         return root
 
 

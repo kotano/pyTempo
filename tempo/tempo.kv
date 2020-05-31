@@ -256,7 +256,9 @@
                         size: self.width, 50
                         pos: self.x, self.center_y - 25
                         source: './data/icons/diary_icon.png'
-                on_release: content_window.current = 'diaryscreen'
+                on_release:
+                    content_window.current = 'diaryscreen';
+                    storyholder.height = root.collect_height(storyholder, 50);
 # CONTENT
         MyScreenManager:
             id: content_window
@@ -343,4 +345,6 @@
                             height: 200 + sum(x.height for x in self.children)
                             # on_height: for x in self.children: print('children', x.height); print(self.height)
                             # on_height: app.root.collect_height(self)
-                            on_children: self.height = app.root.collect_height(self)
+                            on_children:
+                                self.height = app.root.collect_height(self);
+                                diaryscreen.count_postnum();

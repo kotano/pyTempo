@@ -4,9 +4,10 @@ from kivy.clock import Clock
 from kivy.effects.scroll import ScrollEffect
 from kivy.factory import Factory
 from kivy.lang.builder import Builder
-from kivy.properties import (BooleanProperty, DictProperty, ListProperty,
-                             NumericProperty, ObjectProperty, Property,
-                             StringProperty)
+from kivy.properties import (
+    BooleanProperty, DictProperty, ListProperty,
+    NumericProperty, ObjectProperty, Property,
+    StringProperty)
 from kivy.uix.actionbar import ActionBar
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
@@ -249,7 +250,8 @@ class DiaryScreen(Screen):
     def add_story(self, isnew=True):
         widget = STORY.format(
             postnum=self.storycount,
-            creation=dates.date_to_list()
+            creation=dates.date_to_list(),
+            storytext='',
         )
         self.storyholder.add_widget(
             Builder.load_string(widget),
@@ -270,7 +272,7 @@ class Story(Box):
     postnum = NumericProperty()
     _text = StringProperty()
     _title = StringProperty()
-    
+
     def refresh_values(self):
         set_title()
         refresh_height()
