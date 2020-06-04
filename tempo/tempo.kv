@@ -148,10 +148,10 @@
         allow_no_selection: True
         text: root._name
         on_press:
-            self.state = 'down'
+            if self.state == 'down': app.root.timerscreen.trigger_countdown(root._source);
+            self.state = 'down';
             print('Launching timer');
-            app.root.timerscreen.trigger_countdown(root._source);
-            app.root.ids.actiontitle.title = root._name
+            app.root.ids.actiontitle.title = '  Current task: ' + root._name;
 
 
 # DIARYSCREEN
@@ -258,10 +258,11 @@
                         source: './data/icons/diary_icon.png'
                 on_release:
                     content_window.current = 'diaryscreen';
-                    storyholder.height = root.collect_height(storyholder, 50);
+                    # storyholder.height = root.collect_height(storyholder, 50);
 # CONTENT
         MyScreenManager:
             id: content_window
+            current: root.diaryscreen.name
             spacing: 0, 10
             padding: 10, 10
             cols: 1
@@ -333,7 +334,7 @@
                             diaryscreen.add_story()
                     CustomScroll:
 # Storyholder
-                        GridLayout:
+                        Storyholder:
                             id: storyholder
                             cols: 1
                             orientation: 'vertical'
@@ -346,5 +347,5 @@
                             # on_height: for x in self.children: print('children', x.height); print(self.height)
                             # on_height: app.root.collect_height(self)
                             on_children:
-                                self.height = app.root.collect_height(self);
+                                # self.height = app.root.collect_height(self);
                                 diaryscreen.count_postnum();

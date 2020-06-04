@@ -32,7 +32,7 @@ class RootWidget(BoxLayout):
         _set_title(msg)
 
     def collect_height(self, instance, extra=0):
-        total = sum(c.height+extra for c in instance.children)
+        total = sum([c.height+extra for c in instance.children])
         print('children height', total)
         return total
 
@@ -121,7 +121,7 @@ class RootWidget(BoxLayout):
                    'Would you like to delete this tasks? [y/n]')
             q = input(msg)
             if not q.lower() == 'y':
-                app.stop()
+                applic.stop()
 
     def save_tasks(self, *dt):
         ''' Save tasks to .json file'''
@@ -183,7 +183,9 @@ class RootWidget(BoxLayout):
                     storytext=s['storytext'],
                     # completed='.'.join(t['startdate']),
                 )
-                self.storyholder.add_widget(Builder.load_string(widget))
+                strhld = self.storyholder
+                strhld.add_widget(Builder.load_string(widget))
+            # strhld.height = self.collect_height(strhld, 50)
                 # for st in t['subtasks'][::-1]:
                 #     subtask = SUBTASK.format(
                 #         subactive=st[0], subtaskname=st[1], focus=False)
@@ -197,7 +199,7 @@ class RootWidget(BoxLayout):
                    'Would you like to delete all data? [y/n]')
             q = input(msg)
             if not q.lower() == 'y':
-                application.stop()
+                applic.stop()
 
     def save_stories(self, *dt):
         ''' Save stories to .json file'''
@@ -229,6 +231,8 @@ class TempoApp(App):
         return True
 
     def build(self):
+        global applic
+        applic = self
         root = RootWidget()
         Clock.schedule_once(root.load_tasks, 0.1)
         Clock.schedule_once(root.load_stories, 0.1)

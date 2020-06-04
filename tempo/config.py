@@ -12,5 +12,5 @@ if platform == 'win':
     if debug is True:
         print(Window.left)
         print(Window.top)
-        Window.left = 0
-        Window.top = -800
+        # Window.left = 0
+        # Window.top = -800

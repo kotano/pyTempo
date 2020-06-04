@@ -344,8 +344,8 @@ Story:
     postnum: {postnum}
     creation: {creation}
     _text: '{storytext}'
-    # fullheight: storytext.height + sum(x.height for x in self.children[1:])
-    # _text: letter.text
+    
+    height: self.refresh_height()
 
     Popup:
         id: popup
@@ -356,7 +356,7 @@ Story:
             if self.parent == story: self.parent.remove_widget(self)
         on_dismiss:
             root.refresh_height();
-            root.parent.height = app.root.collect_height(root.parent, 50);
+            # root.parent.height = app.root.collect_height(root.parent, 50);
             if not any((letter.text,)): app.root.diaryscreen.undo_story(root);
 
         Box:
@@ -371,24 +371,26 @@ Story:
                 on_text: root._text = self.text; root.set_title()
 
             Button:
+                size_hint: 1, 0.2
                 text: 'Delete'
                 on_press:
-                    # root.parent.remove_widget(root);
-                    # letter.text = '';
                     popup.dismiss();
+                    root.parent.remove_widget(root);
+                    # letter.text = '';
 
 
     Box:
         size_hint: 1, None
         height: 40
+        
         Text:
             halign: 'left'
-
             text: '-'.join([str(x) for x in root.creation])
-            # text: ('{{}}-{{}}-{{}}'.format(*root.creation))
+        
         Text:
-            refresh_text: lambda: root._text.split('\\n')[0][:15]
+            # refresh_text: lambda: root._text.split('\\n')[0][:15]
             text: root._title
+        
         Text:
             halign: 'right'
             text: 'Post №' + str(root.postnum)
@@ -397,7 +399,7 @@ Story:
         id: storytext
         size_hint_y: None
         size: self.texture_size
-        text_size: self.size[0]-5, None
+        text_size: self.size[0]-10, None
         hint_text: 'Some text'
         text: letter.text
         halign: 'left'

@@ -11,6 +11,7 @@ from kivy.properties import (
 from kivy.uix.actionbar import ActionBar
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
@@ -32,6 +33,10 @@ from tempo.templates import (
 
 
 # >>> WIDGETS <<<
+class Box(BoxLayout):
+    pass
+
+
 class PressableLabel(Button):
     pass
 
@@ -71,9 +76,8 @@ class LongpressButton(Factory.Button):
     def _unblock(self, dt):
         self.disabled = False
 
+
 # >>> SCREENS <<<
-
-
 class MyScreenManager(ScreenManager):
     fullscreen = False
     pass
@@ -234,7 +238,8 @@ class CalendarView(Label):
 class DiaryScreen(Screen):
     storyholder = ObjectProperty()
     storylist = ListProperty()
-    storycount = NumericProperty()
+    storycount = NumericProperty(1)
+
 
     def count_postnum(self):
         lst = [1, ]
@@ -261,8 +266,12 @@ class DiaryScreen(Screen):
         # self.storyholder.add_widget(Builder.load_string(STORY))
 
 
-class Box(BoxLayout):
-    pass
+class Storyholder(GridLayout):
+    
+    def collect_height(self, instance, extra=0):
+        total = sum([c.height+extra for c in instance.children])
+        print('children height', total)
+        return total
 
 
 class Story(Box):
@@ -280,8 +289,21 @@ class Story(Box):
 
     def set_title(self):
         self._title = self._text.split('\n')[0][:20]
+        
 
     def refresh_height(self):
+        # if not par:
+        #     return 0
         # self.fullheight = sum(x.height for x in self.children)
-        print('Refreshing height...')
-        self.height = sum(x.height for x in self.children)
+        def _set_height(*dt):
+            par = self.parent
+            if not par:
+                return
+            height = sum([x.height for x in self.children])
+            self.height = height
+            par.height = par.collect_height(par, 50)
+            return 
+            # return height
+        Clock.schedule_once(_set_height, 0.1)
+        return 100
+        # print('Refreshing height...', height)
