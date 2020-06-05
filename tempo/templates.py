@@ -375,7 +375,8 @@ Story:
                 text: 'Delete'
                 on_press:
                     popup.dismiss();
-                    root.parent.remove_widget(root);
+                    # app.root.diaryscreen.undo_story(root);
+                    app.root.storyholder.remove_widget(root);
                     # letter.text = '';
 
 

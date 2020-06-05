@@ -242,7 +242,7 @@ class DiaryScreen(Screen):
 
 
     def count_postnum(self):
-        lst = [1, ]
+        lst = [0, ]
         for x in self.storyholder.children:
             lst.append(x.postnum)
         r = max(lst) + 1
@@ -253,6 +253,7 @@ class DiaryScreen(Screen):
         self.storycount -= 1
 
     def add_story(self, isnew=True):
+        self.count_postnum()
         widget = STORY.format(
             postnum=self.storycount,
             creation=dates.date_to_list(),
@@ -261,7 +262,6 @@ class DiaryScreen(Screen):
         self.storyholder.add_widget(
             Builder.load_string(widget),
             index=len(self.storyholder.children))
-        self.count_postnum()
         self.storyholder.children[-1].ids.popup.open()
         # self.storyholder.add_widget(Builder.load_string(STORY))
 
