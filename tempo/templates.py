@@ -345,7 +345,8 @@ Story:
     creation: {creation}
     _text: '{storytext}'
     
-    height: self.refresh_height()
+    height: self.refresh()
+    on_size: self.refresh()
 
     Popup:
         id: popup
@@ -354,8 +355,10 @@ Story:
         # background_color: 1, 1, 1, 1
         on_parent:
             if self.parent == story: self.parent.remove_widget(self)
+        on_open:
+            app.root.populate_completed_tasks(popup_completed)
         on_dismiss:
-            root.refresh_height();
+            root.refresh();
             # root.parent.height = app.root.collect_height(root.parent, 50);
             if not any((letter.text,)): app.root.diaryscreen.undo_story(root);
 
@@ -368,7 +371,11 @@ Story:
                 multiline: True
                 hint_text: 'Some text'
                 text: root._text
-                on_text: root._text = self.text; root.set_title()
+                on_text: root._text = self.text;
+            
+            StackLayout:
+                id: popup_completed
+                size_hint: 1, None
 
             Button:
                 size_hint: 1, 0.2
@@ -399,7 +406,8 @@ Story:
     PressableLabel:
         id: storytext
         size_hint_y: None
-        size: self.texture_size
+        # size: self.texture_size
+        height: self.texture_size[1] if self.texture_size[1] > 75 else 75
         text_size: self.size[0]-10, None
         hint_text: 'Some text'
         text: letter.text
@@ -408,8 +416,11 @@ Story:
         on_press: popup.open()
 
 # TODO: Add completed tasks 
-    # Box:
-    #     id: completed_tasks
-    #     size_hint_y: 0.5
+    StackLayout:
+        id: completed_tasks
+        size_hint_y: None
+        
+        CompletedTask:
+            text: 'task'
 
 '''

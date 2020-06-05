@@ -168,6 +168,11 @@
     orientation: 'vertical'
     size_hint_y: None
 
+<CompletedTask>:
+    size_hint: None, None
+    height: 30
+    width: len(self.text) * 15
+    text: self._text
 
 ######################## ROOT #########################
 # RootWidget:
@@ -238,7 +243,7 @@
                         source: './data/icons/timer_icon.png'
                 on_release:
                     content_window.current = 'timerscreen';
-                    root.load_minitasks(minitaskholder)
+                    root.populate_minitasks(minitaskholder)
             ScreenButton:
                 id: calendar_button
                 canvas.after:

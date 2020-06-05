@@ -1,4 +1,5 @@
 import calendar
+# from math import ceil
 
 from kivy.clock import Clock
 from kivy.effects.scroll import ScrollEffect
@@ -12,6 +13,7 @@ from kivy.uix.actionbar import ActionBar
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.stacklayout import StackLayout
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
@@ -240,7 +242,6 @@ class DiaryScreen(Screen):
     storylist = ListProperty()
     storycount = NumericProperty(1)
 
-
     def count_postnum(self):
         lst = [0, ]
         for x in self.storyholder.children:
@@ -267,7 +268,7 @@ class DiaryScreen(Screen):
 
 
 class Storyholder(GridLayout):
-    
+
     def collect_height(self, instance, extra=0):
         total = sum([c.height+extra for c in instance.children])
         print('children height', total)
@@ -276,34 +277,56 @@ class Storyholder(GridLayout):
 
 class Story(Box):
     '''Story widget'''
+    # completed_tasks = ObjectProperty()
+
     fullheight = NumericProperty()
     creation = ListProperty()
     postnum = NumericProperty()
     _text = StringProperty()
     _title = StringProperty()
 
-    def refresh_values(self):
-        set_title()
-        refresh_height()
-        pass
+    # def refresh_values(self):
+    #     set_title()
+    #     refresh()
+    #     pass
 
-    def set_title(self):
+    def _set_title(self):
         self._title = self._text.split('\n')[0][:20]
-        
 
-    def refresh_height(self):
-        # if not par:
-        #     return 0
-        # self.fullheight = sum(x.height for x in self.children)
-        def _set_height(*dt):
-            par = self.parent
-            if not par:
-                return
-            height = sum([x.height for x in self.children])
-            self.height = height
-            par.height = par.collect_height(par, 50)
-            return 
-            # return height
-        Clock.schedule_once(_set_height, 0.1)
-        return 100
+    def _set_height(self, *dt):
+        par = self.parent
+        if not par:
+            return
+        height = sum([x.height for x in self.children])
+        self.height = height
+        par.height = par.collect_height(par, 50)
+
+
+    def add_completed(self):
+        pass
+    
+    def refresh(self):
+        default = 100
+        self._set_title()
+        self.arrange_completed(self.ids['completed_tasks'])
+
+        Clock.schedule_once(self._set_height, 0.1)
+        return default
         # print('Refreshing height...', height)
+
+    def arrange_completed(self, instance):
+        # instance = self.ids.completed_tasks
+        height = instance.children[0].height if instance.children else 30
+        def _set_vals(*dt):
+            total_width = sum([x.width for x in instance.children])
+            rows = total_width / instance.width
+            r = height * (int(rows) * 2) if rows > 1 else height
+            instance.height = r
+        Clock.schedule_once(_set_vals, 0.1)
+        return height
+
+class CompletedTask(ToggleButton):
+    _source = ObjectProperty()
+    _text = StringProperty()
+    
+    pass

@@ -146,7 +146,7 @@ class RootWidget(BoxLayout):
         with open(TASKFILE, 'w+', encoding='utf-8') as datafile:
             json.dump(data, datafile, indent=4)
 
-    def load_minitasks(self, holder):
+    def populate_minitasks(self, holder):
         '''Populate minitaskholder on timer screen using
         original tasks from taskholder.
         '''
@@ -171,6 +171,19 @@ class RootWidget(BoxLayout):
             if x._source not in tasklist:
                 holder.remove_widget(x)
 
+    def populate_completed_tasks(self, holder):
+
+        def _make_completed(task):
+            widget = CompletedTask()
+            widget._source = task
+            widget._text = task.taskname.text
+            return widget
+
+        for t in self.taskholder.children[::-1]:
+            if t.checkbox.active:
+                holder.add_widget(_make_completed(t))
+
+
     def load_stories(self, *dt):
         '''Loads story data from data.json if exists.'''
         try:
@@ -185,7 +198,6 @@ class RootWidget(BoxLayout):
                 )
                 strhld = self.storyholder
                 strhld.add_widget(Builder.load_string(widget))
-            # strhld.height = self.collect_height(strhld, 50)
                 # for st in t['subtasks'][::-1]:
                 #     subtask = SUBTASK.format(
                 #         subactive=st[0], subtaskname=st[1], focus=False)
