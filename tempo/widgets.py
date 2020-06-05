@@ -87,6 +87,7 @@ class MyScreenManager(ScreenManager):
 
 # TASKS
 class TaskScreen(Screen):
+
     def sort_tasks(self, instance):
         '''Sort tasks in tasklist.
 
@@ -157,6 +158,25 @@ class Task(BoxLayout):
 
     deltatime = NumericProperty()
     in_progress = BooleanProperty(False)
+
+    _data = DictProperty()
+
+    def save_data(self):
+        data = {
+            'active': self.checkbox.active,
+            'taskname': self.taskname.text,
+            'priority': self.priority.text,
+            'startdate': self.startdate.text.split('.'),
+            'duration': self.duration.text,
+            'progress': self._progress,
+            'deadline': self.deadline.text.split('.'),
+            'notes': self.notes.text.replace('\n', '\\n'),
+            # XXX: subtasks depend on structure. Not reliable
+            'subtasks': [[s.children[2].active, s.children[1].text]
+                            for s in self.subtaskholder.children],
+        }
+        self._data = data
+        return data
 
 
 class Subtask(Task):
@@ -301,10 +321,9 @@ class Story(Box):
         self.height = height
         par.height = par.collect_height(par, 50)
 
-
     def add_completed(self):
         pass
-    
+
     def refresh(self):
         default = 100
         self._set_title()
@@ -317,6 +336,7 @@ class Story(Box):
     def arrange_completed(self, instance):
         # instance = self.ids.completed_tasks
         height = instance.children[0].height if instance.children else 30
+
         def _set_vals(*dt):
             total_width = sum([x.width for x in instance.children])
             rows = total_width / instance.width
@@ -325,8 +345,9 @@ class Story(Box):
         Clock.schedule_once(_set_vals, 0.1)
         return height
 
+
 class CompletedTask(ToggleButton):
     _source = ObjectProperty()
     _text = StringProperty()
-    
+
     pass

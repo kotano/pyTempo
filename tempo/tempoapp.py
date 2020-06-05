@@ -21,14 +21,14 @@ class RootWidget(BoxLayout):
     minitaskholder = ObjectProperty()
     COLORS = DictProperty(COLORS)
 
-    def print_message(self, msg):
+    def print_message(self, msg, duration=3):
         '''Temporarily display message on action bar'''
         def _set_title(m):
             self.ids.actiontitle.title = m
 
         prev = self.ids.actiontitle.title
         # TODO: Make safe intersection of two messages
-        Clock.schedule_once(lambda dt: _set_title(prev), 3)
+        Clock.schedule_once(lambda dt: _set_title(prev), duration)
         _set_title(msg)
 
     def collect_height(self, instance, extra=0):
@@ -172,17 +172,29 @@ class RootWidget(BoxLayout):
                 holder.remove_widget(x)
 
     def populate_completed_tasks(self, holder):
+        # XXX
+
+        tasklist = self.taskholder.children
+        storylist = [x._source for x in holder.children]
 
         def _make_completed(task):
             widget = CompletedTask()
             widget._source = task
             widget._text = task.taskname.text
+            widget._data = task.save_data()
             return widget
 
-        for t in self.taskholder.children[::-1]:
+        for t in tasklist[::-1]:
+            # Add new items to holder
+            if t in storylist:
+                continue
             if t.checkbox.active:
                 holder.add_widget(_make_completed(t))
 
+        for x in holder.children:
+            # Remove old items from holder
+            if x._source not in tasklist:
+                holder.remove_widget(x)
 
     def load_stories(self, *dt):
         '''Loads story data from data.json if exists.'''
