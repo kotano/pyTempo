@@ -341,6 +341,8 @@ first_subtask = SUBTASK.format(subactive=False, subtaskname='', focus=False)
 STORY = '''
 Story:
     id: story
+    # popup: popup.__self__
+
     postnum: {postnum}
     creation: {creation}
     _text: '{storytext}'
@@ -377,14 +379,22 @@ Story:
                 id: popup_completed
                 size_hint: 1, None
 
-            Button:
+            Box:
                 size_hint: 1, 0.2
-                text: 'Delete'
-                on_press:
-                    popup.dismiss();
-                    # app.root.diaryscreen.undo_story(root);
-                    app.root.storyholder.remove_widget(root);
-                    # letter.text = '';
+                Button:
+                    size_hint_x: 0.8
+                    text: 'Save'
+                    on_press:
+                        root.save(app);
+                        popup.dismiss();
+                LongpressButton:
+                    size_hint_x: 0.2
+                    text: 'Delete'
+                    on_long_press:
+                        popup.dismiss();
+                        # app.root.diaryscreen.undo_story(root);
+                        app.root.storyholder.remove_widget(root);
+                        # letter.text = '';
 
 
     Box:
@@ -413,7 +423,8 @@ Story:
         text: letter.text
         halign: 'left'
         valign: 'top'
-        on_press: popup.open()
+        on_press: popup.open();
+
 
 # TODO: Add completed tasks 
     StackLayout:

@@ -173,7 +173,7 @@ class Task(BoxLayout):
             'notes': self.notes.text.replace('\n', '\\n'),
             # XXX: subtasks depend on structure. Not reliable
             'subtasks': [[s.children[2].active, s.children[1].text]
-                            for s in self.subtaskholder.children],
+                         for s in self.subtaskholder.children],
         }
         self._data = data
         return data
@@ -305,6 +305,9 @@ class Story(Box):
     _text = StringProperty()
     _title = StringProperty()
 
+    _data = DictProperty()
+    _tasks = ListProperty()
+
     # def refresh_values(self):
     #     set_title()
     #     refresh()
@@ -324,6 +327,27 @@ class Story(Box):
     def add_completed(self):
         pass
 
+    def save(self, app):
+        '''
+        Params: app(obj): Link to running app inst;
+        '''
+        tasklist = app.root.taskholder
+        for x in self.ids['popup_completed'].children:
+            if x.state == 'down' and x._source in tasklist.children:
+                x.disabled = True
+                tasklist.remove_widget(x._source)
+                self._tasks.append(x._source.save_data())
+                print(self._tasks)
+
+    def save_data(self):
+        self._data = {
+            'storytext': self._text,
+            'postnum': self.postnum,
+            'creation': self.creation,
+            'storytext': self._text.replace('\n', '\\n'),
+            'completed_tasks': self._data
+        }
+
     def refresh(self):
         default = 100
         self._set_title()
@@ -342,6 +366,7 @@ class Story(Box):
             rows = total_width / instance.width
             r = height * (int(rows) * 2) if rows > 1 else height
             instance.height = r
+
         Clock.schedule_once(_set_vals, 0.1)
         return height
 

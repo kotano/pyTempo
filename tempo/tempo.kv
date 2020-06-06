@@ -346,11 +346,7 @@
                             padding: 40
                             spacing: 10
                             size_hint: 1, None
-                            # height: 200 + 200 * len(self.children)
-                            # height: sum(x.fullheight for x in self.children)
                             height: 200 + sum(x.height for x in self.children)
-                            # on_height: for x in self.children: print('children', x.height); print(self.height)
-                            # on_height: app.root.collect_height(self)
-                            on_children:
+                            # on_children:
                                 # self.height = app.root.collect_height(self);
-                                diaryscreen.count_postnum();
+                                # diaryscreen.count_postnum();

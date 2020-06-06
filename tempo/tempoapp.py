@@ -5,13 +5,10 @@ from collections import OrderedDict
 from kivy.app import App
 
 from tempo import config
+from tempo import dates
 from tempo.widgets import *  # noqa: F403
 
-# NOTE: Can use KivyCalendar, if solve bug
-# from KivyCalendar import CalendarWidget, DatePicker
 
-
-# >>> App <<<
 class RootWidget(BoxLayout):
     '''Application root widget '''
     diaryscreen = ObjectProperty()
@@ -63,7 +60,7 @@ class RootWidget(BoxLayout):
 
             This code is a part of application main algorithm.
             It may be hard for understanding
-             if you don't have an idea how it should work.
+            if you don't have an idea how it should work.
         '''
         # XXX: UNSTABLE
         # TODO: This needs optimization
@@ -114,11 +111,14 @@ class RootWidget(BoxLayout):
                     self.taskholder.children[0].subtaskholder.add_widget(
                         Builder.load_string(subtask))
         except (FileNotFoundError):
-            print('File does not exist. It will be created automatically.')
+            msg = 'File does not exist. It will be created automatically.'
+            self.print_message(msg, 10)
+            print(msg)
         except (KeyError, json.JSONDecodeError) as e:
             # Except error in case of data corruption
-            msg = (str(e) + 'We were unable to load data.'
+            msg = (str(e) + 'We were unable to load data. '
                    'Would you like to delete this tasks? [y/n]')
+            self.print_message(msg, 10)
             q = input(msg)
             if not q.lower() == 'y':
                 applic.stop()
@@ -188,13 +188,14 @@ class RootWidget(BoxLayout):
             # Add new items to holder
             if t in storylist:
                 continue
+                # t.parent.remove_widget(t)
             if t.checkbox.active:
                 holder.add_widget(_make_completed(t))
 
-        for x in holder.children:
-            # Remove old items from holder
-            if x._source not in tasklist:
-                holder.remove_widget(x)
+        # for x in holder.children:
+        #     # Remove old items from holder
+        #     if x._source not in tasklist:
+        #         holder.remove_widget(x)
 
     def load_stories(self, *dt):
         '''Loads story data from data.json if exists.'''
