@@ -7,6 +7,7 @@ from kivy.app import App
 from tempo import config
 from tempo import dates
 from tempo.widgets import *  # noqa: F403
+from tempo.config import ConfiguredApp
 
 
 class RootWidget(BoxLayout):
@@ -240,7 +241,7 @@ class RootWidget(BoxLayout):
             json.dump(data, storyfile, indent=4)
 
 
-class TempoApp(App):
+class TempoApp(ConfiguredApp):
     '''Main application class'''
     icon = './data/icons/icon_white.png'
 
@@ -253,6 +254,7 @@ class TempoApp(App):
     def build(self):
         global applic
         applic = self
+        self.set_window()
         root = RootWidget()
         Clock.schedule_once(root.load_tasks, 0.1)
         Clock.schedule_once(root.load_stories, 0.1)

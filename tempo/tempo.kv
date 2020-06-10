@@ -310,7 +310,7 @@
                             text: '{}:{}'.format(*timerscreen.display)
                             on_press: timerscreen.trigger_countdown(timerscreen.current_task)
                             on_long_press:
-                                timerscreen.stop_timer();
+                                timerscreen.force_stop();
                                 app.root.ids.actiontitle.title = 'No active tasks'
                             background_normal: ''
 

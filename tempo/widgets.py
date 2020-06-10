@@ -211,7 +211,11 @@ class TimerScreen(Screen):
             self.current_task = None
             self.count = 1
             self.display = [self.POMODURATION, '00']
-            self._reset_minitasks_state()
+            # self._reset_minitasks_state()
+
+    def force_stop(self):
+        self.stop_timer()
+        self._reset_minitasks_state()
 
     def _track_time(self, value, task=None):
         total = (value * 60) - self.count
@@ -389,5 +393,3 @@ class CompletedTask(ToggleButton):
     _source = ObjectProperty()
     _text = StringProperty()
     _data = DictProperty()
-
-    pass

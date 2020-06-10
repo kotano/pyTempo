@@ -4,7 +4,7 @@ from datetime import date
 import datetime
 
 HOURSPERDAY = 6
-POMODORO_DURATION = 25
+POMODORO_DURATION = 1
 POMODORO_REST = 5
 
 cur_month = date.today().month
