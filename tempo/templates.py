@@ -341,11 +341,12 @@ first_subtask = SUBTASK.format(subactive=False, subtaskname='', focus=False)
 STORY = '''
 Story:
     id: story
-    # popup: popup.__self__
+    popup: popup.__self__
 
     postnum: {postnum}
     creation: {creation}
     _text: '{storytext}'
+    _tasks: {completed_tasks}
     
     height: self.refresh()
     on_size: self.refresh()
@@ -378,16 +379,19 @@ Story:
             StackLayout:
                 id: popup_completed
                 size_hint: 1, None
+                # children
 
             Box:
                 size_hint: 1, 0.2
                 Button:
+                    id: btn_save
                     size_hint_x: 0.8
                     text: 'Save'
                     on_press:
                         root.save(app);
                         popup.dismiss();
                 LongpressButton:
+                    id: btn_delete
                     size_hint_x: 0.2
                     text: 'Delete'
                     on_long_press:
@@ -430,8 +434,5 @@ Story:
     StackLayout:
         id: completed_tasks
         size_hint_y: None
-        
-        CompletedTask:
-            text: 'task'
 
 '''

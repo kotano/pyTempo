@@ -207,7 +207,7 @@ class RootWidget(BoxLayout):
                     postnum=s['postnum'],
                     creation=s['creation'],
                     storytext=s['storytext'],
-                    # completed='.'.join(t['startdate']),
+                    completed_tasks=s['completed_tasks'],
                 )
                 strhld = self.storyholder
                 strhld.add_widget(Builder.load_string(widget))
@@ -232,12 +232,7 @@ class RootWidget(BoxLayout):
         counter = 1
         for story in self.storyholder.children[::-1]:
             data.update({counter: {
-                'storytext': story._text,
-                'postnum': story.postnum,
-                'creation': story.creation,
-                'storytext': story._text.replace('\n', '\\n'),
-                # 'completed_tasks': [[s.children[2].active, s.children[1].text]
-                #              for s in task.subtaskholder.children],
+                **story.save_data()
             }})
             counter += 1
         data = OrderedDict(sorted(data.items(), key=lambda t: t[0]))

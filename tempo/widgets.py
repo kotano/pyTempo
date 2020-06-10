@@ -1,5 +1,4 @@
 import calendar
-# from math import ceil
 
 from kivy.clock import Clock
 from kivy.effects.scroll import ScrollEffect
@@ -279,6 +278,7 @@ class DiaryScreen(Screen):
             postnum=self.storycount,
             creation=dates.date_to_list(),
             storytext='',
+            completed_tasks=[],
         )
         self.storyholder.add_widget(
             Builder.load_string(widget),
@@ -308,11 +308,6 @@ class Story(Box):
     _data = DictProperty()
     _tasks = ListProperty()
 
-    # def refresh_values(self):
-    #     set_title()
-    #     refresh()
-    #     pass
-
     def _set_title(self):
         self._title = self._text.split('\n')[0][:20]
 
@@ -325,7 +320,14 @@ class Story(Box):
         par.height = par.collect_height(par, 50)
 
     def add_completed(self):
-        pass
+        p = self.ids['popup_completed']
+        for x in self._tasks:
+            widget = CompletedTask()
+            widget._data = {**x}
+            widget._text = x['taskname']
+            widget.disabled = True
+            p.add_widget(widget)
+        self.save_data()
 
     def save(self, app):
         '''
@@ -335,6 +337,7 @@ class Story(Box):
         for x in self.ids['popup_completed'].children:
             if x.state == 'down' and x._source in tasklist.children:
                 x.disabled = True
+                x.state = 'normal'
                 tasklist.remove_widget(x._source)
                 self._tasks.append(x._source.save_data())
                 print(self._tasks)
@@ -345,17 +348,28 @@ class Story(Box):
             'postnum': self.postnum,
             'creation': self.creation,
             'storytext': self._text.replace('\n', '\\n'),
-            'completed_tasks': self._data
+            'completed_tasks': self._tasks
         }
+        return self._data
+
+    def display_tasks(self):
+        holder = self.ids['completed_tasks']
+        holder.clear_widgets()
+        for x in self._tasks:
+            widget = CompletedTask()
+            widget.text = x['taskname']
+            holder.add_widget(widget)
 
     def refresh(self):
         default = 100
         self._set_title()
+        if not self._data:
+            self.add_completed()
+        self.display_tasks()
         self.arrange_completed(self.ids['completed_tasks'])
 
         Clock.schedule_once(self._set_height, 0.1)
         return default
-        # print('Refreshing height...', height)
 
     def arrange_completed(self, instance):
         # instance = self.ids.completed_tasks
@@ -374,5 +388,6 @@ class Story(Box):
 class CompletedTask(ToggleButton):
     _source = ObjectProperty()
     _text = StringProperty()
+    _data = DictProperty()
 
     pass

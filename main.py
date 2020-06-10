@@ -12,8 +12,9 @@ def debug():
     try:
         app.run()
     except Exception as e:
-        app.root.print_message(e, 15)
         print(e)
+        app.root.print_message(e, 15)
 
 if __name__ == "__main__":
     debug()
+    # main()
