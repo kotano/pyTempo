@@ -14,7 +14,6 @@ TASK template should be filled with named arguments:
     notes(str): task notes
 """
 
-
 from tempo import utils
 
 COLORS = {

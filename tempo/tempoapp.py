@@ -1,12 +1,18 @@
 import json
 import os
 from collections import OrderedDict
+from os.path import exists
 
 from kivy.uix.widget import Widget
 
 from tempo import utils
 from tempo.settings import ConfiguredApp
 from tempo.widgets import *  # noqa: F403
+
+if os.path.exists('./tempo/tempo_algorithm/algorithm.py'):
+    print('YES')
+else:
+    print('NO')
 
 
 class RootWidget(BoxLayout):
@@ -51,7 +57,7 @@ class RootWidget(BoxLayout):
         else:
             # Find delta time
             hours = utils.find_deltatime(start, end)
-            worktime = utils.find_worktime(hours)
+            worktime = utils.find_worktime(hours, self.APP.worktime)
             return worktime
 
     # NOTE: This func is disabled due to restructuring of the applictaion.
@@ -235,7 +241,6 @@ class TempoApp(ConfiguredApp):
     pomoduration = NumericProperty()
     pomorest = NumericProperty()
     worktime = NumericProperty()
-
 
     icon = './data/icons/icon_white.png'
 

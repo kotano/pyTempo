@@ -39,10 +39,10 @@ def find_deltatime(starttime: date, endtime: date):
     return hours
 
 
-def find_worktime(hours):
+def find_worktime(hours, worktime=6):
     '''Find available work time per day. Return int'''
     days = hours // 24
-    work_hours = days * WORKTIME
+    work_hours = days * worktime
     return work_hours
 
 
