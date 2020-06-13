@@ -1,4 +1,4 @@
-'''This module contains templates for Tempo.
+"""This module contains templates for Tempo.
 
 TASK template is needed in order to load saved task data
 It has complex and difficult structure so it is better to keep him here.
@@ -12,7 +12,7 @@ TASK template should be filled with named arguments:
     progress(numeric): amount of work spent on task
     deadline(str): date in 'dd:mm:yy' format
     notes(str): task notes
-'''
+"""
 
 
 from tempo import dates

@@ -2,12 +2,11 @@ import json
 import os
 from collections import OrderedDict
 
-from kivy.app import App
+from kivy.uix.widget import Widget
 
-from tempo import config
-from tempo import dates
-from tempo.widgets import *  # noqa: F403
+from tempo import config, dates
 from tempo.config import ConfiguredApp
+from tempo.widgets import *  # noqa: F403
 
 
 class RootWidget(BoxLayout):
@@ -20,7 +19,7 @@ class RootWidget(BoxLayout):
     COLORS = DictProperty(COLORS)
 
     def print_message(self, msg, duration=3):
-        '''Temporarily display message on action bar'''
+        '''Temporarily display message on action bar.'''
         def _set_title(m):
             self.ids.actiontitle.title = m
 
@@ -122,7 +121,7 @@ class RootWidget(BoxLayout):
             self.print_message(msg, 10)
             q = input(msg)
             if not q.lower() == 'y':
-                applic.stop()
+                self.APP.stop()
 
     def save_tasks(self, *dt):
         ''' Save tasks to .json file'''
@@ -130,17 +129,7 @@ class RootWidget(BoxLayout):
         counter = 1
         for task in self.taskholder.children[::-1]:
             data.update({counter: {
-                'active': task.checkbox.active,
-                'taskname': task.taskname.text,
-                'priority': task.priority.text,
-                'startdate': task.startdate.text.split('.'),
-                'duration': task.duration.text,
-                'progress': task._progress,
-                'deadline': task.deadline.text.split('.'),
-                'notes': task.notes.text.replace('\n', '\\n'),
-                # XXX: subtasks depend on structure. Not reliable
-                'subtasks': [[s.children[2].active, s.children[1].text]
-                             for s in task.subtaskholder.children],
+                **task.save_data()
             }})
             counter += 1
         data = OrderedDict(sorted(data.items(), key=lambda t: t[0]))
@@ -225,7 +214,7 @@ class RootWidget(BoxLayout):
                    'Would you like to delete all data? [y/n]')
             q = input(msg)
             if not q.lower() == 'y':
-                applic.stop()
+                self.APP.stop()
 
     def save_stories(self, *dt):
         ''' Save stories to .json file'''
@@ -242,24 +231,25 @@ class RootWidget(BoxLayout):
 
 
 class TempoApp(ConfiguredApp):
-    '''Main application class'''
+    '''Main application class.'''
     icon = './data/icons/icon_white.png'
 
     def on_stop(self):
-        # Save tasks before exit
+        """Save data before exit."""
+        # self.remember_window()
         self.root.save_tasks()
         self.root.save_stories()
-        return True
 
     def build(self):
-        global applic
-        applic = self
-        self.set_window()
+        Widget.APP = self
+        self.configure_window()
+        self.set_pomodoro_values()
         root = RootWidget()
         Clock.schedule_once(root.load_tasks, 0.1)
         Clock.schedule_once(root.load_stories, 0.1)
         Clock.schedule_interval(root.save_tasks, 45)
         Clock.schedule_interval(root.save_stories, 45)
+        Clock.schedule_interval(self.remember_window, 20)
         return root
 
 

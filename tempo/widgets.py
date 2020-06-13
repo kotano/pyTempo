@@ -1,36 +1,35 @@
 import calendar
 
+from kivy.app import App
 from kivy.clock import Clock
 from kivy.effects.scroll import ScrollEffect
 from kivy.factory import Factory
 from kivy.lang.builder import Builder
-from kivy.properties import (
-    BooleanProperty, DictProperty, ListProperty,
-    NumericProperty, ObjectProperty, Property,
-    StringProperty)
+from kivy.properties import (BooleanProperty, DictProperty, ListProperty,
+                             NumericProperty, ObjectProperty, Property,
+                             StringProperty)
 from kivy.uix.actionbar import ActionBar
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.stacklayout import StackLayout
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
+from kivy.uix.popup import Popup
 from kivy.uix.progressbar import ProgressBar
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.slider import Slider
+from kivy.uix.stacklayout import StackLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.widget import Widget
-from kivy.uix.popup import Popup
 from kivy.utils import platform
 
-from tempo.tempoapp import App
 from tempo import dates
-from tempo.templates import (
-    COLORS, STORY, SUBTASK, TASK,
-    default_subtask, default_task, first_subtask)
+from tempo.templates import (COLORS, STORY, SUBTASK, TASK, default_subtask,
+                             default_task, first_subtask)
+
 
 
 # >>> WIDGETS <<<
@@ -182,15 +181,16 @@ class Subtask(Task):
     pass
 
 
+
 # TIMER
 class TimerScreen(Screen):
     timerdisplay = ObjectProperty()
     minitaskholder = ObjectProperty()
-    POMODURATION = NumericProperty(dates.POMODORO_DURATION)
+    pomoduration = NumericProperty()
     count = NumericProperty(1)
     active = BooleanProperty(False)
     angle = NumericProperty(360)
-    display = ListProperty([POMODURATION.defaultvalue, '00'])
+    display = ListProperty() # Set in kv
     current_task = None
 
     def trigger_countdown(self, task=current_task):
@@ -200,7 +200,7 @@ class TimerScreen(Screen):
             self.active = False
             return
         self.process = Clock.schedule_interval(
-            lambda dt: self._track_time(self.POMODURATION, task), 1)
+            lambda dt: self._track_time(self.pomoduration, task), 1)
         self.active = True
 
     def stop_timer(self):
@@ -210,7 +210,7 @@ class TimerScreen(Screen):
             self.active = False
             self.current_task = None
             self.count = 1
-            self.display = [self.POMODURATION, '00']
+            self.display = [self.pomoduration, '00']
             # self._reset_minitasks_state()
 
     def force_stop(self):
@@ -233,7 +233,7 @@ class TimerScreen(Screen):
         self.count += 1
 
     def _circle(self):
-        step = (self.POMODURATION * 60) / 360
+        step = (self.pomoduration * 60) / 360
         res = self.count // step
         return res
 
@@ -348,10 +348,9 @@ class Story(Box):
 
     def save_data(self):
         self._data = {
-            'storytext': self._text,
+            'storytext': self._text.replace('\n', '\\n'),
             'postnum': self.postnum,
             'creation': self.creation,
-            'storytext': self._text.replace('\n', '\\n'),
             'completed_tasks': self._tasks
         }
         return self._data

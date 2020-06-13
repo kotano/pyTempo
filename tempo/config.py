@@ -1,17 +1,34 @@
-# Disable multitouch on Windows
+"""
+Config
+==============
+
+This file contains Tempo settings classes. 
+It allows the user to change app default settings and stores these changes.
+
+When the user next runs the programs, their changes are restored.
+
+"""
+
+
+import json
+from os import path
+
+from kivy.app import App
+from kivy.config import ConfigParser
+from kivy.core.window import Window
+from kivy.config import Config
 from kivy.lang import Builder
 from kivy.logger import Logger
-from kivy.uix.settings import SettingsWithTabbedPanel, SettingsWithSidebar
-from kivy.app import App
+from kivy.uix.settings import SettingsWithSidebar, SettingsWithTabbedPanel
 from kivy.utils import platform
-from kivy.core.window import Window
-import json
 
 debug = True
 
+
 if platform == 'win':
-    from kivy.config import Config
+    # Disable multitouch on Windows.
     Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
+    # Disable app stop when ESC button pressed.
     Config.set('kivy', 'exit_on_escape', '0')
 
     # if debug is True:
@@ -21,99 +38,20 @@ if platform == 'win':
     # Window.top = -800
 
 
-"""
-Config Example
-==============
-
-This file contains a simple example of how the use the Kivy settings classes in
-a real app. It allows the user to change the caption and font_size of the label
-and stores these changes.
-
-When the user next runs the programs, their changes are restored.
-
-"""
-
-
-# We first define our GUI
-kv = '''
-BoxLayout:
-    orientation: 'vertical'
-    Button:
-        text: 'Configure app (or press F1)'
-        on_release: app.open_settings()
-    Label:
-        id: label
-        text: 'Hello'
-'''
-
-# This JSON defines entries we want to appear in our App configuration screen
-mylable = '''
-[
-    {
-        "type": "string",
-        "title": "Label caption",
-        "desc": "Choose the text that appears in the label",
-        "section": "My Label",
-        "key": "text"
-    },
-    {
-        "type": "numeric",
-        "title": "Label font size",
-        "desc": "Choose the font size the label",
-        "section": "My Label",
-        "key": "font_size"
-    }
-]
-'''
-
-pomodoro = '''
-[
-    {
-        "type": "numeric",
-        "title": "Pomodoro duration",
-        "desc": "Choose the duration of pomodoro work time",
-        "section": "Pomodoro",
-        "key": "pomodoro_duration"
-    },
-    {
-        "type": "numeric",
-        "title": "Pomodoro rest",
-        "desc": "Choose the pomodoro rest time",
-        "section": "Pomodoro",
-        "key": "pomodoro_rest"
-    }
-]
-'''
-
-window = '''
-[
-    {
-        "type": "numeric",
-        "title": "Window left position",
-        "desc": "Choose the window left edge position",
-        "section": "Window",
-        "key": "left"
-    },
-    {
-        "type": "numeric",
-        "title": "Window top position",
-        "desc": "Choose the window top edge position",
-        "section": "Window",
-        "key": "top"
-    },
-
-]
-'''
-
-with open('config.json') as f:
-    configs = json.load(f)
-
-POMODORO_DURATION = 25
-POMODORO_REST = 5
-HOURSPERDAY = 6
+# Defaults
+D = {
+    'POMODURATION': 25,
+    'POMOREST': 5,
+    'WORKTIME': 6,
+    'WINDOW_WIDTH': 800,
+    'WINDOW_HEIGHT': 600,
+    'WINDOW_LEFT': 368,
+    'WINDOW_TOP': 132,
+}
 
 
 class ConfiguredApp(App):
+    """This class is used to create settings for the app."""
 
     settings_cls = SettingsWithSidebar
 
@@ -137,9 +75,16 @@ class ConfiguredApp(App):
     # label.font_size = float(self.config.get('My Label', 'font_size'))
     # return root
 
-    def set_window(self):
+    def get_application_config(self):
+        """Set app config file location to user_data_dir."""
+        filepath = path.join(self.user_data_dir, '%(appname)s.ini')
+        return super().get_application_config(filepath)
+
+    def configure_window(self):
+        """Set window size and position depepending on config values."""
+        Window.bind(on_request_close=self.remember_window)
         self._set_window_pos()
-        # self._set_window_size()
+        self._set_window_size()
 
     def _set_window_pos(self):
         Window.left = int(self.config.get('Window', 'left'))
@@ -150,61 +95,75 @@ class ConfiguredApp(App):
         height = int(self.config.get('Window', 'height'))
         Window.size = (width, height)
 
+    def set_pomodoro_values(self):
+        """Assign pomodoro values as an instance attributes."""
+        self.pomoduration = int(self.config.get('Pomodoro', 'pomodoro_duration'))
+        self.pomorest = int(self.config.get('Pomodoro', 'pomodoro_rest'))
+        self.worktime = int(self.config.get('Pomodoro', 'worktime'))
+
     def build_config(self, config):
-        """
-        Set the default values for the configs sections.
-        """
-        config.setdefaults('My Label', {'text': 'Hello', 'font_size': 20})
+        """Set the default values for the configs sections."""
+        # config.setdefaults('My Label', {'text': 'Hello', 'font_size': 20})
         config.setdefaults('Window', {
-            'left': Window.left, 'top': Window.top,
-            # 'width': Window.width, 'height': Window.height,
+            'left': D['WINDOW_LEFT'], 'top': D['WINDOW_TOP'],
+            'width': D['WINDOW_WIDTH'], 'height': D['WINDOW_HEIGHT'],
         })
         config.setdefaults('Pomodoro', {
-            'pomodoro_duration': 25,
-            'pomodoro_rest': 5
+            'pomodoro_duration': D['POMODURATION'],
+            'pomodoro_rest': D['POMOREST'],
+            'worktime': D['WORKTIME'],
         })
 
     def build_settings(self, settings):
-        """
-        Add our custom section to the default configuration object.
-        """
+        """Add our custom section to the default configuration object."""
         # We use the string defined above for our JSON, but it could also be
         # loaded from a file as follows:
         #     settings.add_json_panel('My Label', self.config, 'settings.json')
-        settings.add_json_panel('My Label', self.config, data=mylable)
-        settings.add_json_panel('Pomodoro', self.config, data=pomodoro)
-        # settings.add_json_panel('Window', self.config, data=window)
+        # settings.add_json_panel('My Label', self.config, './tempo/settings.json')
+        folder = './tempo/settings/'
+        settings.add_json_panel('Pomodoro', self.config,
+                                folder+'pomodoro.json')
+        settings.add_json_panel('Window', self.config, folder+'window.json')
 
     def on_config_change(self, config, section, key, value):
-        """
-        Respond to changes in the configuration.
-        """
+        """Respond to changes in the configuration."""
         Logger.info("main.py: App.on_config_change: {0}, {1}, {2}, {3}".format(
             config, section, key, value))
 
-        if section == "My Label":
-            if key == "text":
-                self.root.ids.label.text = value
+        if section == "Pomodoro":
+            if key == "worktime":
+                if int(value) >= 23:
+                    value = D['WORKTIME']
+                    config.set('Pomodoro', 'worktime', D['WORKTIME'])
+                    config.write()
+                # self.root.ids.label.text = value
             elif key == 'font_size':
                 self.root.ids.label.font_size = float(value)
+        if section == 'Pomodoro':
+            self.set_pomodoro_values()
 
     def close_settings(self, settings=None):
-        """
-        The settings panel has been closed.
-        """
+        """The settings panel has been closed."""
         Logger.info("main.py: App.close_settings: {0}".format(settings))
         super().close_settings(settings)
 
+    def remember_window(self, *args):
+        """Remember app window position and save to config."""
+        self.config.set('Window', 'left', Window.left)
+        self.config.set('Window', 'top', Window.top)
+        self.config.set('Window', 'width', Window.width)
+        self.config.set('Window', 'height', Window.height)
+        self.config.write()
+
 
 class MySettingsWithTabbedPanel(SettingsWithTabbedPanel):
-    """
-    It is not usually necessary to create subclass of a settings panel. There
-    are many built-in types that you can use out of the box
-    (SettingsWithSidebar, SettingsWithSpinner etc.).
+    """Custom settings pannel."""
+    # It is not usually necessary to create subclass of a settings panel.
+    # There are many built-in types that you can use out of the box
+    # (SettingsWithSidebar, SettingsWithSpinner etc.).
 
-    You would only want to create a Settings subclass like this if you want to
-    change the behavior or appearance of an existing Settings class.
-    """
+    # You would only want to create a Settings subclass like this if you want to
+    # change the behavior or appearance of an existing Settings class.
 
     def on_close(self):
         Logger.info("main.py: MySettingsWithTabbedPanel.on_close")
