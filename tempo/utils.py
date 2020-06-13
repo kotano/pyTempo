@@ -3,8 +3,8 @@ import time
 import datetime
 from datetime import date
 
-from plyer.utils import platform
 from plyer import notification, vibrator
+from plyer.utils import platform
 
 
 # from tempo.config import POMODORO_DURATION, POMODORO_REST, WORKTIME
@@ -47,15 +47,26 @@ def find_worktime(hours):
 
 
 def notify(title, message, mode='normal'):
+    """Send system notification.
+
+    Args:
+        title (str): Notification title
+        message (str): Message main text
+        mode (str, optional): Notification mode
+            choose from ['normal', 'fancy']. Defaults to 'normal'.
+    """
+    icon = None
+    if platform == 'ios':
+        return
     if mode == 'fancy':
         if platform == 'win':
-            icon = None
+            pass
         else:
             icon = './data/icons/logo.png'
     notification.notify(title=title, message=message, app_icon=icon)
 
 
-def vibrate(**kwargs):
+def vibrate(time, pattern=[0, 1]):
     pass
 
 

@@ -1,5 +1,5 @@
 """
-Config
+Settings
 ==============
 
 This file contains Tempo settings classes. 
@@ -65,10 +65,6 @@ class ConfiguredApp(App):
     # self.settings_cls = MySettingsWithTabbedPanel
 
     # We apply the saved configuration settings or the defaults
-    # Window.left = self.config.get('Window', 'left')
-    # Window.top = self.config.get('Window', 'top')
-    # # Window.left = 0
-    # # Window.top = -800
     # root = Builder.load_string(kv)
     # label = root.ids.label
     # label.text = self.config.get('My Label', 'text')
@@ -97,7 +93,8 @@ class ConfiguredApp(App):
 
     def set_pomodoro_values(self):
         """Assign pomodoro values as an instance attributes."""
-        self.pomoduration = int(self.config.get('Pomodoro', 'pomodoro_duration'))
+        self.pomoduration = int(self.config.get(
+            'Pomodoro', 'pomodoro_duration'))
         self.pomorest = int(self.config.get('Pomodoro', 'pomodoro_rest'))
         self.worktime = int(self.config.get('Pomodoro', 'worktime'))
 

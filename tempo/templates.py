@@ -15,7 +15,7 @@ TASK template should be filled with named arguments:
 """
 
 
-from tempo import dates
+from tempo import utils
 
 COLORS = {
     'TempoBlue': (.70, .88, .87, .9),
@@ -328,7 +328,7 @@ Subtask:
 
 default_task = TASK.format(
     active=False, taskname='', priority='-',
-    startdate=dates.date_to_string(), duration='', progress='0', deadline='',
+    startdate=utils.date_to_string(), duration='', progress='0', deadline='',
     notes=''
 )
 

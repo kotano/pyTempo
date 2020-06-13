@@ -4,8 +4,8 @@ from collections import OrderedDict
 
 from kivy.uix.widget import Widget
 
-from tempo import config, dates
-from tempo.config import ConfiguredApp
+from tempo import utils
+from tempo.settings import ConfiguredApp
 from tempo.widgets import *  # noqa: F403
 
 
@@ -41,8 +41,8 @@ class RootWidget(BoxLayout):
                 deadline(obj): Task deadline textinput object
         '''
         try:
-            start = dates.convert_to_date(startdate.text)
-            end = dates.convert_to_date(deadline.text)
+            start = utils.convert_to_date(startdate.text)
+            end = utils.convert_to_date(deadline.text)
         except (ValueError, TypeError) as e:
             print(e)
             # TODO: Make undo when wrong data / take data from save?
@@ -50,8 +50,8 @@ class RootWidget(BoxLayout):
             return 0
         else:
             # Find delta time
-            hours = dates.find_deltatime(start, end)
-            worktime = dates.find_worktime(hours)
+            hours = utils.find_deltatime(start, end)
+            worktime = utils.find_worktime(hours)
             return worktime
 
     # NOTE: This func is disabled due to restructuring of the applictaion.
@@ -232,6 +232,11 @@ class RootWidget(BoxLayout):
 
 class TempoApp(ConfiguredApp):
     '''Main application class.'''
+    pomoduration = NumericProperty()
+    pomorest = NumericProperty()
+    worktime = NumericProperty()
+
+
     icon = './data/icons/icon_white.png'
 
     def on_stop(self):

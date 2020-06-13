@@ -26,7 +26,7 @@ from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.widget import Widget
 from kivy.utils import platform
 
-from tempo import dates
+from tempo import utils
 from tempo.templates import (COLORS, STORY, SUBTASK, TASK, default_subtask,
                              default_task, first_subtask)
 
@@ -211,6 +211,7 @@ class TimerScreen(Screen):
             self.current_task = None
             self.count = 1
             self.display = [self.pomoduration, '00']
+            utils.notify('Stop', 'Pomodoro stopped')
             # self._reset_minitasks_state()
 
     def force_stop(self):
@@ -255,7 +256,7 @@ class CalendarScreen(Screen):
 
 class CalendarView(Label):
     cal = calendar.TextCalendar(0)
-    endar = cal.formatmonth(dates.cur_year, dates.cur_month)
+    endar = cal.formatmonth(utils.cur_year, utils.cur_month)
     c = StringProperty(endar)
 
 
@@ -280,7 +281,7 @@ class DiaryScreen(Screen):
         self.count_postnum()
         widget = STORY.format(
             postnum=self.storycount,
-            creation=dates.date_to_list(),
+            creation=utils.date_to_list(),
             storytext='',
             completed_tasks=[],
         )
