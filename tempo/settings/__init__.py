@@ -24,18 +24,14 @@ from kivy.utils import platform
 
 debug = True
 
+CURRENT_DIR = path.dirname(__file__)
+
 
 if platform == 'win':
     # Disable multitouch on Windows.
     Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
     # Disable app stop when ESC button pressed.
     Config.set('kivy', 'exit_on_escape', '0')
-
-    # if debug is True:
-    # print(Window.left)
-    # print(Window.top)
-    # Window.left = 0
-    # Window.top = -800
 
 
 # Defaults
@@ -47,6 +43,7 @@ D = {
     'WINDOW_HEIGHT': 600,
     'WINDOW_LEFT': 368,
     'WINDOW_TOP': 132,
+    'SCREEN': 'taskscreen'
 }
 
 
@@ -54,22 +51,16 @@ class ConfiguredApp(App):
     """This class is used to create settings for the app."""
 
     settings_cls = SettingsWithSidebar
+    use_kivy_settings = True
 
-    # def build(self):
-    #     """
-    #     Build and return the root widget.
-    #     """
-    # The line below is optional. You could leave it out or use one of the
-    # standard options, such as SettingsWithSidebar, SettingsWithSpinner
-    # etc.
-    # self.settings_cls = MySettingsWithTabbedPanel
-
-    # We apply the saved configuration settings or the defaults
-    # root = Builder.load_string(kv)
-    # label = root.ids.label
-    # label.text = self.config.get('My Label', 'text')
-    # label.font_size = float(self.config.get('My Label', 'font_size'))
-    # return root
+    def configure_app(self):
+        """Set all application configurations.
+        
+        Use this once when launch the application.
+        """
+        self.configure_window()
+        self.set_screen()
+        self.set_pomodoro_values()
 
     def get_application_config(self):
         """Set app config file location to user_data_dir."""
@@ -78,9 +69,16 @@ class ConfiguredApp(App):
 
     def configure_window(self):
         """Set window size and position depepending on config values."""
+        if platform in ['ios', 'android']:
+            return
         Window.bind(on_request_close=self.remember_window)
         self._set_window_pos()
         self._set_window_size()
+
+    def set_screen(self):
+        self.defaultscreen = self.config.get('General', 'defaultscreen')
+        pass
+
 
     def _set_window_pos(self):
         Window.left = int(self.config.get('Window', 'left'))
@@ -94,9 +92,9 @@ class ConfiguredApp(App):
     def set_pomodoro_values(self):
         """Assign pomodoro values as an instance attributes."""
         self.pomoduration = int(self.config.get(
-            'Pomodoro', 'pomodoro_duration'))
-        self.pomorest = int(self.config.get('Pomodoro', 'pomodoro_rest'))
-        self.worktime = int(self.config.get('Pomodoro', 'worktime'))
+            'General', 'pomodoro_duration'))
+        self.pomorest = int(self.config.get('General', 'pomodoro_rest'))
+        self.worktime = int(self.config.get('General', 'worktime'))
 
     def build_config(self, config):
         """Set the default values for the configs sections."""
@@ -105,10 +103,11 @@ class ConfiguredApp(App):
             'left': D['WINDOW_LEFT'], 'top': D['WINDOW_TOP'],
             'width': D['WINDOW_WIDTH'], 'height': D['WINDOW_HEIGHT'],
         })
-        config.setdefaults('Pomodoro', {
+        config.setdefaults('General', {
             'pomodoro_duration': D['POMODURATION'],
             'pomodoro_rest': D['POMOREST'],
             'worktime': D['WORKTIME'],
+            'defaultscreen': D['SCREEN'],
         })
 
     def build_settings(self, settings):
@@ -117,26 +116,26 @@ class ConfiguredApp(App):
         # loaded from a file as follows:
         #     settings.add_json_panel('My Label', self.config, 'settings.json')
         # settings.add_json_panel('My Label', self.config, './tempo/settings.json')
-        folder = './tempo/settings/'
-        settings.add_json_panel('Pomodoro', self.config,
-                                folder+'pomodoro.json')
-        settings.add_json_panel('Window', self.config, folder+'window.json')
+        settings.add_json_panel(
+            'General', self.config, path.join(CURRENT_DIR, 'general.json'))
+        settings.add_json_panel(
+            'Window', self.config, path.join(CURRENT_DIR, 'window.json'))
 
     def on_config_change(self, config, section, key, value):
         """Respond to changes in the configuration."""
         Logger.info("main.py: App.on_config_change: {0}, {1}, {2}, {3}".format(
             config, section, key, value))
 
-        if section == "Pomodoro":
+        if section == "General":
             if key == "worktime":
                 if int(value) >= 23:
                     value = D['WORKTIME']
-                    config.set('Pomodoro', 'worktime', D['WORKTIME'])
+                    config.set('General', 'worktime', D['WORKTIME'])
                     config.write()
                 # self.root.ids.label.text = value
             elif key == 'font_size':
                 self.root.ids.label.font_size = float(value)
-        if section == 'Pomodoro':
+        if section == 'General':
             self.set_pomodoro_values()
 
     def close_settings(self, settings=None):

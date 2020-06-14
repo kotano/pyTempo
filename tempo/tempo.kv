@@ -224,8 +224,8 @@
             size: 70, self.height
 
             ScreenButton:
-                id: list_button
-                on_parent: self.state = 'down'
+                id: taskscreen_button
+                on_parent: 
                 canvas.after:
                     Rectangle:
                         # Icon size is 50x50
@@ -234,7 +234,7 @@
                         source: './data/icons/list_icon.png'
                 on_release: content_window.current = 'taskscreen'
             ScreenButton:
-                id: timer_button
+                id: timerscreen_button
                 canvas.after:
                     Rectangle:
                         # Icon size is 50x50
@@ -245,7 +245,7 @@
                     content_window.current = 'timerscreen';
                     root.populate_minitasks(minitaskholder)
             ScreenButton:
-                id: calendar_button
+                id: calendarscreen_button
                 canvas.after:
                     Rectangle:
                         # Icon size is 50x50
@@ -254,7 +254,7 @@
                         source: './data/icons/calendar_icon.png'
                 on_release: content_window.current = 'calendarscreen'
             ScreenButton:
-                id: diary_button
+                id: diaryscreen_button
                 canvas.after:
                     Rectangle:
                         # Icon size is 50x50
@@ -267,7 +267,8 @@
 # CONTENT
         MyScreenManager:
             id: content_window
-            current: root.diaryscreen.name
+            # current: app.defaultscreen
+            on_parent: root.switch_screen(app.defaultscreen)
             spacing: 0, 10
             padding: 10, 10
             cols: 1

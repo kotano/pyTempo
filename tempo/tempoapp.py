@@ -18,12 +18,28 @@ from tempo.widgets import *  # noqa: F403
 
 class RootWidget(BoxLayout):
     '''Application root widget '''
+    content_window = ObjectProperty()
     diaryscreen = ObjectProperty()
 
     storyholder = ObjectProperty()
     taskholder = ObjectProperty()
     minitaskholder = ObjectProperty()
     COLORS = DictProperty(COLORS)
+
+    def switch_screen(self, screen):
+        """Safely trigger screen change.
+
+        Args:
+            screen ([str, int]): Screen name or position on the sidebar.
+        """
+        if screen == 'taskscreen' or screen == 1:
+            self.ids.taskscreen_button.trigger_action()
+        elif screen == 'timerscreen' or screen == 2:
+            self.ids.timerscreen_button.trigger_action()
+        elif screen == 'calendarscreen' or screen == 3:
+            self.ids.calendarscreen_button.trigger_action()
+        elif screen == 'diaryscreen' or screen == 4:
+            self.ids.diaryscreen_button.trigger_action()
 
     def print_message(self, msg, duration=3):
         '''Temporarily display message on action bar.'''
@@ -62,30 +78,7 @@ class RootWidget(BoxLayout):
             return worktime
 
     # NOTE: This func is disabled due to restructuring of the applictaion.
-    def find_max_duration(self, task):
-        '''Find maximum available time for each task and return int.
 
-            This code is a part of application main algorithm.
-            It may be hard for understanding
-            if you don't have an idea how it should work.
-        '''
-        # XXX: UNSTABLE
-        # TODO: This needs optimization
-        # FIXME: Unpredictable results
-        keep = []
-        for t in self.taskholder.children:
-            keep.append([t.deltatime, t._duration, t._max_duration])
-        keep = sorted(keep, key=lambda x: x[0])
-        my_index = keep.index(
-            [task.deltatime, task._duration, task._max_duration])
-        before = [x[1] for x in keep][:my_index]
-        after = [x[2]-x[1] for x in keep][my_index+1:]
-        max_duration = task.deltatime - sum(before)
-        if after:
-            max_duration = min(max_duration, min(after))
-        max_duration = max(0, max_duration)
-        task._max_duration = max_duration
-        return max_duration
 
     # def refresh_data(self, *dt):
     #     for t in self.taskholder.children:
@@ -248,8 +241,7 @@ class TempoApp(ConfiguredApp):
 
     def build(self):
         Widget.APP = self
-        self.configure_window()
-        self.set_pomodoro_values()
+        self.configure_app()
         root = RootWidget()
         Clock.schedule_once(root.load_tasks, 0.1)
         Clock.schedule_once(root.load_stories, 0.1)
