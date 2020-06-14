@@ -10,8 +10,9 @@ def test_find_deltatime():
 
 
 def test_find_worktime():
-    # If we have one day, so then we have only HOURSPERDAY hours value
-    assert utils.HOURSPERDAY == utils.find_worktime(24)
+    # If we have one day, so then we have only default work hours value
+    assert 6 == utils.find_worktime(24, 6)
+    assert 12 == utils.find_worktime(48, 6)
 
 
 def test_date_to_string():
@@ -22,3 +23,7 @@ def test_date_to_string():
 def test_convert_to_date():
     s = '22.06.2020'
     assert datetime.date(2020, 6, 22) == utils.convert_to_date(s)
+
+
+def test_notify():
+    utils.notify('Test', 'Test passed successfuly.')

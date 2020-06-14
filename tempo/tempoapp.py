@@ -9,10 +9,11 @@ from tempo import utils
 from tempo.settings import ConfiguredApp
 from tempo.widgets import *  # noqa: F403
 
-if os.path.exists('./tempo/tempo_algorithm/algorithm.py'):
-    print('YES')
-else:
-    print('NO')
+
+# if os.path.exists('./tempo/tempo_algorithm/algorithm.py'):
+#     print('YES')
+# else:
+#     print('NO')
 
 
 class RootWidget(BoxLayout):
@@ -207,11 +208,6 @@ class RootWidget(BoxLayout):
                 )
                 strhld = self.storyholder
                 strhld.add_widget(Builder.load_string(widget))
-                # for st in t['subtasks'][::-1]:
-                #     subtask = SUBTASK.format(
-                #         subactive=st[0], subtaskname=st[1], focus=False)
-                #     self.taskholder.children[0].subtaskholder.add_widget(
-                #         Builder.load_string(subtask))
         except (FileNotFoundError):
             print('File does not exist. It will be created automatically.')
         except (KeyError, json.JSONDecodeError) as e:

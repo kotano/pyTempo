@@ -31,7 +31,6 @@ from tempo.templates import (COLORS, STORY, SUBTASK, TASK, default_subtask,
                              default_task, first_subtask)
 
 
-
 # >>> WIDGETS <<<
 class Box(BoxLayout):
     pass
@@ -131,18 +130,18 @@ class TaskScreen(Screen):
     def _clear_input(self, instance):
         '''Made to fix an unknown issue with
         clearing subtask text input
+
         instance (obj): subtask object reference
         '''
         instance.subtaskname.text = ''
         instance.subcheckbox.active = False
 
-    def complete_task(self, holder, root, value):
+    def complete_task(self, holder, root):
         '''Does task complete behavior
 
         Parameters:
             holder (obj): tasks container object
             root (obj): main task object
-            value (bool): checkbox value
         '''
         if value:
             holder.remove_widget(root)
@@ -181,7 +180,6 @@ class Subtask(Task):
     pass
 
 
-
 # TIMER
 class TimerScreen(Screen):
     timerdisplay = ObjectProperty()
@@ -190,7 +188,7 @@ class TimerScreen(Screen):
     count = NumericProperty(1)
     active = BooleanProperty(False)
     angle = NumericProperty(360)
-    display = ListProperty() # Set in kv
+    display = ListProperty()  # Set in kv
     current_task = None
 
     def trigger_countdown(self, task=current_task):
@@ -220,10 +218,8 @@ class TimerScreen(Screen):
 
     def _track_time(self, value, task=None):
         total = (value * 60) - self.count
-        # print(total)
         if task:
             task._progress += 1/3600
-            # print(task._progress)
         if total == 0:
             self.stop_timer()
             return
@@ -289,7 +285,6 @@ class DiaryScreen(Screen):
             Builder.load_string(widget),
             index=len(self.storyholder.children))
         self.storyholder.children[-1].ids.popup.open()
-        # self.storyholder.add_widget(Builder.load_string(STORY))
 
 
 class Storyholder(GridLayout):

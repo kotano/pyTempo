@@ -7,11 +7,25 @@ from plyer import notification, vibrator
 from plyer.utils import platform
 
 
-# from tempo.config import POMODORO_DURATION, POMODORO_REST, WORKTIME
-
+# TODO: Make a function
 cur_month = date.today().month
 cur_year = date.today().year
 cur_date = date.today()
+
+
+def print_log(func):
+    """Decorator function to track functions execution."""
+
+    def wrapper(*args, **kwargs):
+        n = func.__name__
+        print('{} has started with arguments:\n{}\n{}'.format(
+            n, args, kwargs))
+        res = func(*args, **kwargs)
+        print('{} has finished and returned: {}'.format(
+            n, res))
+        return res
+
+    return wrapper
 
 
 def date_to_string(d=date.today()):
@@ -53,37 +67,28 @@ def notify(title, message, mode='normal'):
         title (str): Notification title
         message (str): Message main text
         mode (str, optional): Notification mode
-            choose from ['normal', 'fancy']. Defaults to 'normal'.
+            choose from ['normal', 'fancy', 'toast']. Defaults to 'normal'.
     """
-    icon = None
+    kwargs = {
+        'app_name': 'Tempo',
+        'app_icon': './data/icons/logo.png',
+        'title': title, 'message': message,
+        # Ticker is a text to display on status bar when notification arrives.
+        'ticker': None, 'timeout': 10,
+        # Toast is a simple android message instead of full notification.
+        'toast': False
+    }
+    # Not implemented yet for ios.
     if platform == 'ios':
         return
-    if mode == 'fancy':
-        if platform == 'win':
-            pass
-        else:
-            icon = './data/icons/logo.png'
-    notification.notify(title=title, message=message, app_icon=icon)
+    elif platform == 'win':
+        # TODO: Make app logo.ico file
+        kwargs['app_icon'] = None
+        kwargs['timeout'] = 4
+    elif platform == 'android' and mode == 'toast':
+        kwargs['toast': True]
+    notification.notify(**kwargs)
 
 
 def vibrate(time, pattern=[0, 1]):
     pass
-
-
-# class NotificationDemo(BoxLayout):
-
-#     def do_notify(self, mode='normal'):
-#         kwargs = {'title': title, 'message': message, 'ticker': ticker}
-
-#         if mode == 'fancy':
-#             kwargs['app_name'] = "Plyer Notification Example"
-#             if platform == "win":
-#                 kwargs['app_icon'] = join(dirname(realpath(__file__)),
-#                                           'plyer-icon.ico')
-#                 kwargs['timeout'] = 4
-#             else:
-#                 kwargs['app_icon'] = join(dirname(realpath(__file__)),
-#                                           'plyer-icon.png')
-#         elif mode == 'toast':
-#             kwargs['toast'] = True
-#         notification.notify(**kwargs)
