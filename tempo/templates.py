@@ -36,15 +36,22 @@ Task:
     deadline: deadline.__self__
     notes: notes.__self__
 
-    _progress: float({progress})
     _max_duration: task.deltatime
+    _active: {active}
+    _taskname: '{taskname}'
+    _priority: '{priority}'
+    _startdate: '{startdate}'
+    _deadline: '{deadline}'
+    _duration: float({duration})
+    _progress: float({progress})
+    _notes: '{notes}'
 
     opacity: .2 if checkbox.active else 1
 
 # checkbox
     CheckBox:
         id: checkbox
-        active: {active}
+        active: root._active
         on_active: app.root.taskscreen.complete_task(root.parent, root, self.active)
         size_hint: None, 1
         width: 20
@@ -84,12 +91,14 @@ Task:
                     PrioritySpinner:
                         size_hint: 0.1, 1
                         id: priority
-                        text: '{priority}'
+                        text: str(root._priority)
+                        on_values: root._priority = self.text
 
 #> task name
                     DefaultInput:
                         id: taskname
-                        text: '{taskname}'
+                        text: str(root._taskname)
+                        on_text: root._taskname = self.text
                         font_size: 18
                         focus: True
                         hint_text: 'Enter task name'
@@ -116,7 +125,8 @@ Task:
                             text: 'Start date'
                         DateInput:
                             id: startdate
-                            text: '{startdate}'
+                            text: str(root._startdate)
+                            on_text: root._startdae = self.text
                             on_focus:
                                 if self.focus == False: root.deltatime = app.root.get_worktime(startdate, deadline)
 
@@ -170,7 +180,8 @@ Task:
                                                     width: 1
                                                     rectangle: self.x, self.y, self.width, self.height
                                             id: duration
-                                            text: '{duration}'
+                                            text: str(root._duration)
+                                            on_text: root._duration = float(self.text)
                                             on_focus:
                                                 if not self.text: self.text = '0'
                                                 if float(self.text) > task._max_duration and self.focus == False: self.text = str(task._max_duration)
@@ -206,7 +217,8 @@ Task:
                             text: 'End date'
                         DateInput:
                             id: deadline
-                            text: '{deadline}'
+                            text: str(root._deadline)
+                            on_text: root._deadline = self.text
                             on_focus:
                                 if self.focus == False: root.deltatime = app.root.get_worktime(startdate, deadline);
                                 # app.root.refresh_data()
@@ -233,7 +245,8 @@ Task:
                                 width: 1
                                 rectangle: self.x, self.y, self.width, self.height
                         id: notes
-                        text: '{notes}'
+                        text: str(root._notes)
+                        on_text: root._notes = self.text
                         markup: True
                         multiline: True
                         hint_text: 'Notes...'

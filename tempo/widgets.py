@@ -136,7 +136,7 @@ class TaskScreen(Screen):
         instance.subtaskname.text = ''
         instance.subcheckbox.active = False
 
-    def complete_task(self, holder, root):
+    def complete_task(self, holder, root, value):
         '''Does task complete behavior
 
         Parameters:
@@ -160,14 +160,14 @@ class Task(BoxLayout):
 
     def save_data(self):
         data = {
-            'active': self.checkbox.active,
-            'taskname': self.taskname.text,
-            'priority': self.priority.text,
-            'startdate': self.startdate.text.split('.'),
-            'duration': self.duration.text,
+            'active': self._active,
+            'taskname': self._taskname,
+            'priority': self._priority,
+            'startdate': self._startdate.split('.'),
+            'duration': self._duration,
             'progress': self._progress,
-            'deadline': self.deadline.text.split('.'),
-            'notes': self.notes.text.replace('\n', '\\n'),
+            'deadline': self._deadline.split('.'),
+            'notes': self._notes.replace('\n', '\\n'),
             # XXX: subtasks depend on structure. Not reliable
             'subtasks': [[s.children[2].active, s.children[1].text]
                          for s in self.subtaskholder.children],
