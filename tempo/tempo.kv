@@ -6,10 +6,10 @@
     font_name: './data/fonts/RobotoMono-Regular'
 
 
-<Text@Label>
+<Text>:
     color: COLORS['TextColor']
 
-<ScreenButton@ToggleButton>:
+<ScreenButton>:
     group: 'screen'
     allow_no_selection: False
     background_normal: ''
@@ -18,7 +18,7 @@
     background_normal: ''
     color: 0, 0, 0, 1
 
-<DefaultInput@TextInput>:
+<DefaultInput>:
     background_normal: ''
     write_tab: False
     multiline: False
@@ -39,11 +39,11 @@
 
 <PressableBoxLayout>:
 
-<DateInput@DefaultInput>:
+<DateInput>:
     border: 1, 1, 1, 1
 
 
-<PrioritySpinner@Spinner>:
+<PrioritySpinner>:
     text_autoupdate: True
     color: 0, 0, 0, 1
     values: ('-', '!!!High', '!!Normal', '!Low')
@@ -51,7 +51,7 @@
     height: 40
     background_normal: ''
 
-<TaskHolder@GridLayout>:
+<TaskHolder>:
     id: taskholder
     spacing: 0, 10
     padding: 10, 10

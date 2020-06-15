@@ -1,9 +1,15 @@
+import os
+from os import path
+from unittest.mock import Mock
+
 import pytest
 
-import tempo
 from tempo import tempoapp
 from tempo import widgets
 from tempo.tempoapp import RootWidget, TempoApp
+
+
+CURRENT_DIR = path.join(path.dirname(__file__))
 
 
 class AppTest(TempoApp):
@@ -20,35 +26,48 @@ class AppTest(TempoApp):
         return root
 
 
-class RootTest(RootWidget):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.APP = AppTest
-        self.APP.worktime = 6
+# class RootTest(RootWidget):
+#     def __init__(self, **kwargs):
+#         super().__init__(**kwargs)
+#         self.APP = AppTest
+#         self.APP.worktime = 6
 
 
+TASKVALUES = {
+    'active': True, 'taskname': 'Test',
+    'priority': '!Low',
+    'startdate': ['22', '06', '2020'],
+    'deadline': ['23', '06', '2020'],
+    'duration': 4, 'progress': 5,
+    'notes': 'Some test note', 'subtasks': []
+}
 
 
-class Mock(object):
-    pass
+def make_task(name=''):
+    v = TASKVALUES
+    t = widgets.Task()
+    t._active = v['active']
+    t._taskname = v['taskname'] if not name else name
+    t._priority = v['priority']
+    t._startdate = '.'.join(v['startdate'])
+    t._deadline = '.'.join(v['deadline'])
+    t._duration = v['duration']
+    t._progress = v['progress']
+    t._notes = v['notes']
+    t.subtaskholder = Mock()
+    t.subtaskholder.children = v['subtasks']
+    return t
 
-# @pytest.fixture
-# def provide_task():
-#     t = widgets.Task
-#     t.checkbox = Mock()
-#     t.checkbox.active = True
-#     t.taskname = Mock()
-#     t.taskname.text = 'Test'
-#     t.priority = Mock()
-#     t.priority.text = '!Low'
-#     t.startdate = Mock()
-#     t.startdate.active = True
 
 @pytest.fixture
 def provide_root():
     R = RootWidget()
     R.APP = AppTest
     R.APP.worktime = 6
+    taskholder = widgets.Widget(id='taskholder')
+    R.taskholder = taskholder
+    R.add_widget(taskholder)
+    # R.taskholder.children = []
     return R
 
 
@@ -81,9 +100,36 @@ def test_story_save_data():
     assert r == expected
 
 
-# def test_save_tasks():
-    # def test_load_tasks(monkeypatch):
-    #     monkeypatch.setattr(tempoapp, 'DATAFILE', 'tests/fixtures/data.json')
-    #     r = app.root
-    #     f = r.load_tasks()
-    #     assert 0
+def test_task_save_data():
+    expected = TASKVALUES
+    r = make_task()
+    assert r.save_data() == expected
+
+
+def test_save_tasks(monkeypatch, provide_root):
+    r = provide_root
+    expected_file = path.join(CURRENT_DIR, 'fixtures', 'tasks.json')
+    test_file = path.join(CURRENT_DIR, 'tasks.json')
+    monkeypatch.setattr(tempoapp, 'TASKFILE', test_file)
+    r.taskholder.children.append(make_task())
+    r.save_tasks()
+    f1 = open(test_file)
+    f2 = open(expected_file)
+    assert f1.read() == f2.read()
+    f1.close()
+    f2.close()
+    os.remove(test_file)
+
+
+# def test_load_tasks(monkeypatch, provide_root):
+    # NOTE: Depends much on graphic interface so hard to test.
+
+    # r = provide_root
+    # expected_file = path.join(CURRENT_DIR, 'fixtures', 'tasks.json')
+    # test_file = path.join(CURRENT_DIR, 'tasks.json')
+    # monkeypatch.setattr(tempoapp, 'TASKFILE', expected_file)
+    # monkeypatch.setattr(r, 'taskholder', [])
+    # t = r.taskholder
+    # monkeypatch.setattr(t, 'add_widget', lambda x: [].append(x))
+    # f = r.load_tasks()
+    # assert 0

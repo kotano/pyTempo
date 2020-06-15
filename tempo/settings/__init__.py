@@ -2,22 +2,18 @@
 Settings
 ==============
 
-This file contains Tempo settings classes. 
+This file contains Tempo settings classes.
 It allows the user to change app default settings and stores these changes.
 
 When the user next runs the programs, their changes are restored.
 
 """
 
-
-import json
 from os import path
 
 from kivy.app import App
-from kivy.config import ConfigParser
 from kivy.core.window import Window
 from kivy.config import Config
-from kivy.lang import Builder
 from kivy.logger import Logger
 from kivy.uix.settings import SettingsWithSidebar, SettingsWithTabbedPanel
 from kivy.utils import platform
@@ -34,7 +30,7 @@ if platform == 'win':
     Config.set('kivy', 'exit_on_escape', '0')
 
 
-# Defaults
+# DEFAULTS
 D = {
     'POMODURATION': 25,
     'POMOREST': 5,
@@ -55,7 +51,7 @@ class ConfiguredApp(App):
 
     def configure_app(self):
         """Set all application configurations.
-        
+
         Use this once when launch the application.
         """
         self.configure_window()
@@ -72,13 +68,12 @@ class ConfiguredApp(App):
         if platform in ['ios', 'android']:
             return
         Window.bind(on_request_close=self.remember_window)
-        self._set_window_pos()
         self._set_window_size()
+        self._set_window_pos()
 
     def set_screen(self):
         self.defaultscreen = self.config.get('General', 'defaultscreen')
         pass
-
 
     def _set_window_pos(self):
         Window.left = int(self.config.get('Window', 'left'))
@@ -115,7 +110,8 @@ class ConfiguredApp(App):
         # We use the string defined above for our JSON, but it could also be
         # loaded from a file as follows:
         #     settings.add_json_panel('My Label', self.config, 'settings.json')
-        # settings.add_json_panel('My Label', self.config, './tempo/settings.json')
+        # settings.add_json_panel(
+        #     'My Label', self.config, './tempo/settings.json')
         settings.add_json_panel(
             'General', self.config, path.join(CURRENT_DIR, 'general.json'))
         settings.add_json_panel(
@@ -158,8 +154,9 @@ class MySettingsWithTabbedPanel(SettingsWithTabbedPanel):
     # There are many built-in types that you can use out of the box
     # (SettingsWithSidebar, SettingsWithSpinner etc.).
 
-    # You would only want to create a Settings subclass like this if you want to
-    # change the behavior or appearance of an existing Settings class.
+    # You would only want to create a Settings subclass like this if
+    # you want to change the behavior or appearance of
+    # an existing Settings class.
 
     def on_close(self):
         Logger.info("main.py: MySettingsWithTabbedPanel.on_close")

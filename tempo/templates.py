@@ -52,7 +52,9 @@ Task:
     CheckBox:
         id: checkbox
         active: root._active
-        on_active: app.root.taskscreen.complete_task(root.parent, root, self.active)
+        on_active:
+            app.root.taskscreen.complete_task(root.parent, root, self.active);
+            root._active = self.active
         size_hint: None, 1
         width: 20
         pos: root.center
@@ -340,7 +342,7 @@ Subtask:
 
 default_task = TASK.format(
     active=False, taskname='', priority='-',
-    startdate=utils.date_to_string(), duration='', progress='0', deadline='',
+    startdate=utils.cur_date(), duration='', progress='0', deadline='',
     notes=''
 )
 
@@ -359,7 +361,7 @@ Story:
     creation: {creation}
     _text: '{storytext}'
     _tasks: {completed_tasks}
-    
+
     height: self.refresh()
     on_size: self.refresh()
 
@@ -387,7 +389,7 @@ Story:
                 hint_text: 'Some text'
                 text: root._text
                 on_text: root._text = self.text;
-            
+
             StackLayout:
                 id: popup_completed
                 size_hint: 1, None
@@ -416,15 +418,15 @@ Story:
     Box:
         size_hint: 1, None
         height: 40
-        
+
         Text:
             halign: 'left'
             text: '-'.join([str(x) for x in root.creation])
-        
+
         Text:
             # refresh_text: lambda: root._text.split('\\n')[0][:15]
             text: root._title
-        
+
         Text:
             halign: 'right'
             text: 'Post №' + str(root.postnum)
@@ -441,8 +443,6 @@ Story:
         valign: 'top'
         on_press: popup.open();
 
-
-# TODO: Add completed tasks 
     StackLayout:
         id: completed_tasks
         size_hint_y: None

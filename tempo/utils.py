@@ -1,20 +1,30 @@
-import sys
-import time
-import datetime
+"""Utils module for various tasks.
+
+It has:
+    decorators,
+    functions to work with time and dates,
+    functions to work with operation systems,
+    etc.
+
+"""
+
+# import time
 from datetime import date
+from time import ctime
 
 from plyer import notification, vibrator
 from plyer.utils import platform
 
 
-# TODO: Make a function
-cur_month = date.today().month
-cur_year = date.today().year
-cur_date = date.today()
+# Make it callable to prevent from storing obsolete value.
+def cur_month(): return date.today().month
+def cur_year(): return date.today().year
+def cur_date(): return date.today()
+def cur_time(): return ctime()
 
 
 def print_log(func):
-    """Decorator function to track functions execution."""
+    """Decorate function to track its execution."""
 
     def wrapper(*args, **kwargs):
         n = func.__name__
@@ -28,8 +38,8 @@ def print_log(func):
     return wrapper
 
 
-def date_to_string(d=date.today()):
-    '''Return dd:mm:yy format string from date object.'''
+def date_to_string(d):
+    """Return dd:mm:yy format string from date object."""
     return d.strftime("%d.%m.%Y")
 
 
@@ -91,4 +101,5 @@ def notify(title, message, mode='normal'):
 
 
 def vibrate(time, pattern=[0, 1]):
+    vibrator.vibrate()
     pass

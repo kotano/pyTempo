@@ -1,0 +1,21 @@
+{
+    "1": {
+        "active": true,
+        "taskname": "Test",
+        "priority": "!Low",
+        "startdate": [
+            "22",
+            "06",
+            "2020"
+        ],
+        "duration": 4,
+        "progress": 5,
+        "deadline": [
+            "23",
+            "06",
+            "2020"
+        ],
+        "notes": "Some test note",
+        "subtasks": []
+    }
+}

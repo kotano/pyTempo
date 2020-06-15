@@ -1,34 +1,27 @@
 import calendar
 
-from kivy.app import App
 from kivy.clock import Clock
 from kivy.effects.scroll import ScrollEffect
 from kivy.factory import Factory
 from kivy.lang.builder import Builder
 from kivy.properties import (BooleanProperty, DictProperty, ListProperty,
-                             NumericProperty, ObjectProperty, Property,
-                             StringProperty)
-from kivy.uix.actionbar import ActionBar
+                             NumericProperty, ObjectProperty, StringProperty)
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
-from kivy.uix.dropdown import DropDown
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
-from kivy.uix.popup import Popup
-from kivy.uix.progressbar import ProgressBar
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.scrollview import ScrollView
-from kivy.uix.slider import Slider
-from kivy.uix.stacklayout import StackLayout
+from kivy.uix.spinner import Spinner
 from kivy.uix.textinput import TextInput
 from kivy.uix.togglebutton import ToggleButton
-from kivy.uix.widget import Widget
+from kivy.uix.widget import Widget  # noqa: F401
 from kivy.utils import platform
 
 from tempo import utils
-from tempo.templates import (COLORS, STORY, SUBTASK, TASK, default_subtask,
-                             default_task, first_subtask)
+from tempo.templates import (COLORS, STORY, default_subtask, default_task,
+                             first_subtask)
 
 
 # >>> WIDGETS <<<
@@ -48,6 +41,26 @@ class CustomScroll(ScrollView):
     if platform == 'win':
         effect_cls = ScrollEffect
     bar_color = COLORS['TempoBlue']
+    pass
+
+
+class PrioritySpinner(Spinner):
+    pass
+
+
+class Text(Label):
+    pass
+
+
+class DefaultInput(TextInput):
+    pass
+
+
+class DateInput(DefaultInput):
+    pass
+
+
+class ScreenButton(ToggleButton):
     pass
 
 
@@ -112,7 +125,7 @@ class TaskScreen(Screen):
         self.taskholder.children = sorted_lst
 
     def add_new_task(self):
-        ''' Append new task to 'taskholder' widget'''
+        '''Append new task to 'taskholder' widget'''
         self.taskholder.add_widget(Builder.load_string(default_task))
         last_task = self.taskholder.children[0]
         subtskhldr = last_task.subtaskholder
@@ -148,18 +161,29 @@ class TaskScreen(Screen):
             holder.add_widget(root)
 
 
+class TaskHolder(GridLayout):
+    pass
+
+
 class Task(BoxLayout):
+    subtaskholder = ObjectProperty()
+
+    _active = BooleanProperty()
+    _taskname = StringProperty()
+    _priority = StringProperty()
+    _startdate = StringProperty()
+    _deadline = StringProperty()
+    _notes = StringProperty()
     _duration = NumericProperty()
     _max_duration = NumericProperty()
     _progress = NumericProperty()
 
     deltatime = NumericProperty()
-    in_progress = BooleanProperty(False)
 
     _data = DictProperty()
 
     def save_data(self):
-        data = {
+        self._data = {
             'active': self._active,
             'taskname': self._taskname,
             'priority': self._priority,
@@ -172,8 +196,13 @@ class Task(BoxLayout):
             'subtasks': [[s.children[2].active, s.children[1].text]
                          for s in self.subtaskholder.children],
         }
-        self._data = data
-        return data
+        return self._data
+
+    def __repr__(self):
+        active = 'Completed' if self._active else 'Active'
+        res = '{} task "{}" with progress equal to {}'.format(
+            active, self._taskname, self._progress)
+        return res
 
 
 class Subtask(Task):
@@ -252,7 +281,7 @@ class CalendarScreen(Screen):
 
 class CalendarView(Label):
     cal = calendar.TextCalendar(0)
-    endar = cal.formatmonth(utils.cur_year, utils.cur_month)
+    endar = cal.formatmonth(utils.cur_year(), utils.cur_month())
     c = StringProperty(endar)
 
 

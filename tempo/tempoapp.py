@@ -1,19 +1,18 @@
 import json
-import os
+from os import path
 from collections import OrderedDict
-from os.path import exists
 
 from kivy.uix.widget import Widget
 
 from tempo import utils
 from tempo.settings import ConfiguredApp
+from tempo.templates import TASK, SUBTASK
 from tempo.widgets import *  # noqa: F403
 
-
-# if os.path.exists('./tempo/tempo_algorithm/algorithm.py'):
-#     print('YES')
-# else:
-#     print('NO')
+if path.exists('./tempo/tempo_algorithm/algorithm.py'):
+    print('YES')
+else:
+    print('NO')
 
 
 class RootWidget(BoxLayout):
@@ -78,7 +77,6 @@ class RootWidget(BoxLayout):
             return worktime
 
     # NOTE: This func is disabled due to restructuring of the applictaion.
-
 
     # def refresh_data(self, *dt):
     #     for t in self.taskholder.children:
@@ -151,6 +149,7 @@ class RootWidget(BoxLayout):
             return widget
 
         for x in tasklist[::-1]:
+            print(x)
             # Add new items to holder
             if x in minilist:
                 continue
@@ -162,7 +161,7 @@ class RootWidget(BoxLayout):
                 holder.remove_widget(x)
 
     def populate_completed_tasks(self, holder):
-        # XXX
+        # TODO: Refactor
 
         tasklist = self.taskholder.children
         storylist = [x._source for x in holder.children]
@@ -178,14 +177,8 @@ class RootWidget(BoxLayout):
             # Add new items to holder
             if t in storylist:
                 continue
-                # t.parent.remove_widget(t)
             if t.checkbox.active:
                 holder.add_widget(_make_completed(t))
-
-        # for x in holder.children:
-        #     # Remove old items from holder
-        #     if x._source not in tasklist:
-        #         holder.remove_widget(x)
 
     def load_stories(self, *dt):
         '''Loads story data from data.json if exists.'''
@@ -226,7 +219,11 @@ class RootWidget(BoxLayout):
 
 
 class TempoApp(ConfiguredApp):
-    '''Main application class.'''
+    '''Tempo application class.
+
+    This class inherits from ConfiguredApp class
+    which sets app settings configuration.
+    '''
     pomoduration = NumericProperty()
     pomorest = NumericProperty()
     worktime = NumericProperty()
@@ -241,6 +238,8 @@ class TempoApp(ConfiguredApp):
 
     def build(self):
         Widget.APP = self
+        # Set application attributes stored in tempo.ini
+        # see parent class for more info.
         self.configure_app()
         root = RootWidget()
         Clock.schedule_once(root.load_tasks, 0.1)
@@ -253,8 +252,8 @@ class TempoApp(ConfiguredApp):
 
 # Multiplatform path to application user data
 datadir = TempoApp().user_data_dir
-TASKFILE = os.path.join(datadir, 'tasks.json')
-STORYFILE = os.path.join(datadir, 'stories.json')
+TASKFILE = path.join(datadir, 'tasks.json')
+STORYFILE = path.join(datadir, 'stories.json')
 
 
 # FOR DEBUG
