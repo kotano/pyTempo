@@ -12,18 +12,26 @@ See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
+You can create development environment using anaconda __environment.yml__ file in the Tempo repository __data__ folder.
+To do this after downloading Tempo repository enter following commands into [__Anaconda Prompt__](https://docs.conda.io/projects/conda/en/latest/user-guide/install/#regular-installation) :
+
+```
+cd path/to/repo/data
+conda update --all
+conda env create -f environment.yml
+```
+
 #### Kivy
 To start working on project you first need to download [__kivy__](https://github.com/kivy/kivy) framework.
 
 The simpliest way to do this is to use Anaconda.
-> #### On windows
 >Install Kivy using Anaconda:  
 >Using your Anaconda virtual environment type following command into the console.  
 >```
 >conda install kivy -c conda-forge
 >```
 
-If you are using different platform, please refer to [kivy download page](https://kivy.org/#download).
+For other installation options, please refer to [kivy download page](https://kivy.org/#download).
 
 #### Plyer
 Plyer is used to work with OS features like notifications or vibration.
