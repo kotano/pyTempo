@@ -1,3 +1,0 @@
-[submodule "tempo/tempo-secret"]
-	path = tempo/tempo-secret
-	url = https://github.com/kotano/tempo-secret.git
