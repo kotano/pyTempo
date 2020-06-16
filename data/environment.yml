@@ -1,0 +1,16 @@
+name: kivyapp
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7.7
+  - kivy
+  - pip
+  - pytest
+  - autopep8
+  - flake8
+  - rope
+  - pycodestyle
+  - pydocstyle
+  - pip:
+    - plyer
