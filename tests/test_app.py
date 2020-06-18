@@ -9,7 +9,7 @@ from tempo import widgets
 from tempo.tempoapp import RootWidget, TempoApp
 
 
-CURRENT_DIR = path.join(path.dirname(__file__))
+CURRENT_DIR = path.dirname(__file__)
 
 
 class AppTest(TempoApp):

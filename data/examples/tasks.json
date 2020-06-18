@@ -1,0 +1,114 @@
+{
+    "1": {
+        "active": false,
+        "taskname": "Your first task",
+        "priority": "-",
+        "startdate": [
+            "2020-06-15"
+        ],
+        "duration": 64.0,
+        "progress": 0,
+        "deadline": [
+            "23",
+            "06",
+            "2020"
+        ],
+        "notes": "Here you can add notes to your task.\\n\\nWhen you create new task don\\'t forget to set its priority at the left-top corner of the popup.\\nAlso you can specify task start date and end date. Just enter preferable\\ndate in day.month.year format.\\nAfter setting up dates you can select task total work duration by pressing on HOURS OF text box.",
+        "subtasks": [
+            [
+                true,
+                "Click on checkbox to finish subtask."
+            ],
+            [
+                false,
+                "Delete subtask using X button at the right."
+            ],
+            [
+                false,
+                "Click on existing subtask and press Enter to create new subtask."
+            ]
+        ]
+    },
+    "2": {
+        "active": false,
+        "taskname": "Configure app settings",
+        "priority": "-",
+        "startdate": [
+            "2020-06-15"
+        ],
+        "duration": 0,
+        "progress": 0,
+        "deadline": [
+            ""
+        ],
+        "notes": "Task total time depends on preferable worktime value.\\nThis value represent maximum work hours per day when you able to work on your tasks.\\nIt defaults to 6 but you can change this value in the settings.",
+        "subtasks": [
+            [
+                false,
+                "Open settings by clicking on Tempo logo or by pressing F1 key."
+            ]
+        ]
+    },
+    "3": {
+        "active": false,
+        "taskname": "Check out Timer screen",
+        "priority": "-",
+        "startdate": [
+            "2020-06-15"
+        ],
+        "duration": 0,
+        "progress": 0,
+        "deadline": [
+            ""
+        ],
+        "notes": "The best way to track your progress is to start Pomodoro session.\\nPomodoro is a special technique which splits your work session on \\ntime when you work and time when you rest. It helps you to be more focused on you current task and leave all distractions for the scheduled rest time.",
+        "subtasks": [
+            [
+                false,
+                "Start working on task by choosing it on Timer screen."
+            ]
+        ]
+    },
+    "4": {
+        "active": false,
+        "taskname": "Write about your progress",
+        "priority": "-",
+        "startdate": [
+            "2020-06-15"
+        ],
+        "duration": 0,
+        "progress": 0,
+        "deadline": [
+            ""
+        ],
+        "notes": "If you want to ",
+        "subtasks": [
+            [
+                false,
+                "Write some story on Diary screen."
+            ]
+        ]
+    },
+    "5": {
+        "active": false,
+        "taskname": "Wait for Calendar screen release",
+        "priority": "-",
+        "startdate": [
+            "2020-06-15"
+        ],
+        "duration": 0,
+        "progress": 0,
+        "deadline": [
+            "30",
+            "07",
+            "2020"
+        ],
+        "notes": "Calendar Screen is one of the main part of Tempo. It allows you to properly schedule work hours for each task.",
+        "subtasks": [
+            [
+                false,
+                "Drink some tea while waiting."
+            ]
+        ]
+    }
+}

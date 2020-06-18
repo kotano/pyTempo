@@ -1,0 +1,33 @@
+{
+    "1": {
+        "storytext": "Story\\n\\nEach element of diary is called a story.\\nUse stories to write about your feelings or thoughs.\\nWhen you finish some task you can add it to your story. Just mark some task as finished by clicking on its checkbox and select it on your story\\'s bottom\\npannel. After that press on Save button to completely bind task to your story.\\nIf you decide to delete your story press and hold Delete button. Be careful it is irreversible and all your progress will be lost.",
+        "postnum": 1,
+        "creation": [
+            2020,
+            6,
+            15
+        ],
+        "completed_tasks": [
+            {
+                "active": true,
+                "taskname": "Download Tempo",
+                "priority": "-",
+                "startdate": [
+                    "2020-06-15"
+                ],
+                "duration": 0,
+                "progress": 0,
+                "deadline": [
+                    ""
+                ],
+                "notes": "",
+                "subtasks": [
+                    [
+                        false,
+                        ""
+                    ]
+                ]
+            }
+        ]
+    }
+}
