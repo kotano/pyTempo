@@ -1,3 +1,4 @@
+#:include tempo/widgets/task.kv
 #:import COLORS tempo.templates.COLORS
 #:import utils tempo.utils
 
@@ -119,16 +120,6 @@
                 height: 50 + 50 * len(self.children)
 
 # TASK #
-<Task>:
-    size_hint_y: None
-    canvas:
-        Color:
-            rgb: .5, .5, .5, 1
-        Line:
-            points: self.x, self.y - 4, self.x + self.width, self.y -4
-            width: 1
-    size_hint_y: None
-    height: 40
 
 # Subtask
 <Subtask>:

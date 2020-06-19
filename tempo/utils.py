@@ -14,6 +14,7 @@ from time import ctime
 
 from plyer import notification, vibrator
 from plyer.utils import platform
+from functools import wraps
 
 
 # Make it callable to prevent from storing obsolete value.
@@ -26,6 +27,7 @@ def cur_time(): return ctime()
 def print_log(func):
     """Decorate function to track its execution."""
 
+    @wraps(func)
     def wrapper(*args, **kwargs):
         n = func.__name__
         print('{} has started with arguments:\n{}\n{}'.format(

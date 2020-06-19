@@ -92,22 +92,9 @@ class RootWidget(BoxLayout):
             with open(TASKFILE, 'r') as datafile:
                 tasks = json.load(datafile)
             for t in tasks.values():
-                widget = TASK.format(
-                    active=t['active'],
-                    taskname=t['taskname'],
-                    priority=t['priority'],
-                    startdate='.'.join(t['startdate']),
-                    duration=t['duration'],
-                    progress=t['progress'],
-                    deadline='.'.join(t['deadline']),
-                    notes=t['notes']
-                )
-                self.taskholder.add_widget(Builder.load_string(widget))
-                for st in t['subtasks'][::-1]:
-                    subtask = SUBTASK.format(
-                        subactive=st[0], subtaskname=st[1], focus=False)
-                    self.taskholder.children[0].subtaskholder.add_widget(
-                        Builder.load_string(subtask))
+                widget = Task()
+                widget.load_data(t)
+                self.taskholder.add_widget(widget)
         except (FileNotFoundError):
             msg = 'File does not exist. It will be created automatically.'
             self.print_message(msg, 10)

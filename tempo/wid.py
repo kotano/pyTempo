@@ -6,7 +6,6 @@ from kivy.factory import Factory
 from kivy.lang.builder import Builder
 from kivy.properties import (BooleanProperty, DictProperty, ListProperty,
                              NumericProperty, ObjectProperty, StringProperty)
-from kivy.uix.widget import Widget  # noqa: F401
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -17,6 +16,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.spinner import Spinner
 from kivy.uix.textinput import TextInput
 from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.widget import Widget  # noqa: F401
 from kivy.utils import platform
 
 from tempo import utils
@@ -96,20 +96,6 @@ class MyScreenManager(ScreenManager):
 
 
 # TASKS
-
-class Subtask(BoxLayout):
-    _focus = BooleanProperty()
-    _subactive = BooleanProperty()
-    _subtaskname = StringProperty()
-
-    def save_data(self):
-        data = {
-            'subfocus': self._focus,
-            'subactive': self._subactive,
-            'subtaskname': self._subtaskname,
-        }
-        return data
-
 class TaskScreen(Screen):
 
     def sort_tasks(self, instance):
@@ -145,18 +131,14 @@ class TaskScreen(Screen):
         subtskhldr = last_task.subtaskholder
         subtskhldr.add_widget(Builder.load_string(first_subtask))
         last_task.popup.open()
-    
+
     def add_subtask(self, holder):
         '''Adds subtask to task
 
         Parameters:
             holder (obj): reference to 'subtaskholder' object
         '''
-        # holder.add_widget(Builder.load_string(default_subtask))
-        widget = Subtask()
-        widget._subactive = False
-        holder.add_widget(widget)
-
+        holder.add_widget(Builder.load_string(default_subtask))
 
     def _clear_input(self, instance):
         '''Made to fix an unknown issue with
@@ -182,11 +164,10 @@ class TaskScreen(Screen):
 class TaskHolder(GridLayout):
     pass
 
-class Task(BoxLayout):
 
+class Task(BoxLayout):
     subtaskholder = ObjectProperty()
 
-    # META
     _active = BooleanProperty()
     _taskname = StringProperty()
     _priority = StringProperty()
@@ -196,7 +177,6 @@ class Task(BoxLayout):
     _duration = NumericProperty()
     _max_duration = NumericProperty()
     _progress = NumericProperty()
-    _subtasks = ListProperty()
 
     deltatime = NumericProperty()
 
@@ -207,35 +187,16 @@ class Task(BoxLayout):
             'active': self._active,
             'taskname': self._taskname,
             'priority': self._priority,
-            'startdate': self._startdate,  # .split('.'),
+            'startdate': self._startdate.split('.'),
             'duration': self._duration,
             'progress': self._progress,
-            'deadline': self._deadline,  # .split('.'),
-            'notes': self._notes,  # .replace('\n', '\\n'),
-            'subtasks': [s.save_data() for s in self.subtaskholder.children],
+            'deadline': self._deadline.split('.'),
+            'notes': self._notes.replace('\n', '\\n'),
+            # XXX: subtasks depend on structure. Not reliable
+            'subtasks': [[s.children[2].active, s.children[1].text]
+                         for s in self.subtaskholder.children],
         }
         return self._data
-
-    def load_data(self, data: dict):
-        self._active = data['active']
-        self._taskname = data['taskname']
-        self._priority = data['priority']
-        self._startdate = data['startdate']
-        self._duration = data['duration']
-        self._progress = data['progress']
-        self._deadline = data['deadline']
-        self._notes = data['notes']
-        
-        self._subtasks = data['subtasks']
-        self.load_subtasks(self._subtasks)
-
-    def load_subtasks(self, data: list):
-        for x in data:
-            widget = Subtask()
-            widget._focus = x['subfocus']
-            widget._subactive = x['subactive']
-            widget._subtaskname = x['subtaskname']
-            self.ids.subtaskholder.add_widget(widget)
 
     def __repr__(self):
         active = 'Completed' if self._active else 'Active'
@@ -244,8 +205,8 @@ class Task(BoxLayout):
         return res
 
 
-
-    
+class Subtask(Task):
+    pass
 
 
 # TIMER
@@ -365,9 +326,7 @@ class Storyholder(GridLayout):
 
 class Story(Box):
     '''Story widget'''
-
-    # NOTE, FIXME: When story popup is opened it triggers
-    # "populate_completed_tasks" function in root widget.
+    # completed_tasks = ObjectProperty()
 
     fullheight = NumericProperty()
     creation = ListProperty()
