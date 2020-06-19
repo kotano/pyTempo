@@ -1,4 +1,5 @@
 ##:import icons tempo.settings.icons
+#:import utils tempo.utils
 
 <Task>:
 # GRAPHICS
@@ -120,9 +121,10 @@
                         DateInput:
                             id: startdate
                             text: str(root._startdate)
-                            on_text: root._startdate = self.text
+                            # on_text: root._startdate = root.handle_date(self.text)
                             on_focus:
-                                if self.focus == False: root.deltatime = app.root.get_worktime(startdate, deadline)
+                                # if not self.focus: root.handle_dates()
+                                if not self.focus: root.deltatime = app.root.get_worktime(startdate, deadline)
 
 # Progress bar
                     BoxLayout:
@@ -214,7 +216,7 @@
                             text: str(root._deadline)
                             on_text: root._deadline = self.text
                             on_focus:
-                                if self.focus == False: root.deltatime = app.root.get_worktime(startdate, deadline);
+                                if not self.focus: root.deltatime = app.root.get_worktime(startdate, deadline);
                                 # app.root.refresh_data()
 
 # Subtask

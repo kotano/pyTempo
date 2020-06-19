@@ -55,6 +55,8 @@ class RootWidget(BoxLayout):
         print('children height', total)
         return total
 
+    @utils.mark_deprecated()
+    @utils.print_log
     def get_worktime(self, startdate, deadline):
         '''Compute full work time for task and handle exceptions. Return int.
 
@@ -136,7 +138,6 @@ class RootWidget(BoxLayout):
             return widget
 
         for x in tasklist[::-1]:
-            print(x)
             # Add new items to holder
             if x in minilist:
                 continue

@@ -1,5 +1,6 @@
 import calendar
 
+from kivy.app import App
 from kivy.clock import Clock
 from kivy.effects.scroll import ScrollEffect
 from kivy.factory import Factory
@@ -99,7 +100,7 @@ class MyScreenManager(ScreenManager):
 
 class Subtask(BoxLayout):
     _focus = BooleanProperty()
-    _subactive = BooleanProperty()
+    _subactive = BooleanProperty(False)
     _subtaskname = StringProperty()
 
     def save_data(self):
@@ -109,6 +110,7 @@ class Subtask(BoxLayout):
             'subtaskname': self._subtaskname,
         }
         return data
+
 
 class TaskScreen(Screen):
 
@@ -140,12 +142,17 @@ class TaskScreen(Screen):
 
     def add_new_task(self):
         '''Append new task to 'taskholder' widget'''
-        self.taskholder.add_widget(Builder.load_string(default_task))
+        # self.taskholder.add_widget(Builder.load_string(default_task))
+        new_task = Task()
+        today = utils.date_to_string(utils.cur_date())
+        new_task._startdate = today
+        self.taskholder.add_widget(new_task)
         last_task = self.taskholder.children[0]
         subtskhldr = last_task.subtaskholder
-        subtskhldr.add_widget(Builder.load_string(first_subtask))
+        # subtskhldr.add_widget(Builder.load_string(first_subtask))
+        subtskhldr.add_widget(Subtask())
         last_task.popup.open()
-    
+
     def add_subtask(self, holder):
         '''Adds subtask to task
 
@@ -156,7 +163,6 @@ class TaskScreen(Screen):
         widget = Subtask()
         widget._subactive = False
         holder.add_widget(widget)
-
 
     def _clear_input(self, instance):
         '''Made to fix an unknown issue with
@@ -174,24 +180,28 @@ class TaskScreen(Screen):
             holder (obj): tasks container object
             root (obj): main task object
         '''
-        if value:
-            holder.remove_widget(root)
-            holder.add_widget(root)
+        if holder:
+            if value:
+                holder.remove_widget(root)
+                holder.add_widget(root)
 
 
 class TaskHolder(GridLayout):
     pass
+
 
 class Task(BoxLayout):
 
     subtaskholder = ObjectProperty()
 
     # META
-    _active = BooleanProperty()
+    _active = BooleanProperty(False)
     _taskname = StringProperty()
-    _priority = StringProperty()
+    _priority = StringProperty('-')
     _startdate = StringProperty()
     _deadline = StringProperty()
+    # _startdate = ListProperty()
+    # _deadline = ListProperty()
     _notes = StringProperty()
     _duration = NumericProperty()
     _max_duration = NumericProperty()
@@ -202,6 +212,41 @@ class Task(BoxLayout):
 
     _data = DictProperty()
 
+    def convert_to_list(self, text):
+        date = utils.convert_to_date(text)
+        res = utils.date_to_list(date)
+        return res
+
+
+    def get_worktime(self, startdate, deadline):
+        print(dir(self))
+        """Compute full work time for task.
+
+        Args:
+            startdate (list): First date in [yyyy, mm, dd] format
+            deadline (list): Second date in [yyyy, mm, dd] format
+        Returns:
+            int: Work time
+        """                
+        start = utils.convert_to_date(startdate)
+        end = utils.convert_to_date(deadline)
+        hours = utils.find_deltatime(start, end)
+        worktime = utils.find_worktime(hours, self.APP.worktime)
+        return worktime
+
+    def handle_dates(self):
+        startdate = self.ids.startdate
+        deadline = self.ids.deadline
+        try:
+            self._startdate = self.convert_to_list(startdate.text)
+            self._deadline = self.convert_to_list(deadline.text)
+        except (ValueError, TypeError) as e:
+            print(e)
+            print('You have entered wrong data')
+            self.deltatime = 0
+        else:
+            self.deltatime = self.get_worktime(self._startdate, self._deadline)
+    
     def save_data(self):
         self._data = {
             'active': self._active,
@@ -225,7 +270,7 @@ class Task(BoxLayout):
         self._progress = data['progress']
         self._deadline = data['deadline']
         self._notes = data['notes']
-        
+
         self._subtasks = data['subtasks']
         self.load_subtasks(self._subtasks)
 
@@ -242,10 +287,6 @@ class Task(BoxLayout):
         res = '{} task "{}" with progress equal to {}'.format(
             active, self._taskname, self._progress)
         return res
-
-
-
-    
 
 
 # TIMER

@@ -15,18 +15,12 @@ from time import ctime
 from plyer import notification, vibrator
 from plyer.utils import platform
 from functools import wraps
+import warnings
 
 
-# Make it callable to prevent from storing obsolete value.
-def cur_month(): return date.today().month
-def cur_year(): return date.today().year
-def cur_date(): return date.today()
-def cur_time(): return ctime()
-
-
+# DECORATORS
 def print_log(func):
     """Decorate function to track its execution."""
-
     @wraps(func)
     def wrapper(*args, **kwargs):
         n = func.__name__
@@ -38,6 +32,29 @@ def print_log(func):
         return res
 
     return wrapper
+
+
+def mark_deprecated(message=''):
+    def deprecated_decorator(func):
+        @wraps(func)
+        def deprecated_func(*args, **kwargs):
+            warnings.warn("{} is a deprecated function. {}".format(
+                func.__name__, message),
+                category=DeprecationWarning,
+                stacklevel=2)
+            warnings.simplefilter('default', DeprecationWarning)
+            return func(*args, **kwargs)
+        return deprecated_func
+    return deprecated_decorator
+
+
+# TIME
+
+# Make it callable to prevent from storing obsolete value.
+def cur_month(): return date.today().month
+def cur_year(): return date.today().year
+def cur_date(): return date.today()
+def cur_time(): return ctime()
 
 
 def date_to_string(d):
@@ -72,6 +89,7 @@ def find_worktime(hours, worktime=6):
     return work_hours
 
 
+# >>> OS
 def notify(title, message, mode='normal'):
     """Send system notification.
 
