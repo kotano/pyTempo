@@ -2,6 +2,12 @@ import json
 from os import path
 from collections import OrderedDict
 
+# FOR DEBUGGING
+import pathlib
+import sys
+sys.path.append(str(pathlib.Path(__file__).resolve().parent.parent))
+print(sys.path)
+
 from kivy.uix.widget import Widget
 
 from tempo import utils

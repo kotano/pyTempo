@@ -32,5 +32,16 @@
         "desc": "Select default screen to display when app launches.",
         "section": "General",
         "key": "defaultscreen"
+    },
+    {
+        "type": "options",
+        "title": "Color scheme",
+        "options": [
+            "TempoBlue",
+            "TempoBright"
+        ],
+        "desc": "Select Tempo interface theme.",
+        "section": "General",
+        "key": "color_scheme"
     }
 ]

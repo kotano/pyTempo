@@ -10,17 +10,18 @@ When the user next runs the programs, their changes are restored.
 """
 
 from os import path
+from pathlib import Path
 
 from kivy.app import App
-from kivy.core.window import Window
 from kivy.config import Config
+from kivy.core.window import Window
 from kivy.logger import Logger
 from kivy.uix.settings import SettingsWithSidebar, SettingsWithTabbedPanel
 from kivy.utils import platform
+from kivy.properties import DictProperty, ConfigParserProperty
 
-debug = True
-
-CURRENT_DIR = path.dirname(__file__)
+# CURRENT_DIR = path.dirname(__file__)
+CURRENT_DIR = Path(__file__).parent
 
 
 if platform == 'win':
@@ -28,7 +29,6 @@ if platform == 'win':
     Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
     # Disable app stop when ESC button pressed.
     Config.set('kivy', 'exit_on_escape', '0')
-
 
 # DEFAULTS
 D = {
@@ -39,24 +39,113 @@ D = {
     'WINDOW_HEIGHT': 600,
     'WINDOW_LEFT': 368,
     'WINDOW_TOP': 132,
-    'SCREEN': 'taskscreen'
+    'SCREEN': 'taskscreen',
+    'COLOR_SCHEME': 'TempoBlue'
+}
+
+# COLORS
+C = {
+    'TempoBlue': {
+        'background': [1, 1, 1, 1],
+        'button': [.89, .91, .96, 1],
+        'accent': [.67, .79, .96, 1],
+        'active': [1, .78, .33, 1],
+        'text_dark': [0, 0, 0, 1],
+        'text_bright': [1, 1, 1, 1]
+    },
+    'TempoBright': {
+        'background': [1, 1, 1, 1],
+        'button': [.89, .91, .96, 1],
+        'accent': [1, .78, .33, 1],
+        'active': [.92, .34, .34, 1],
+        'text_dark': [0, 0, 0, 1],
+        'text_bright': [1, 1, 1, 1]
+    },
+    # OLD
+    'Aquamarine': {
+        'background': [1, 1, 1, 1],
+        'accent': [.70, .88, .87, .9],
+        'text_dark': [0, 0, 0, 1],
+        'text_bright': [1, 1, 1, 1]
+    }
 }
 
 
 class ConfiguredApp(App):
     """This class is used to create settings for the app."""
-
-    settings_cls = SettingsWithSidebar
     use_kivy_settings = True
+    settings_cls = SettingsWithSidebar
+
+    ICONS_DIR = Path.cwd() / 'data' / 'icons'
+    COLORS = C
+
+    colors = DictProperty()
+    # color_scheme = ConfigParserProperty(
+    #     'TempoBlue', 'General', 'color_scheme', 'kivy')
+
+    def build_config(self, config):
+        """Set the default values for the configs sections."""
+        # config.setdefaults('My Label', {'text': 'Hello', 'font_size': 20})
+        config.setdefaults('General', {
+            'pomodoro_duration': D['POMODURATION'],
+            'pomodoro_rest': D['POMOREST'],
+            'worktime': D['WORKTIME'],
+            'defaultscreen': D['SCREEN'],
+            'color_scheme': D['COLOR_SCHEME']
+        })
+        config.setdefaults('Window', {
+            'left': D['WINDOW_LEFT'], 'top': D['WINDOW_TOP'],
+            'width': D['WINDOW_WIDTH'], 'height': D['WINDOW_HEIGHT'],
+        })
+
+    def build_settings(self, settings):
+        """Add our custom section to the default configuration object."""
+        # We use the string defined above for our JSON, but it could also be
+        # loaded from a file as follows:
+        #     settings.add_json_panel('My Label', self.config, 'settings.json')
+        # settings.add_json_panel(
+        #     'My Label', self.config, './tempo/settings.json')
+        settings.add_json_panel(
+            'General', self.config, path.join(CURRENT_DIR, 'general.json'))
+        settings.add_json_panel(
+            'Window', self.config, path.join(CURRENT_DIR, 'window.json'))
+
+    def on_config_change(self, config, section, key, value):
+        """Respond to changes in the configuration."""
+        Logger.info("main.py: App.on_config_change: {0}, {1}, {2}, {3}".format(
+            config, section, key, value))
+
+        if section == "General":
+            self.set_pomodoro_values()
+            if key == "worktime":
+                if int(value) >= 23:
+                    value = D['WORKTIME']
+                    config.set('General', 'worktime', D['WORKTIME'])
+                    config.write()
+                # self.root.ids.label.text = value
+            elif key == 'color_scheme':
+                self.on_color_scheme()
+            # elif key == 'font_size':
+            #     self.root.ids.label.font_size = float(value)
+            # elif key == 'font_size':
+            #     self.root.ids.label.font_size = float(value)
 
     def configure_app(self):
         """Set all application configurations.
 
         Use this once when launch the application.
         """
+        self.on_color_scheme()
         self.configure_window()
         self.set_screen()
         self.set_pomodoro_values()
+
+    def on_color_scheme(self):
+        print(self.colors)
+        self.colors = C[self.config.get('General', 'color_scheme')]
+        print(self.colors)
+        # self.colors = C[self.color_scheme]
+        # self.colors = COLORS[self.config.get('General', 'color_scheme')]
 
     def get_application_config(self):
         """Set app config file location to user_data_dir."""
@@ -90,49 +179,6 @@ class ConfiguredApp(App):
             'General', 'pomodoro_duration'))
         self.pomorest = int(self.config.get('General', 'pomodoro_rest'))
         self.worktime = int(self.config.get('General', 'worktime'))
-
-    def build_config(self, config):
-        """Set the default values for the configs sections."""
-        # config.setdefaults('My Label', {'text': 'Hello', 'font_size': 20})
-        config.setdefaults('Window', {
-            'left': D['WINDOW_LEFT'], 'top': D['WINDOW_TOP'],
-            'width': D['WINDOW_WIDTH'], 'height': D['WINDOW_HEIGHT'],
-        })
-        config.setdefaults('General', {
-            'pomodoro_duration': D['POMODURATION'],
-            'pomodoro_rest': D['POMOREST'],
-            'worktime': D['WORKTIME'],
-            'defaultscreen': D['SCREEN'],
-        })
-
-    def build_settings(self, settings):
-        """Add our custom section to the default configuration object."""
-        # We use the string defined above for our JSON, but it could also be
-        # loaded from a file as follows:
-        #     settings.add_json_panel('My Label', self.config, 'settings.json')
-        # settings.add_json_panel(
-        #     'My Label', self.config, './tempo/settings.json')
-        settings.add_json_panel(
-            'General', self.config, path.join(CURRENT_DIR, 'general.json'))
-        settings.add_json_panel(
-            'Window', self.config, path.join(CURRENT_DIR, 'window.json'))
-
-    def on_config_change(self, config, section, key, value):
-        """Respond to changes in the configuration."""
-        Logger.info("main.py: App.on_config_change: {0}, {1}, {2}, {3}".format(
-            config, section, key, value))
-
-        if section == "General":
-            if key == "worktime":
-                if int(value) >= 23:
-                    value = D['WORKTIME']
-                    config.set('General', 'worktime', D['WORKTIME'])
-                    config.write()
-                # self.root.ids.label.text = value
-            elif key == 'font_size':
-                self.root.ids.label.font_size = float(value)
-        if section == 'General':
-            self.set_pomodoro_values()
 
     def close_settings(self, settings=None):
         """The settings panel has been closed."""

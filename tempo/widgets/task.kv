@@ -1,4 +1,3 @@
-##:import icons tempo.settings.icons
 #:import utils tempo.utils
 
 <Task>:
@@ -62,7 +61,7 @@
             id: popup
             size_hint: 0.9, 0.9
             title: "Edit task"
-            # background_color: 1, 1, 1, 1
+            background_color: 1, 1, 1, 1
             on_parent:
                 if self.parent == bl: self.parent.remove_widget(self)
             on_dismiss: if not any((taskname.text, deadline.text, notes.text)): app.root.taskholder.remove_widget(task)
@@ -74,6 +73,7 @@
                     Rectangle:
                         pos: self.pos
                         size: self.size
+                # background_color: 1, 1, 1, 1
                 background_color: 1, 1, 1, 1
                 orientation: 'vertical'
 
@@ -345,7 +345,7 @@
         width: 32
         height: 32
         color: 0, 0, 0, .5
-        background_normal: './data/icons/delete32.png'
+        background_normal: str(app.ICONS_DIR / 'delete32.png')
         on_release: app.root.taskscreen._clear_input(subtask) if len(root.parent.children) <= 1 else root.parent.remove_widget(subtask)
 
 <FirstSubtask@Subtask>:

@@ -299,15 +299,30 @@ class TimerScreen(Screen):
     angle = NumericProperty(360)
     display = ListProperty()  # Set in kv
     current_task = None
+    
+    _inversions = NumericProperty()
+
+
+    @utils.print_log
+    def _active_mode(self):
+        return None
+        if self.process.is_triggered:
+            app = App.get_running_app()
+            active = app.colors['active']
+            accent = app.colors['accent']
+            app.colors['active'] = accent
+            app.colors['accent'] = active
 
     def trigger_countdown(self, task=current_task):
         self.current_task = task
         if self.active is True:
             self.process.cancel()
+            self._active_mode()
             self.active = False
             return
         self.process = Clock.schedule_interval(
             lambda dt: self._track_time(self.pomoduration, task), 1)
+        self._active_mode()
         self.active = True
 
     def stop_timer(self):
@@ -323,6 +338,7 @@ class TimerScreen(Screen):
 
     def force_stop(self):
         self.stop_timer()
+        # self._active_mode()
         self._reset_minitasks_state()
 
     def _track_time(self, value, task=None):

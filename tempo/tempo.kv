@@ -6,18 +6,30 @@
     # Setting application main font
     font_name: './data/fonts/RobotoMono-Regular'
 
+<Label>:
+    # color: app.colors['text_dark']
+
+<Button>:
+    color: app.colors['text_dark']
+    background_normal: ''
+    background_down: ''
+    background_color: app.colors['accent'] if self.state == 'down' else app.colors['button']
 
 <Text>:
-    color: COLORS['TextColor']
+    color: app.colors['text_dark']
 
 <ScreenButton>:
     group: 'screen'
     allow_no_selection: False
     background_normal: ''
+    background_down: ''
+    background_color: app.colors['accent'] if self.state == 'down' else app.colors['button']
 
 <PressableLabel>:
+    border: 2, 2, 2, 2
     background_normal: ''
-    color: 0, 0, 0, 1
+    background_color: app.colors['button']
+    color: app.colors['text_dark']
 
 <DefaultInput>:
     background_normal: ''
@@ -25,7 +37,7 @@
     multiline: False
     canvas.after:
         Color:
-            rgba: 0.5, 0.5, 0.5, 1
+            rgb: 0.5, 0.5, 0.5
         Line:
             width: 1
             rectangle: self.x, self.y, self.width, self.height
@@ -33,7 +45,7 @@
 <Box>:
     canvas.after:
         Color:
-            rgba: 0.5, 0.5, 0.5, 1
+            rgb: 0.5, 0.5, 0.5
         Line:
             width: 1
             rectangle: self.x, self.y, self.width, self.height
@@ -43,10 +55,9 @@
 <DateInput>:
     border: 1, 1, 1, 1
 
-
 <PrioritySpinner>:
     text_autoupdate: True
-    color: 0, 0, 0, 1
+    color: app.colors['text_dark']
     values: ('-', '!!!High', '!!Normal', '!Low')
     size_hint_y: None
     height: 40
@@ -63,7 +74,7 @@
 <ActionSpinner@Spinner+ActionItem>
     canvas.before:
         Color:
-            rgba: 0.128, 0.128, 0.128, 1
+            rgb: 0.128, 0.128, 0.128
         Rectangle:
             size: self.size
             pos: self.pos
@@ -78,10 +89,13 @@
     taskholder: taskholder
     BoxLayout:
         orientation: 'vertical'
-        padding: 10
+        padding: 10, 2
         Button:
-            size_hint_y: None
-            height: 40
+            background_normal: ''
+            background_color: app.colors['accent'] #if self.state == 'down' else app.colors['button']
+            size_hint_y: 0.1
+            color: app.colors['text_dark']
+            # height: 40
             text: 'Add new task'
             on_release: root.add_new_task()
         BoxLayout:
@@ -90,7 +104,7 @@
             padding: 0, 2
             canvas:
                 Color:
-                    rgb: .5, .5, .5, 1
+                    rgb: .5, .5, .5
                 Line:
                     points: self.x, self.y, self.x + self.width, self.y
                     width: 2
@@ -133,8 +147,12 @@
 <MiniTask>:
     size_hint_y: None
     height: 40
-    # CheckBox:
+
     ToggleButton:
+        background_normal: ''
+        background_down: ''
+        background_color: app.colors['accent'] if self.state == 'down' else app.colors['button']
+        color: app.colors['text_dark']
         group: 'minitasks'
         allow_no_selection: True
         text: root._name
@@ -151,7 +169,7 @@
 <Story>:
     canvas.after:
         Color:
-            rgba: 0.5, 0.5, 0.5, 1
+            rgb: 0.5, 0.5, 0.5
         Line:
             width: 3
             rectangle: self.x, self.y, self.width, self.height
@@ -178,7 +196,7 @@
     orientation: 'vertical'
     canvas.before:
         Color:
-            rgb: 1, 1, 1
+            rgb: app.colors['background']
         Rectangle:
             size: self.size
 
@@ -186,17 +204,19 @@
     ActionBar:
         # size_hint_y: 0.2
         height: '50dp'
-        # background_color: .70, .88, .87, .9
-        # background_image: ''
+        background_color: app.colors['accent']
+        background_image: ''
         ActionView:
             id: av
             ActionPrevious:
+                color: app.colors['text_dark']
                 id: actiontitle
                 with_previous: False
                 title: 'Select task on timer screen to start working'
-                app_icon: './data/icons/logo.png'
+                app_icon: str(app.ICONS_DIR / 'logo.png')
                 on_release: app.open_settings()
                 background_normal: ''
+                background_color: ''
             ActionLabel:
 
 
@@ -204,12 +224,18 @@
     BoxLayout:
         canvas.before:
             Color:
-                rgb: 1, 1, 1, 1
+                rgb: app.colors['background']
             Rectangle:
                 size: self.size
 # Sidebar
         Box:
-            padding: 5, 10
+            canvas.before:
+                Color:
+                    rgba: app.colors['button']
+                Rectangle:
+                    size: self.size
+            
+            padding: 5, 2
             orientation: 'vertical'
             size_hint_x: None
             size: 70, self.height
@@ -222,7 +248,7 @@
                         # Icon size is 50x50
                         size: self.width, 50
                         pos: self.x, self.center_y - 25
-                        source: './data/icons/list_icon.png'
+                        source: str(app.ICONS_DIR / 'list_icon.png')
                 on_release: content_window.current = 'taskscreen'
             ScreenButton:
                 id: timerscreen_button
@@ -231,7 +257,7 @@
                         # Icon size is 50x50
                         size: self.width, 50
                         pos: self.x, self.center_y - 25
-                        source: './data/icons/timer_icon.png'
+                        source: str(app.ICONS_DIR / 'timer_icon.png')
                 on_release:
                     content_window.current = 'timerscreen';
                     root.populate_minitasks(minitaskholder)
@@ -242,7 +268,7 @@
                         # Icon size is 50x50
                         size: self.width, 50
                         pos: self.x, self.center_y - 25
-                        source: './data/icons/calendar_icon.png'
+                        source: str(app.ICONS_DIR / 'calendar_icon.png')
                 on_release: content_window.current = 'calendarscreen'
             ScreenButton:
                 id: diaryscreen_button
@@ -251,7 +277,7 @@
                         # Icon size is 50x50
                         size: self.width, 50
                         pos: self.x, self.center_y - 25
-                        source: './data/icons/diary_icon.png'
+                        source: str(app.ICONS_DIR / 'diary_icon.png')
                 on_release:
                     content_window.current = 'diaryscreen';
                     # storyholder.height = root.collect_height(storyholder, 50);
@@ -295,22 +321,22 @@
                         LongpressButton:
                             canvas:
                                 Color:
-                                    rgba: 1, .1, 0, 0.5
+                                    # rgba: 1, .1, 0, 0.5
+                                    rgba: app.colors['accent'][:3] + [0.6]
                                 Ellipse:
                                     pos: self.center_x  - self.width / 4, self.center_y - self.width / 4
                                     size: self.width / 2, self.width / 2
-                                    # source: './data/icons/logo.png'
                                     angle_start: 0
                                     angle_end: timerscreen.angle
 
-                            color: COLORS['TextColor']
+                            color: app.colors['text_dark']
                             id: timerdisplay
                             text: '{}:{}'.format(*timerscreen.display)
                             on_press: timerscreen.trigger_countdown(timerscreen.current_task)
                             on_long_press:
                                 timerscreen.force_stop();
                                 app.root.ids.actiontitle.title = 'No active tasks'
-                            background_normal: ''
+                            background_color: app.colors['accent'] if self.state == 'down' else app.colors['background']
 
 # CALENDAR
             CalendarScreen:
@@ -320,7 +346,7 @@
                     CalendarView:
                         strip: False
                         halign: 'right'
-                        color: 0, 0, 0, 1
+                        color: app.colors['text_dark']
                         text: (self.endar)
 # DIARY
             DiaryScreen:
@@ -332,6 +358,9 @@
                     Button:
                         size_hint_y: 0.1
                         text: 'Add new story'
+                        background_normal: ''
+                        background_color: app.colors['accent']
+                        color: app.colors['text_dark'] 
                         on_press:
                             app.root.print_message('Adding new story');
                             diaryscreen.add_story()
