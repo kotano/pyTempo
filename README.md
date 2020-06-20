@@ -1,6 +1,6 @@
 # [Tempo](https://kotano.github.io/Tempo/)
 
-<img alt="Tempo icon" align="right" height="256" src="https://kotano.github.io/Tempo/docs/sources/logo.png"/>
+<img alt="Tempo icon" align="right" height="256" src="https://kotano.github.io/Tempo/data/icons/logo.png"/>
 
 Tempo is a task-management application that tracks your tasks / goals and evenly distributes work on them. 
 
@@ -60,7 +60,7 @@ Make sure you have installed kivy and other dependencies before launch.
 python .../Tempo/main.py
 ```
 After executing this command, you will see the main application window.
-<img alt="Main application window" align="" height="" src="https://kotano.github.io/Tempo/docs/sources/main_window.png"/>
+<img alt="Main application window" align="" height="" src="https://kotano.github.io/Tempo/data/icons/main_window.png"/>
 
 ## Running the tests
 

@@ -19,16 +19,13 @@ Tempo helps people to manage their time more efficiently, set priorities correct
 
 
 ## Features:
-- Add tasks with subtasks, deadlines and notes
-- Set completion time
-- Tick to tone down completed tasks
-- Prioritize and filter
-- Use the pomodoro timer
-- Schedule your day
-- Track your productivity using diary
-- Automatic prioritizing and scheduling work time*
 
-
-
-
+- add tasks with subtasks, deadlines and notes
+- set completion time
+- tick to tone down completed tasks
+- prioritize and filter
+- use the pomodoro timer
+- schedule your day
+- track your productivity using diary
+- automatic prioritizing and scheduling work time*
 
