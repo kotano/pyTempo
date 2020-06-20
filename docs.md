@@ -16,6 +16,7 @@ permalink: '/docs/'
 # Documents
 
 * [Readme](https://kotano.github.io/Tempo/readme) 
+* [Diagrams](https://kotano.github.io/Tempo/docs/diagrams)
 * [Manual](https://clck.ru/NPy3K)
 * [Technical requirements](https://clck.ru/P7oLC)
 * [Tempo presentation](https://clck.ru/NPy59)
