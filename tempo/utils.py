@@ -11,11 +11,11 @@ It has:
 # import time
 from datetime import date
 from time import ctime
+from functools import wraps
+import warnings
 
 from plyer import notification, vibrator
 from plyer.utils import platform
-from functools import wraps
-import warnings
 
 
 # DECORATORS

@@ -44,3 +44,8 @@ Building an app using _.spec_ file:
                 runtime_tmpdir=None,
                 console=False)
 ```
+'S:\\Users\\ahuda\\miniconda3\\envs\\ui\\Lib\\site-packages'
+
+python -m PyInstaller --name Tempo --onefile --paths S:\Users\ahuda\miniconda3\envs\ui\Lib\site-packages ../Tempo/main.py
+
+path\to\pyinstaller.exe --onefile  file.py

@@ -85,7 +85,7 @@
                         size_hint: 0.1, 1
                         id: priority
                         text: str(root._priority)
-                        on_values: root._priority = self.text
+                        on_text: root._priority = self.text
 
 # Task name
                     DefaultInput:
@@ -286,7 +286,7 @@
 
 # Priority
     Text:
-        text: priority.text
+        text: str(root._priority)
 
 # Time
     Text:

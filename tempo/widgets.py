@@ -252,11 +252,11 @@ class Task(BoxLayout):
             'active': self._active,
             'taskname': self._taskname,
             'priority': self._priority,
-            'startdate': self._startdate,  # .split('.'),
+            'startdate': self._startdate,
             'duration': self._duration,
             'progress': self._progress,
-            'deadline': self._deadline,  # .split('.'),
-            'notes': self._notes,  # .replace('\n', '\\n'),
+            'deadline': self._deadline,
+            'notes': self._notes,
             'subtasks': [s.save_data() for s in self.subtaskholder.children],
         }
         return self._data

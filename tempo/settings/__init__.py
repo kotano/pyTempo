@@ -19,6 +19,7 @@ from kivy.logger import Logger
 from kivy.uix.settings import SettingsWithSidebar, SettingsWithTabbedPanel
 from kivy.utils import platform
 from kivy.properties import DictProperty, ConfigParserProperty
+from kivy.lang.builder import Builder
 
 # CURRENT_DIR = path.dirname(__file__)
 CURRENT_DIR = Path(__file__).parent
@@ -76,9 +77,12 @@ class ConfiguredApp(App):
     use_kivy_settings = True
     settings_cls = SettingsWithSidebar
 
-    ICONS_DIR = Path.cwd() / 'data' / 'icons'
+    ROOT_DIR = CURRENT_DIR.parent.parent
+    ICONS_DIR = ROOT_DIR / 'data' / 'icons'
+    WIDGETS_DIR = ROOT_DIR / 'tempo' / 'widgets'
     COLORS = C
 
+    icon = str(ICONS_DIR / 'icon_white.png')
     colors = DictProperty()
     # color_scheme = ConfigParserProperty(
     #     'TempoBlue', 'General', 'color_scheme', 'kivy')
@@ -135,6 +139,7 @@ class ConfiguredApp(App):
 
         Use this once when launch the application.
         """
+        Builder.load_file(str(self.WIDGETS_DIR / 'task.kv'))
         self.on_color_scheme()
         self.configure_window()
         self.set_screen()

@@ -233,8 +233,6 @@ class TempoApp(ConfiguredApp):
     pomorest = NumericProperty()
     worktime = NumericProperty()
 
-    icon = './data/icons/icon_white.png'
-
     def on_stop(self):
         """Save data before exit."""
         # self.remember_window()
