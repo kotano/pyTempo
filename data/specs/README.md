@@ -27,7 +27,9 @@ Building an app using _.spec_ file:
 ## Known issues
 * An error may appear while launching built application. Usually this happens if you haven't included project directory into the _.spec_ file. To fix this add Tree('projectdir') into the _.spec_ as it is decribed here:
 ```
-        exe = EXE(pyz, Tree('..\\Tempo\\'),
+        exe = EXE(pyz,
+                Tree('..\\Tempo\\data'),
+                Tree('..\\Tempo\\tempo'),
                 a.scripts,
                 a.binaries,
                 a.zipfiles,

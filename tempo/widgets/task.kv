@@ -61,7 +61,6 @@
             id: popup
             size_hint: 0.9, 0.9
             title: "Edit task"
-            background_color: 1, 1, 1, 1
             on_parent:
                 if self.parent == bl: self.parent.remove_widget(self)
             on_dismiss: if not any((taskname.text, deadline.text, notes.text)): app.root.taskholder.remove_widget(task)
@@ -69,12 +68,11 @@
             BoxLayout:
                 canvas.before:
                     Color:
-                        rgba: 1, 1, 1, 1
+                        rgba: app.colors['background']
                     Rectangle:
                         pos: self.pos
                         size: self.size
-                # background_color: 1, 1, 1, 1
-                background_color: 1, 1, 1, 1
+                background_color: app.colors['background']
                 orientation: 'vertical'
 
 
@@ -110,7 +108,6 @@
                     padding: 10, 10
                     size_hint_y: None
                     height: 100
-                    # height: 50
 
 # Task start date
                     BoxLayout:
@@ -133,11 +130,17 @@
                         Text:
                             text: 'Task progress'
                         PressableBoxLayout:
+                            canvas:
+                                Color:
+                                    rgba: app.colors['button']
+                                Rectangle:
+                                    size: self.size
+                                    pos: self.pos
+                                    # radius: [20,]
+
                             dropdown: dropdown.__self__
                             center: self.center
-                            background_normal: ''
-                            # border: 0, 1, 0, 1
-                            color: 0, 0, 0, 1
+                            color: app.colors['text_dark']
                             size_hint_y: None
                             height: 40
                             on_parent: dropdown.dismiss()
@@ -152,7 +155,7 @@
                                 Box:
                                     canvas.before:
                                         Color:
-                                            rgba: app.root.COLORS['TempoBlue']
+                                            rgba: app.colors['accent']
                                         Rectangle:
                                             size: self.size
                                             pos: self.pos
@@ -182,6 +185,7 @@
                                                 if not self.text: self.text = '0'
                                                 if float(self.text) > task._max_duration and self.focus == False: self.text = str(task._max_duration)
                                             hint_text: str(task._max_duration)
+                                        
                                         Text:
                                             text: str(task._max_duration)
 # Task progress info
@@ -202,7 +206,7 @@
                                     size_hint: 1, None
                                     height: 10
                                     # value: float(progress.text)
-                                    value: 50
+                                    value: root._progress
                                     max: 100
                                     # max: float(duration.text)
 # Deadline
@@ -253,12 +257,12 @@
                     size_hint_y: None
                     height: 50
 # Save button
-                    Button:
+                    AccentButton:
                         text: 'Save'
                         color: 0, 0, 0, 1
+                        # size_hint_x: 
                         background_normal: ''
                         # background_color: .70, .88, .87, 1
-                        background_color: app.root.COLORS['TempoBlue']
                         on_release:
                             app.root.save_tasks();
                             popup.dismiss();
@@ -266,10 +270,8 @@
                     Button:
                         text: 'Delete'
                         # min_state_time: 1
-                        trigger_action: 5
-                        size_hint_x: None
-                        width: 50
-                        background_color: 1, 0, 0, 1
+                        size_hint_x: 0.1
+                        # width: 80
                         on_release:
                             app.root.taskholder.remove_widget(task);
                             popup.dismiss();

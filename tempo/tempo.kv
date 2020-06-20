@@ -15,6 +15,11 @@
     background_down: ''
     background_color: app.colors['accent'] if self.state == 'down' else app.colors['button']
 
+
+<AccentButton@Button>:
+    background_color: app.colors['accent'] if self.state == 'normal' else app.colors['button']
+
+
 <Text>:
     color: app.colors['text_dark']
 
@@ -33,6 +38,7 @@
 
 <DefaultInput>:
     background_normal: ''
+    color: app.colors['text_dark']
     write_tab: False
     multiline: False
     canvas.after:
@@ -90,14 +96,6 @@
     BoxLayout:
         orientation: 'vertical'
         padding: 10, 2
-        Button:
-            background_normal: ''
-            background_color: app.colors['accent'] #if self.state == 'down' else app.colors['button']
-            size_hint_y: 0.1
-            color: app.colors['text_dark']
-            # height: 40
-            text: 'Add new task'
-            on_release: root.add_new_task()
         BoxLayout:
             size_hint_y: None
             height: 40
@@ -202,7 +200,6 @@
 
 # Action bar
     ActionBar:
-        # size_hint_y: 0.2
         height: '50dp'
         background_color: app.colors['accent']
         background_image: ''
@@ -215,9 +212,12 @@
                 title: 'Select task on timer screen to start working'
                 app_icon: str(app.ICONS_DIR / 'logo.png')
                 on_release: app.open_settings()
-                background_normal: ''
-                background_color: ''
+                # background_normal: ''
+                # background_color: app.colors['accent']
             ActionLabel:
+            ActionButton:
+                on_release: app.root.add_item()
+                icon: str(app.ICONS_DIR / 'plus_icon.png')
 
 
 # Container
@@ -355,15 +355,15 @@
                 name: 'diaryscreen'
                 Box:
                     orientation: 'vertical'
-                    Button:
-                        size_hint_y: 0.1
-                        text: 'Add new story'
-                        background_normal: ''
-                        background_color: app.colors['accent']
-                        color: app.colors['text_dark'] 
-                        on_press:
-                            app.root.print_message('Adding new story');
-                            diaryscreen.add_story()
+                    # Button:
+                    #     size_hint_y: 0.1
+                    #     text: 'Add new story'
+                    #     background_normal: ''
+                    #     background_color: app.colors['accent']
+                    #     color: app.colors['text_dark'] 
+                    #     on_press:
+                    #         app.root.print_message('Adding new story');
+                    #         diaryscreen.add_story()
                     CustomScroll:
 # Storyholder
                         Storyholder:
@@ -374,6 +374,3 @@
                             spacing: 10
                             size_hint: 1, None
                             height: 200 + sum(x.height for x in self.children)
-                            # on_children:
-                                # self.height = app.root.collect_height(self);
-                                # diaryscreen.count_postnum();

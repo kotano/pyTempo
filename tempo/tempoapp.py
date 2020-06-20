@@ -3,10 +3,11 @@ from os import path
 from collections import OrderedDict
 
 # FOR DEBUGGING
-import pathlib
-import sys
-sys.path.append(str(pathlib.Path(__file__).resolve().parent.parent))
-print(sys.path)
+if __name__ == "__main__":
+    import pathlib
+    import sys
+    sys.path.append(str(pathlib.Path(__file__).resolve().parent.parent))
+    print(sys.path)
 
 from kivy.uix.widget import Widget
 
@@ -30,6 +31,16 @@ class RootWidget(BoxLayout):
     taskholder = ObjectProperty()
     minitaskholder = ObjectProperty()
     COLORS = DictProperty(COLORS)
+
+
+    def add_item(self):
+        """Add new item depending on which screen is currently active."""
+        window = self.ids.content_window
+        if window.current == 'taskscreen':
+            self.ids.taskscreen.add_new_task()
+        elif window.current == 'diaryscreen':
+            self.ids.diaryscreen.add_story()
+
 
     def switch_screen(self, screen):
         """Safely trigger screen change.
