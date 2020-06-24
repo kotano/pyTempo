@@ -19,4 +19,5 @@ permalink: '/docs/'
 * [Diagrams](https://kotano.github.io/Tempo/docs/diagrams)
 * [Manual](https://clck.ru/NPy3K)
 * [Technical requirements](https://clck.ru/P7oLC)
-* [Tempo presentation](https://clck.ru/NPy59)
+<!-- * [Tempo presentation](https://clck.ru/NPy59) -->
+* [Tempo presentation](https://www.canva.com/design/DAD-fneYtjQ/PCbNETKr4Z7f2ToElMR7nw/view?utm_content=DAD-fneYtjQ&utm_campaign=designshare&utm_medium=link&utm_source=sharebutton)
