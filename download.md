@@ -16,7 +16,7 @@ Welcome to Tempo download page
 
 ## Windows
 
-<a href='https://clck.ru/NbUeG' download><button>Download</button></a>
+<a href='https://clck.ru/PE2TH' download><button>Download</button></a>
 
 
 ## Android
