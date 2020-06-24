@@ -21,3 +21,4 @@ permalink: '/docs/'
 * [Technical requirements](https://clck.ru/P7oLC)
 <!-- * [Tempo presentation](https://clck.ru/NPy59) -->
 * [Tempo presentation](https://www.canva.com/design/DAD-fneYtjQ/PCbNETKr4Z7f2ToElMR7nw/view?utm_content=DAD-fneYtjQ&utm_campaign=designshare&utm_medium=link&utm_source=sharebutton)
+* [Mockups](https://www.figma.com/file/pPmjcQm7jtt5x80xWXePrU/TempoApp-Copy?node-id=0%3A1)
