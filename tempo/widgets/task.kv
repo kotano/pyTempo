@@ -121,7 +121,7 @@
                             # on_text: root._startdate = root.handle_date(self.text)
                             on_focus:
                                 # if not self.focus: root.handle_dates()
-                                if not self.focus: root.deltatime = app.root.get_worktime(startdate, deadline)
+                                if not self.focus: root._duration = app.root.get_worktime(startdate, deadline)
 
 # Progress bar
                     BoxLayout:
@@ -165,12 +165,13 @@
                                     Slider:
                                         id: sl
                                         step: 0.5
-                                        value: task._duration
-                                        max: task._max_duration
+                                        value: root._duration
+                                        max: root._max_duration
                                         on_value: duration.text = str(self.value)
 # Duration
                                     BoxLayout:
                                         DefaultInput:
+                                            input_filter: 'float'
                                             borders: 1, 1, 1, 1
                                             canvas:
                                                 Color:
@@ -183,7 +184,7 @@
                                             on_text: root._duration = float(self.text)
                                             on_focus:
                                                 if not self.text: self.text = '0'
-                                                if float(self.text) > task._max_duration and self.focus == False: self.text = str(task._max_duration)
+                                                if float(self.text) > task._max_duration and self.focus is False: self.text = str(root._max_duration)
                                             hint_text: str(task._max_duration)
                                         
                                         Text:
@@ -220,7 +221,7 @@
                             text: str(root._deadline)
                             on_text: root._deadline = self.text
                             on_focus:
-                                if not self.focus: root.deltatime = app.root.get_worktime(startdate, deadline);
+                                if not self.focus: root._duration = app.root.get_worktime(startdate, deadline);
                                 # app.root.refresh_data()
 
 # Subtask

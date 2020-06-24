@@ -212,12 +212,14 @@ class Task(BoxLayout):
 
     _data = DictProperty()
 
+    # This one is from future
     def convert_to_list(self, text):
         date = utils.convert_to_date(text)
         res = utils.date_to_list(date)
         return res
 
 
+    # This one is from future too
     def get_worktime(self, startdate, deadline):
         print(dir(self))
         """Compute full work time for task.
@@ -234,6 +236,7 @@ class Task(BoxLayout):
         worktime = utils.find_worktime(hours, self.APP.worktime)
         return worktime
 
+    # Not implemented yet
     def handle_dates(self):
         startdate = self.ids.startdate
         deadline = self.ids.deadline
@@ -281,6 +284,10 @@ class Task(BoxLayout):
             widget._subactive = x['subactive']
             widget._subtaskname = x['subtaskname']
             self.ids.subtaskholder.add_widget(widget)
+
+    def refresh(self):
+
+        pass
 
     def __repr__(self):
         active = 'Completed' if self._active else 'Active'

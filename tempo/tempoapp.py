@@ -32,7 +32,6 @@ class RootWidget(BoxLayout):
     minitaskholder = ObjectProperty()
     COLORS = DictProperty(COLORS)
 
-
     def add_item(self):
         """Add new item depending on which screen is currently active."""
         window = self.ids.content_window
@@ -40,7 +39,6 @@ class RootWidget(BoxLayout):
             self.ids.taskscreen.add_new_task()
         elif window.current == 'diaryscreen':
             self.ids.diaryscreen.add_story()
-
 
     def switch_screen(self, screen):
         """Safely trigger screen change.
@@ -51,7 +49,9 @@ class RootWidget(BoxLayout):
         if screen == 'taskscreen' or screen == 1:
             self.ids.taskscreen_button.trigger_action()
         elif screen == 'timerscreen' or screen == 2:
-            self.ids.timerscreen_button.trigger_action()
+            action = self.ids.timerscreen_button.trigger_action
+            # Wait until tasks being loaded # FIXME
+            Clock.schedule_once(lambda dt: action(), 0.5) 
         elif screen == 'calendarscreen' or screen == 3:
             self.ids.calendarscreen_button.trigger_action()
         elif screen == 'diaryscreen' or screen == 4:
@@ -96,7 +96,6 @@ class RootWidget(BoxLayout):
             return worktime
 
     # NOTE: This func is disabled due to restructuring of the applictaion.
-
     # def refresh_data(self, *dt):
     #     for t in self.taskholder.children:
     #         t.deltatime = self.get_worktime(t.startdate, t.deadline)
@@ -113,6 +112,8 @@ class RootWidget(BoxLayout):
             for t in tasks.values():
                 widget = Task()
                 widget.load_data(t)
+                # widget.deltatime = self.get_worktime(
+                #     widget.startdate, widget.deadline)
                 self.taskholder.add_widget(widget)
         except (FileNotFoundError):
             msg = 'File does not exist. It will be created automatically.'

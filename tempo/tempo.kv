@@ -5,6 +5,7 @@
 <Widget>:
     # Setting application main font
     font_name: './data/fonts/RobotoMono-Regular'
+    
 
 <Label>:
     # color: app.colors['text_dark']
@@ -238,7 +239,7 @@
             padding: 5, 2
             orientation: 'vertical'
             size_hint_x: None
-            size: 70, self.height
+            size: 63, self.height
 
             ScreenButton:
                 id: taskscreen_button
@@ -261,7 +262,9 @@
                 on_release:
                     content_window.current = 'timerscreen';
                     root.populate_minitasks(minitaskholder)
+# Disabled
             ScreenButton:
+                disabled: True
                 id: calendarscreen_button
                 canvas.after:
                     Rectangle:
