@@ -14,5 +14,5 @@
 
 
 ## Our goals:
-- Create a user-friendly application with intuitive interface and all of the necessary functionality for task and time management  
-- Introduce time management principles in the hope of their further integration into society
+- To create a user-friendly application with intuitive interface and all of the necessary functionality for task and time management  
+- To introduce time management principles in the hope of their further integration into society
