@@ -13,7 +13,6 @@ from kivy.uix.widget import Widget
 
 from tempo import utils
 from tempo.settings import ConfiguredApp
-from tempo.templates import TASK, SUBTASK
 from tempo.widgets import *  # noqa: F403
 
 if path.exists('./tempo/tempo_algorithm/algorithm.py'):

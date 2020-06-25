@@ -50,6 +50,7 @@
         size_hint: None, 1
         width: 20
         pos: root.center
+        color: app.colors['accent']
  
 ## Taskname popup
     BoxLayout:
@@ -268,12 +269,13 @@
                             app.root.save_tasks();
                             popup.dismiss();
 # Delete button
-                    Button:
+                    LongpressButton:
                         text: 'Delete'
                         # min_state_time: 1
                         size_hint_x: 0.1
                         # width: 80
-                        on_release:
+                        # on_release:
+                        on_long_press:
                             app.root.taskholder.remove_widget(task);
                             popup.dismiss();
                             app.root.save_tasks();

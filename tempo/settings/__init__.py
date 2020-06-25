@@ -33,8 +33,8 @@ if platform == 'win':
 
 # DEFAULTS
 D = {
-    'POMODURATION': 25,
-    'POMOREST': 5,
+    'POMODURATION': 50,
+    'POMOREST': 10,
     'WORKTIME': 6,
     'WINDOW_WIDTH': 800,
     'WINDOW_HEIGHT': 600,

@@ -397,7 +397,7 @@ Story:
 
             Box:
                 size_hint: 1, 0.2
-                Button:
+                AccentButton:
                     id: btn_save
                     size_hint_x: 0.8
                     text: 'Save'
@@ -444,6 +444,12 @@ Story:
         on_press: popup.open();
 
     StackLayout:
+        canvas:
+            Color:
+                rgba: .5, .5, .5, .5
+            Line:
+                width: 1
+                rectangle: self.x, self.y, self.width, self.height
         id: completed_tasks
         size_hint_y: None
 

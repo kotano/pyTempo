@@ -3,9 +3,10 @@
 ##:include tempo/widgets/task.kv
 
 <Widget>:
-    # Setting application main font
-    font_name: './data/fonts/RobotoMono-Regular'
-    
+    # Setting application main font.
+    font_name: str(app.ROOT_DIR / 'data' / 'fonts' / 'RobotoMono-Regular')
+    # font_name: './data/fonts/RobotoMono-Regular'
+
 
 <Label>:
     # color: app.colors['text_dark']
@@ -212,6 +213,7 @@
                 with_previous: False
                 title: 'Select task on timer screen to start working'
                 app_icon: str(app.ICONS_DIR / 'logo.png')
+                # app_icon: str(app.ICONS_DIR / 'logo_blue_50.png')
                 on_release: app.open_settings()
                 # background_normal: ''
                 # background_color: app.colors['accent']
@@ -317,6 +319,7 @@
                             size_hint_y: None
                             cols: 1
                             padding: 10
+                            spacing: 5
                             height: 100 + 40 * len(self.children)
 
                     Box:
