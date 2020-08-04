@@ -82,7 +82,8 @@ class ConfiguredApp(App):
     WIDGETS_DIR = ROOT_DIR / 'tempo' / 'widgets'
     COLORS = C
 
-    icon = str(ICONS_DIR / 'icon_white.png')
+    # icon = str(ICONS_DIR / 'icon_white.png')
+    icon = str(ICONS_DIR / 'logo_dark_50.png')
     colors = DictProperty()
     # color_scheme = ConfigParserProperty(
     #     'TempoBlue', 'General', 'color_scheme', 'kivy')
